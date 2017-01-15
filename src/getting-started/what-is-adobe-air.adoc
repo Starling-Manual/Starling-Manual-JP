@@ -1,44 +1,58 @@
-== What is Adobe AIR?
+== Adobe AIR とは
 ifndef::imagesdir[:imagesdir: ../../img]
 
-Just a few years ago, Adobe's _Flash Player_ was omnipresent when browsing the web.
-At that time, it was basically the only choice when you wanted to create interactive or animated content for the web.
-Browsers had very limited capabilities when it came to video, sound, and animation; and the few features they had were plagued by browser incompatibilities.
-In short: it was a mess.
+たった数年前まで、Adobe の _Flash Player_ で再生されるコンテンツは web のいたるところで見る事ができました。その頃は、web で動くインタラクティブであったりアニメーションを含むコンテンツを作るには、_Flash Player_ を使う事が当たり前で唯一の選択でした。
+//原文：Browsers had very limited capabilities when it came to video, sound, and animation;
+ブラウザ上でビデオやサウンド、アニメーションを再生するのは技術的な制限が多かったのです。
+//原文：and the few features they had were plagued by browser incompatibilities.
+そして、数少ない関連機能は、ブラウザ間の非互換性という問題に悩まされていました。
+端的に言えば、メチャクチャな状態でした。
 
-That's why _Adobe Flash_ was so popular.
-footnote:[_Flash_ was originally created by _Macromedia_, which was acquired by Adobe in 2005.]
-It allowed designers and developers to create multimedia content in an intuitive authoring program (now called _Adobe Animate_), and ensured that it would look the same across all platforms.
-With _ActionScript 3_, it also featured a language that was both easy to learn, and very powerful.
+_Adobe Flash_ が持てはやされていた理由はここにあります。
+脚注：[ _Flash_ は元々 _Macromedia_ 社により開発され, 2005年に Adobe 社の１製品に仲間入りしました。 ]
 
-Building on the popularity of its platform, Adobe realized that there was a demand to use the same technology for standalone applications that run outside the browser.
-That's what the _Adobe AIR_ runtime is for.
-Applications built with the _AIR SDK_ can be deployed as standalone applications that run on desktop (_Windows_, _macOS_) or mobile (_Android_, _iOS_).
-Its standard library is a superset of the one from Flash, so you can do anything in _AIR_ that you can do in _Flash_; but it also provides a huge number of additional APIs for things like file system access or window management.
+//原文：It allowed designers and developers to create multimedia content in an intuitive authoring program (now called _Adobe Animate_), and ensured that it would look the same across all platforms.
+Flash（現在の _Adobe Animate_ ）によって、デザイナとデベロッパーは直感的に扱えるオーサリングツール上でマルチメディアコンテンツを作成する事ができ、出来上がったコンテンツは全てのプラットフォームで確実に同じ見た目で動作させる事ができました。
+//原文：With _ActionScript 3_, it also featured a language that was both easy to learn, and very powerful.
+_ActionScript 3_ も習うのが簡単でパワフルな言語として取り上げられました。
 
-Of course, when you want to create a desktop application, you also need a way to create a graphical user interface, right?
-Since standard Flash was not very well suited for this task, this was moved into another SDK: _Flex_ (now _Apache Flex_).
-Flex also introduced an XML-based markup language (called _MXML_) to define user interface layouts.
+このプラットフォームの人気を受けて、Adobe はこのテクノロジーをブラウザ外でも用いて、単独のアプリケーションを作りたいという要望がある事に気づきました。
+これに応じる技術が、 _Adobe AIR_ ランタイムなのです。
 
-NOTE: For Starling, you don't need _Flex_, just the _AIR SDK_.
+_AIR SDK_ を用いて作られたアプリケーションはデスクトップ（_Windows_ と _macOS_）及びモバイル（_Android_ と _iOS_）上で動かす事ができます。
 
-=== The current state of Flash and AIR
+AIR の標準ライブラリは、Flashのスーパーセットであり、_Flash_ で可能な事は _AIR_ 上でも全てそのまま利用できます。さらに  アプリケーション window の制御や、システムファイルへのアクセスなど、たくさんの追加 API も提供します。
 
-At the time of its introduction, _AIR_ was part of a trend summarized under the term "rich Internet applications" (_RIA_) -- a buzzword that was all the rage in the late 2000's.
-There was a fierce competition between Adobe's _AIR_ and Microsoft's _Silverlight_ (as well as Sun's _JavaFX_).
-Fast forward to the present day, though, and it's apparent that the tides have turned.
+もちろん、デスクトップアプリケーションを作る際にもグラフィカルなユーザーインターフェースを作る方法は必要ですよね？
+通常の Flash にはこの要求を強く満たす機能を持ち合わせていなかっため、さらに新たな SDK が用意されました。それが _Flex_（現在の _Apache Flex_）です。Flex では _MXML_ と呼ばれる XML ベースのマークアップ言語で、ユーザーインターフェースのレイアウトを指定する事ができます。
+
+NOTE: Starling は _Flex_ を必要としません。_AIR SDK_ のみが必要です。
+
+=== 現在の Flash と AIR
+
+//原文：At the time of its introduction, _AIR_ was part of a trend summarized under the term "rich Internet applications" (_RIA_) -- a buzzword that was all the rage in the late 2000's.
+//ちょっと厳密に訳すのが難しい..
+その導入の時期において、AIR は "rich Internet applications" (_RIA_) という流行、2000年代後半のバズワードであった言葉、それの一部でした。
+そこには Adobe の _AIR_ と Microsoft の _Silverlight_ 間での（そして同様に Sun の _JavaFX_ との）強烈な競争がありました。
+
+しかしながら、時は現在となり、世の中の流行は明らかに移り変わりました。
 The winner is clearly _HTML5/JavaScript_, which is now the most popular technology stack when building applications with web technologies.
-Even Adobe followed the trend and is adding more and more _HTML5_-support to its products.
+勝者は明白に _HTML5/JavaScript_ であり、これは web の技術でアプリケーションを作成する際の現在最も人気なテクノロジーです。
+Adobe でさえもこの流れに乗っ取り、ツールの _HTML5_ サポートをどんどんと強めていっています。
 
-TIP: When it comes to software development, don't fall into the trap of blindly following the masses.
-For every problem, there are multiple solutions; some of them better suited than others.
-Pick the tool you are most comfortable with; a tool that gets out of your way and lets you focus on the software you want to create.
+//原文：TIP: When it comes to software development, don't fall into the trap of blindly following the masses.
+TIP: ソフトウェアの開発という点においては、一般の流れに盲目的に乗っかるという罠にはまってはいけません。
+//原文：For every problem, there are multiple solutions; some of them better suited than others.
+全ての問題には、いくつもの解法があります。ある解法は他のものよりもずっと適切です。
+//原文：Pick the tool you are most comfortable with; a tool that gets out of your way and lets you focus on the software you want to create.
+//ここの、gets out of your way あたりが訳せてない
+自身が最も快適に感じる、作りたいと思うソフトウェア開発に集中できるツールを選びましょう。
 
-Even though it might be no longer the "cool kid" in town, the _AIR/Flash_-platform is still an extremely attractive platform to build software with.
+今では"クールなやつ"と街で呼ばれないかもしれませんが、_AIR/Flash_ は現在でもソフトウェアを開発するのに非常に魅力的なプラットフォームです。
 
-* Compared to the fragmented world of _HTML5_, where trending libraries change faster than Lady Gaga's costumes, it is very mature and easy to use.
-* It comes with an extensive standard library that provides all the tools you need for day-to-day development.
-* The Flash plug-in, while clearly on the decline for general websites, is still the standard for browser gaming. The majority of games on _Facebook_, for example, is still built with Flash.
-* Especially combined with _Starling_ and _Feathers_, it provides one of the smoothest paths for true cross-platform development (targeting all major desktop and mobile platforms with a single code-base).
+* _HTML5_ の断片的な世界〜流行のライブラリがレディーガガの衣装よりも早く移り変わる場所〜そこと比べて _AIR/Flash_ は成熟していて使いやすいプラットフォームです。
+* _AIR/Flash_ プラットフォームには、毎日の開発に必要なツール全てを網羅した大規模な標準ライブラリが付属します。
+* Flash Player プラグインは毎日のウェブサイトで見る事が確かに減ってきてはいますが、今でもブラウザ上のゲームにおいての標準です。例えば、_Facebook_ ゲームの大多数は今でも Flash で作成されています。
+* 特に _Starling_ と _Feathers_（UIライブラリ） を組み合わせた場合は、デスクトップとモバイル両方をターゲットにしたシングルコードのクロスプラットフォーム開発において、最も円滑な開発手法の一つであると言えるでしょう。
 
-Talking about _Starling_ ... how does it fit into this picture?
+さて、_Starling_ について考えると、これはどのように当てはまるでしょう？

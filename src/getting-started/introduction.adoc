@@ -1,28 +1,30 @@
-== Introduction
+== イントロダクション
 
-First of all: welcome to the Starling community!
-Since its first release in 2011, developers from all over the world have created amazing games and apps with the help of the little red bird.
-It's great you want to join us!
+まず最初に、、Starling コミュニティーへようこそ！
+2011年の最初のリリース以来、世界中のデベロッパーがこの小さな赤い鳥と一緒に、素晴らしいゲームやアプリを開発してきました。このドキュメントを読んでくれているあなたが仲間入りする事はとても素晴らしい事です。
 
-You have come to the right place: this manual will teach all you need to know.
-We'll cover everything from 'A' like _Asset Management_ to 'Z' like, ehm, _Zen-like coding_.
+//原文：You have come to the right place:
+あなたは適切なドキュメントを手にしています。
+このマニュアルはあなたが知るべきことを全て教えてくれます。
+AからZまで、例えば、A… _Asset Management_ から、Z…(えーと) _Zen-like coding_ までです。
 
-I will start from scratch, beginning with a small game that will give you a feeling for the framework.
-Then we'll look at all the concepts in detail, including the display list architecture and Starling's animation system.
-Later chapters contain information for advanced Starling users, like how to write custom rendering code.
-Before you know it, you'll be a master of Starling!
+まず、フレームワークの感じを掴んでもらうために、小さなゲームを１から作っていきましょう。
+その後、ディスプレイリストの構成やアニメーションシステムのコンセプトについて詳細に見ていきます。
+//原文：Later chapters contain information for advanced Starling users, like how to write custom rendering code.
+その後の章では、中上級 Starling ユーザの為に、（シェーダーを用いた）カスタムレンダリングの書き方などについて言及します。
+//原文：Before you know it, you'll be a master of Starling!
+それらについて知る前でも、あなたは Starling マスターとなっているでしょう！
 
-However, there is one small precondition: you should have a basic understanding of _ActionScript 3_ (AS3).
-Fear not: if you have used any other object oriented language, you will get the hang of it quickly.
-There are numerous books and tutorials available that will get you started.
+しかし、その為には _ActionScript 3_ (AS3)の基本的な理解をしている事が必要となります。
+//原文：Fear not: if you have used any other object oriented language, you will get the hang of it quickly.
+でも、心配はいらないかもしれません。何かしらオブジェクト指向言語の経験があればすぐにAS3の理解を深める事ができるでしょう。
+//原文：There are numerous books and tutorials available that will get you started.
+世の中にあるたくさんの本やチュートリアルも役に立つはずです。
 
-If you ask me for one book in particular, I can recommend "Essential ActionScript 3" by _Colin Moock_.
-When I started to work with AS3, it taught me all the important nuts and bolts, and I'm still taking it off the bookshelf from time to time (especially with AS3's weird E4X syntax for XML processing).
+あえて述べるならば、_Colin Moock_ 氏の著書である "Essential ActionScript 3" をオススメします。私自身もこの本にお世話になり、たくさんの重要なことを学びました。そして今でもしばしばその本を取り出してくるのです。（特にAS3の妙な仕様のXMLの取り扱い、E4X、について調べる時などに。）
 
 .AS3 vs. JS
 ****
-Did you know that _ActionScript 3_ was actually designed to become a successor to _JavaScript_?
-As you might know, _JavaScript_ is an implementation of the _ECMAScript_ language specification; and _ActionScript 3_ is based on _ECMAScript 4_.
-However, due to mostly political reasons, _ECMAScript 4_ was abandoned and never made it into browsers; today, _ActionScript 3_ remains the only implementation of the standard.
-Ironically, though, modern versions of _JavaScript_ look more and more like _ActionScript 3_.
+_ActionScript 3_ が実際には _JavaScript_ の後継言語としてデザインされているのを知っていましたか？
+ご存知の通り、_JavaScript_ は _ECMAScript_ 仕様の実装であり、_ActionScript 3_ は _ECMAScript 4_ に基づいています。しかし主に政治的な理由により、_ECMAScript 4_ は見捨てられ、ブラウザに実装される事はありませんでした。今日では、_ActionScript 3_ は唯一の標準実装となっています。皮肉な事に、最近の _JavaScript_ はどんどんと _ActionScript 3_ に似てきています。
 ****
