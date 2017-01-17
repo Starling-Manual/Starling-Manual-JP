@@ -1,68 +1,89 @@
-== What is Starling?
+== Starling について
 ifndef::imagesdir[:imagesdir: ../../img]
 
-The _Starling Framework_ allows you to create hardware accelerated apps in _ActionScript 3_.
-The main target is the creation of 2D games, but Starling may be used for any graphical application.
-Thanks to _Adobe AIR_, Starling-based applications can be deployed to all major mobile and desktop platforms.
+_Starling Framework_ は _ActionScript 3_ を用いて、ハードウェアアクセラレーションの効いた（高速に動作する）
+アプリケーションの制作を可能にします。
+Starling の主なターゲットは 2D のゲームですが、どのようなグラフィカルなアプリケーションの制作にも用いることができます。
+_Adobe AIR_ を使えば、全てのメジャーなモバイル端末とデスクトップＰＣに向けてアプリケーションを書き出すことができます。
 
-.This red little fella represents the logo of the Starling Framework.
+.この赤くて小さいトリが Starling Framework のロゴです。
 image::starling-bird.png["The Starling logo.", 400]
 
-While Starling mimics the classic display list architecture of _Adobe AIR/Flash_, it provides a much better performance: all objects are rendered directly by the GPU (using the _Stage3D_ API).
-The complete architecture was designed for working well with the GPU; common game development tasks were built right into its core.
-Starling hides _Stage3D_ internals from developers, but makes it easy to access them for those who need full performance and flexibility.
+Starling はクラシックな（昔から _AIR や Flash_ で使われている）ディスプレイリスト構造を模倣しているものの、それよりもはるかに高速に動作します。
+全てのオブジェクトは _Stage3D_ API を用いて、GPU によって直接描画されます。Starling は GPU をうまく使って動作するように設計されているのです。
+//原文：common game development tasks were built right into its core.
+一般的にゲーム開発に必要となる制御プログラムはすでに Starling 側で実装済みです。
+Starling は 難解な _Stage3D_ の制御をゲーム開発者から隠蔽しつつ、パフォーマンスや柔軟性を損なわずに、その機能だけを提供します。
 
-=== Why another display API?
+=== ディスプレイリスト API を新たに作る理由
 
-As outlined above, Starling's API is very similar to the native Flash API, namely: the `flash.display` package.
-So you might ask: why go to all that effort to recreate Flash inside ... err, Flash?
+上に述べた通り、Starling の API は Flash のそれと、とても近いものとなっています。`flash.display` パッケージの事です。
+//原文：So you might ask: why go to all that effort to recreate Flash inside ... err, Flash?
+ここで、このような疑問が出てくるかもしれません： Flash 自体の内部実装を モバイルに対応できるよう作り直せばいいのではないか？ 別の API を作り直す必要はないのでは？、と。
 
-The reason is that the original `flash.display` API, with its flexible display list, vector capabilities, text rendering, filters, and whatnot, was designed in an era of desktop computers.
-Those computers had powerful CPUs, but (by modern standards) primitive, fixed-logic graphics hardware.
-Today's mobile hardware, on the other hand, has an almost reversed setup: a weak (i.e. battery-conserving) CPU with a very advanced graphics chip.
+理由は、元々の `flash.display` （柔軟なディスプレイリストを持ち、ベクターグラフィックス・テキスト描画・フィルタ機能などの様々な機能を持った）API は、デスクトップコンピューターの時代に作られたものだからです。
+それらのコンピューターはパワフルなCPUをいくつか持つものの、グラフィックスのハードウェアは原始的で決まった処理しかできないものしか搭載していません。
+しかし今日のモバイルハードウェアは、ほとんど逆の特色を持っています。貧弱でバッテリー喰いの CPU ととても高性能なグラフィックスチップを積んでいるのです。
 
-The problem: it's extremely difficult (if not impossible) to change an API that was designed for pure CPU rendering to suddenly use the GPU efficiently.
-footnote:[Here's an interesting article from one of Adobe's engineers about the reasons, via 'archive.org': http://tinyurl.com/hkbdgfn]
-Thus, such attempts failed spectacularly, and the Flash plug-in is nowadays completely gone from browsers on phones and tablets.
+問題は、CPU 描画向けに作られた API を急遽 GPU を効率的に使えるよう変更するのは、不可能ではないにしろ、とても難しいという事です。
+footnote:['archive.org' サイトに、Starling のような Stage3D 上のライブラリについて、Adobe のエンジニアによるとても面白い考察記事があります。 http://tinyurl.com/hkbdgfn]
+したがって、そのような試みは壮大に失敗しました。Flash プラグインはモバイル端末やタブレットのブラウザから完全にいなくなってしまったのです。
 
-To its credit, Adobe was very aware of this issue.
-That's why, back in 2011, they introduced a low level graphics API called _Stage3D_.
-That API is decidedly low-level; it's basically a wrapper of _OpenGL_ and _DirectX_, allowing developers to access the raw power of the GPU.
+ここで名誉のために言っておくと、Adobe はこの問題についてよくよく気づいていました。
+_Stage3D_ という ローレベルなグラフィックス API を 2011年に発表したのは、その理由からです。
+_Stage3D_ は紛れもなくローレベルで、基本的には、_OpenGL_ や _DirectX_ のラッパーです。開発者に GPU の生のパワーを利用する術を提供します。
 
-The problem: such a low-level API didn't help users of the classic display list much, at least not right away.
-That's because the _Stage3D_ API is as low-level as it gets, so it's nothing a typical developer can (or should!) directly work with when creating an app or game.
-footnote:[Fancy writing some some pixel shaders in an assembly language? I guessed so.]
-Clearly, Adobe needed a more high-level API, built on top of _Stage3D_, but as easy to use as `flash.display`.
+そして、さらに別の問題としてあるのは、そのようなローレベルな API では、既存のディスプレイリスト操作に慣れているユーザーの開発の助けには、少なくとも直ちにはならない、という事です。
+//原文：That's because the _Stage3D_ API is as low-level as it gets,so it's nothing a typical developer can (or should!) directly work with when creating an app or game.
+なぜならば _Stage3D_ API はこの上なくローレベルなので、一般的な開発者がアプリやゲームを開発する際に直接触れるようなものでも、触るべきものでもないのです。
+//原文：footnote:[Fancy writing some some pixel shaders in an assembly language? I guessed so.]
+footnote:[ピクセルシェーダーをアセンブリ言語でいくつも書くことを思い出したりしましたか？ 私はそのように思いました。]
+Adobe は間違いなく、_Stage3D_ 上で動作する`flash.display` のように使いやすいハイレベルな API を欲していました。
 
-Well ... this is were Starling enters the stage (pun intended)!
-It was designed from ground up for _Stage3D_, while mimicking the classic Flash API as much as possible.
-This makes it is possible to fully leverage today's powerful graphics hardware, while using concepts countless developers are already familiar with.
+//原文：Well ... this is were Starling enters the stage (pun intended)!
+これが、Starling が "stage" の上にたった背景（ここ、ダジャレです！）なのです。
+Starling は _Stage3D_ 上で動き、できる限り Flash の ディスプレイリストのように扱えるようデザインされています。
+これによって、多くの開発者が慣れ親しんでいる開発コンセプトを用いつつ、今日のパワフルなグラフィックスハードウェアを利用するというような、
+少ない労力で最大のうまみを得ることを可能としています。
 
-Adobe could have made such an API themselves, of course.
-However, monolithic APIs built by big companies have the tendency to become big and inflexible.
-A small open source project, on the other hand, powered by a community of equal-minded developers, can act much more swiftly.
-That's the insight that lead _Thibault Imbert_, product manager of the _Flash_ and _AIR_ platforms in 2011, to initiate the Starling project.
+もちろん、Adobe 自身がそのような API を作ることもできたかもしれません。
+//原文：However, monolithic APIs built by big companies have the tendency to become big and inflexible.
+しかし、一枚岩な API群 が巨大な１企業によって作られる場合、肥大して柔軟性を欠いたものになってしまう傾向があります。
+一方、開発者と同目線のコミュニティによって作られたオープンソースのプロジェクトは、ずっと軽快に振る舞うことができます。
+//原文：That's the insight that lead _Thibault Imbert_, product manager of the _Flash_ and _AIR_ platforms in 2011, to initiate the Starling project.
+これは、2011年に _Flash_ と _AIR_ プラットフォームのプロダクトマネージャーであった _Thibault Imbert_ が Starling プロジェクトを開始するに至った洞察です。
 
-To this day, it is funded and supported by Adobe.
+そして今日では、 Starling は Adobe から資金提供を受け支えられています。
 
-=== Starling's philosophy
+=== Starling の哲学
 
-One of the core aims of Starling was to make it as lightweight and easy to use as possible.
-In my opinion, an open source library should not only be easy to use -- it should also encourage diving into the code.
-I want developers to be able to understand what's going on behind the scenes; only then will they be able to extend and modify it until it perfectly fits their needs.
+//原文：One of the core aims of Starling was to make it as lightweight and easy to use as possible.
+Starling の主な狙いの一つに、できる限り軽量で使いやすい状態であるようにする、というものがありました。
+//原文：In my opinion, an open source library should not only be easy to use -- it should also encourage diving into the code.
+これは私の個人的な意見ですが、オープンソースのライブラリは単に使いやすいだけでなく、そのコードにユーザーが手を入れる事も奨励すべきです。
+//原文：I want developers to be able to understand what's going on behind the scenes;
+開発者には、ライブラリが裏で何を行なっているのか、理解できる状態であって欲しいと思っています。
+//原文：only then will they be able to extend and modify it until it perfectly fits their needs.
+そして、もしもライブラリの機能が不十分であった場合は、開発者側でライブラリを拡張したり調整したりできるようであって欲しいと思います。
 
-That's why Starling's source is well documented and surprisingly concise.
-With a size of just about 15k lines of code, it's probably smaller than most games that are written with it!
+これが、Starling のソースがよくドキュメント化されていて、驚くほど簡潔になっている理由です。
+たった1万5千行のコードは、おそらくStarling を使ったたいていのゲーム側のコードより小さい事でしょう！
 
 [TIP]
 ====
-I really want to emphasize that: if you're one day stuck or confused why your code isn't working as expected, don't hesitate to step into the source code of Starling.
-Oftentimes, you'll quickly see what's going wrong, and you'll get a much better understanding of its internals.
+これは本当にオススメしたいのですが、もしある日思った通りにコードが動かず行き詰まったり困ってしまったなら、
+ためらわずに Starling のソースコードを参照してみてください。
+たいていの場合、すぐに何がいけないのかがわかり、内部構造についてより深い理解が得られるはずです。
 ====
 
-Another important goal of Starling is, of course, its close affinity to the display list architecture.
-That's not only because I really like the whole idea behind the display list, but also to make it easy for developers to transition to Starling.
+//原文：Another important goal of Starling is, of course, its close affinity to the display list architecture.
+もう一つの Starling の 重要な目的はもちろん、レガシーなディスプレイリスト構造と似ている状態である、ということです。
+これは、私がディスプレイリストの背後にある考え方を好きだからという理由からだけでなく、
+開発者が Starling の扱いにすぐに馴染めるようにするためでもあります。
 
-Nevertheless, I was never trying to create a perfect duplicate.
-Targeting the GPU requires specific concepts, and those should shine through!
-Concepts like _Textures_ and _Meshes_ aim to blend in seamlessly with the original API, just as if it had always been designed for the GPU.
+それでも、私はディスプレイリストの完全な複製を作ろうとした事は一度もありません。
+//原文：Targeting the GPU requires specific concepts,and those should shine through!
+GPU をターゲットとした場合、明確なコンセプトが必要であり、そのコンセプトが随所に行き渡っていなくてはなりません。
+//原文：Concepts like _Textures_ and _Meshes_ aim to blend in seamlessly with the original API, just as if it had always been designed for the GPU.
+_Textures_ や _Meshes_ のようなコンセプトは、オリジナルの API が自然に、そもそも GPU 向けにデザインされていたかのように
+調和できるよう、狙っています。
