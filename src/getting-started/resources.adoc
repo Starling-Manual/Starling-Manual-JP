@@ -1,113 +1,148 @@
-== Resources
+== リソース一覧
 
-We almost have all the building blocks in place now. Let's see how to set everything up so that we can finally get started with our first project, right?
+//原文：We almost have all the building blocks in place now.
+必要な道具はほぼ揃いました。
+//原文：Let's see how to set everything up so that we can finally get started with our first project, right?
+最初のプロジェクトを始めるため、どのように準備をすればいいか見てみましょう。
 
 === AIR SDK
 
-If you have picked and installed your IDE, the next step is to download the latest version of the _AIR SDK_.
-Adobe releases a new stable version once every three months, so be sure to keep up to date!
-Each new release typically contains several important bug-fixes, which is especially important to maintain compatibility with the latest mobile operating systems.
-You will also constantly see the team experimenting with new features, and I'm trying hard to keep up with that pace in Starling.
+IDE の準備が終わったならば、次にすることは _AIR SDK_ 最新バージョンのダウンロードです。
+Adobe は SDK の安定バージョンを３ヶ月に１度定期リリースします。常に最新をキープしましょう。
+新しいリリースにはたいてい重要なバグフィックスが含まれ、それは最新のモバイルOSとの互換性を保つのに重要なものです。
+//原文：You will also constantly see the team experimenting with new features,
+さらに、新機能の実験的な実装などもしばしば見ることでできるでしょう。
+//原文：and I'm trying hard to keep up with that pace in Starling.
+私はなるべくこの SDK の 更新ペースについていけるよう、Starling への取り込みを頑張っています。
 
-The latest release can always be found here:
+最新のリリースバージョンはいつでもここで見つけることができます。
 https://www.adobe.com/devnet/air/air-sdk-download.html[Download Adobe AIR SDK]
 
-NOTE: Starling 2 requires at least AIR 19.
+NOTE: Starling 2 は AIR のバージョン19以上を必要とします
 
-=== Flash Player Projector
+=== Flash Player プロジェクター
 
-If your project also aims to run in the _Flash Player_, I recommend you get the standalone version of it, called _Projector_ (available as _Debug_ and _Release_ versions).
-The advantage of the projector is a much easier debugging experience.
-Yes, you could also debug via the browser (after installing the debug-version of the plug-in) -- but personally, I find that extremely cumbersome.
-The projector starts up much faster, and you don't need to configure any HTML files to get it going.
+もしもあなたのプロジェクトが _Flash Player_ 上でも動くコンテンツを作ることも目的とするなら、
+_Flash Player_ の スタンドアロン版を手に入れることをオススメします。
+_プロジェクター_ と呼ばれるものです。（_デバッグ版_ と _リリース版_ が存在します。）
 
-This page contains a list of all Flash Player versions suitable for developers. Look for the "projector content debugger":
+プロジェクターを使うとデバッグ開発を行うのが簡単になります。
+もちろんデバッグ版の Flash Player をブラウザにインストールしてデバッグを行うこともできます。しかし個人的にはとても面倒に感じます。
+
+プロジェクターはずっと速く起動しますし、動作させるために html ファイルを用意する必要もありません。
+
+下記のページは開発者が利用可能な全てのバージョンの Flash Player を含んでいます。
+"projector content debugger" を探して見てください。
+
 https://www.adobe.com/support/flashplayer/debug_downloads.html[Adobe Flash Player Debug Downloads]
 
-NOTE: The debugger is significantly slower than the standard version. Keep that in mind when you're working on performance optimization.
+NOTE: デバッグ版の動作は通常盤に比べて著しく低速です。コンテンツのパフォーマンス調整を行う際はこの事を忘れないでください。
 
-Again, your IDE might need to know how to find the correct player.
-For example, in _IDEA_, this setting is part of the debug configurations screen; other IDEs might simply use the system default.
-In any case, it's important to always use a player version that's equal to or higher than the AIR SDK version you compiled the SWF with.
+あなたが使っている IDE はどのバージョンの player を使えばいいか設定してやる必要があるかもしれません。
+例えば、_IDEA_ ではデバッグ設定スクリーンに、この player 設定が存在します。
+他の IDE では シンプルに OS のシステム設定の player を使うかも知れません。
+どの場合でも、SWF ファイルをコンパイルする AIR SDK のバージョンよりも高いか同じバージョンの player を使う事が大事です。
 
 === Starling
 
-Now all that's left to download is Starling itself.
-You can choose between two ways of doing that.
+さて、あと残すは Starling 自体のダウンロードだけです。
+２つの方法で手に入れる事ができます。
 
-a. Download the latest release as a zip-file from http://gamua.com/starling/download/[gamua.com/starling/download].
-b. Clone Starling's _Git_ repository.
+a. 最新のリリースを ZIP ファイルで入手：http://gamua.com/starling/download/[gamua.com/starling/download]
+b. Starling の _Git_ リポジトリをクローンする
 
-The advantage of the former is that it comes with a precompiled SWC file (found in the folder `starling/bin`) that is easily linked to your project.
-However, you'll always only get the stable releases this way, which means you're missing out on the latest hot updates and fixes!
-For this reason, I'd rather advocate using _Git_.
+前者の良い点は、コンパイル済みの SWC ファイルが付属してくる事です。(`starling/bin` フォルダ以下に配置されています。)
+SWC ファイルは簡単にプロジェクトに取り込む事ができるでしょう。
 
-TIP: Let's say you report a bug and it is fixed a few days later (yes, that happens!): with the standard download, you'll have to wait for the fix until I'm creating a new stable release, which could be quite a while.
-When you're using the _Git_ repository, you'll have the fix right away.
+しかし、この方法では安定リリースバージョンしか手に入れる事ができません。
+最新機能やバグ修正をすぐさま取り入れることはできないのです。
+この理由から むしろ、_Git_ を使ってファイルを入手することをオススメします。
 
-Going into depths about _Git_ would exceed the scope of this manual, but you'll find lots of great tutorials about it on the web.
-Once installed, _Git_ can _clone_ the complete Starling repository to your disk with the following command:
+TIP: あなたがバグレポートをしたとして、数日後にそれが修正されたとします。（そういうことは実際にあります。）
+通常のダウンロードの方法では、次の安定バージョンのリリースを私が作るまで、かなり長い間待つ場合もありますが、
+もしも _Git_ リポジトリを使っているならば、すぐさま修正バージョンを手に入れることができるのです。
+
+_Git_ について詳しい解説をすると、このマニュアルの範疇を超えてしまいます。
+しかし、web 上には Git の良いチュートリアルがたくさん見つかるはずです。
+一度インストールすれば、下記のコマンドにより、Starling リポジトリの完全なコピーをあなたの PC 上に手に入れることができます。
 
   git clone https://github.com/Gamua/Starling-Framework.git
 
-This will copy Starling to the folder `Starling-Framework`.
-Look for the actual source code inside the sub-folder `starling/src`.
-All of the mentioned IDEs support adding this folder as a _source path_ to your project, which will make Starling part of your project.
-That's not any more complicated than linking to the SWC file; and as a neat side effect, you will even be able to step into Starling's source on debugging.
+`Starling-Framework` フォルダの下に Starling のコピーが作られます。
 
-But what's best about this approach is how easy it is to update Starling to the latest version.
+実際のソースコードは `starling/src` というサブフォルダの中に見つかります。
+先の述べた全ての IDE が _source path_ として、このソースコードフォルダを登録できます。
+これにより、Starling をあなたのプロジェクトの一部として取り込むことができます。
+SWC ファイルをリンクすることより難しいことはありません。
+//原文：and as a neat side effect, you will even be able to step into Starling's source on debugging.
+そして素敵な副作用として、デバッグ開発時には Starling のソースコードに直接 潜っていって参照することができます。
+
+しかし、このアプローチの最も良い部分は、簡単に最新バージョンの Starling に更新することができることです。
+
 Simply navigate into the repository's directory and `pull`:
+単純に、リポジトリのディレクトリにて`pull`コマンドを実行してください。
 
   cd Starling-Framework
   git pull
 
-That's much simpler than opening up the browser and manually downloading a new version, isn't it?
+この方法はブラウザを開いて最新ファイルをダウンロードするより、ずっとシンプルだと思いませんか？
 
 [NOTE]
 ====
-Some additional information for advanced _Git_-users:
+_Git_ ユーザにいくつか追加の情報があります。
 
-* All day-to-day development in Starling happens on the `master` branch.
-* Stable releases are _tagged_ (like `v2.0`, `v2.0.1`, `v2.1`).
-* Each tag is marked as a _Release_ on _GitHub_, at which time I'll also attach a precompiled SWC file.
+//原文：* All day-to-day development in Starling happens on the `master` branch.
+* 日々の Starling の開発は `master` ブランチで行われます。
+* 安定バージョンは _タグ付け_ されます。 (例えば `v2.0`, `v2.0.1`, `v2.1` など)
+* それぞれのタグは _GitHub_ 上で _Release_ として扱われ、そこにはコンパイル済みの SWC ファイルも付属されます。
 ====
 
 === Getting Help
 
-The best of us get stuck sometimes.
-You might hit a road block because of a bug in Starling, or maybe because of a problem that seems impossible to solve.
-Either way, the Starling community won't leave you alone in your misery!
-Here are some resources that you can go to when you need help.
+//原文：The best of us get stuck sometimes.
+誰にでも行き詰ってしまうことはあります。
+//原文：You might hit a road block because of a bug in Starling, or maybe because of a problem that seems impossible to solve.
+解決不可能な問題に直面したり、Starling のバグのせいであったり、そのような理由で先に進めなくなる事もあるでしょう。
 
-Starling Forum::
-That's the main hub of the Starling community.
-With dozens of new posts each day, it's very likely that your problem has already been asked before, so be sure to make use of the _search_ feature.
-If that doesn't help, feel free to register an account and ask away.
-One of the most friendly and patient communities you'll find on the web! +
+どちらにしても、Starling コミュニティ はあなたを一人置き去りにはしません。
+
+助けが必要な時に訪れるべき情報源となるサイトがいくつか存在します。
+
+Starling フォーラム::
+Starling コミュニティの中の一番のハブたる場所です。
+毎日たくさんの投稿があり、あなたが持っている問題はすでにここで質問済みであることも多いでしょう。_検索_ 機能を活用してください。
+
+もしも目的の情報が見るからないのなら、気軽にメンバー登録をして質問をしてください。
+そこに、web上で最も親切で寛容なコミュニティを見つける事ができるでしょう。 +
 -> http://forum.starling-framework.org
 
-Starling Manual::
-ifdef::target-manual[The online manual you are reading right now.]
-ifndef::target-manual[The online manual provides an extensive introduction to Starling.]
-I try my best to keep it updated for each new release. +
+
+Starling マニュアル::
+ifdef::target-manual[今あなたが読んでいるこのページの事です.]
+ifndef::target-manual[オンラインマニュアルは広い範囲の Starling の解説を提供します。]
+I try my best to keep it updated for each new release.
+できる限り Straling のリリースと共にこのマニュアルも更新していくつもりです。 +
 -> http://manual.starling-framework.org
 
 Starling Wiki::
-The wiki contains links and articles about different Starling related topics, and most importantly: a list of Starling extensions.
-We will discuss some of those later. +
+//原文：The wiki contains links and articles about different Starling related topics,
+wiki ページは また異なった感じで Starling に関する話題のリンクや記事を含んでいます。
+そしてこれが大事な事なのですが、Starling の拡張機能の一覧ページを持っています。
+いくつかの拡張機能については後ほどまた紹介します。 +
 -> http://wiki.starling-framework.org
 
-API Reference::
-Don't forget to consult the Starling API Reference for detailed information about all classes and methods. +
+API リファレンス::
+Starling の API リファレンス ページを参照するのも忘れないでください。クラスやメソッドについてより詳細な情報が得られます。 +
 -> http://doc.starling-framework.org
 
 Gamua Blog::
-Keep up to date with the latest news about Starling via the Gamua blog.
-I must admit I'm a little lazy when it comes to writing blog posts, but there will always be at least one for each Starling release. +
+Gamua blog で Starling について、最新の情報を手に入れてください。
+正直なところブログポストを書くのは怠けてしまう事もあるのだけれども、Starling の最新リリースについての情報は必ずポストされています。 +
 -> http://gamua.com/blog
 
 Twitter::
 I'm using several social networks, but the best way to reach me is via `@Gamua`.
-Follow this account to get updates about new developments or links to other Starling-powered games. +
+私は いくつかの SNS を使っていますが、Twitter で `@Gamua` とメンションする事が私と連絡を取る一番の方法です。
+このアカウントをフォローして、新しい開発内容や、Starling で作られたゲームなどの最新情報を手に入れてください。 +
 -> https://twitter.com/Gamua
 
