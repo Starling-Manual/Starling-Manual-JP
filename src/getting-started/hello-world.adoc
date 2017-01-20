@@ -1,33 +1,46 @@
 == Hello World
 ifndef::imagesdir[:imagesdir: ../../img]
 
-Phew, that was quite a lot of background information.
-It's time we finally get our hands dirty!
-And what better way to do that than a classical "Hello World" program.
-This manual wouldn't be complete without one, right?
+//原文：Phew, that was quite a lot of background information.
+//It's time we finally get our hands dirty!
+さて、ここまでたくさんの付随的な情報を伝えてきましたが、ついに手を動かす時です。
+//原文：And what better way to do that than a classical "Hello World" program.
+プログラミングの一般的な通例に習って "Hello World" を表示するプログラムを書いてみましょう。
+//原文：This manual wouldn't be complete without one, right?
+"Hello World" 無くして、このマニュアルは完成しないのです。（そう思いません？）
 
-=== Checklist
+=== チェックリスト
 
-Here's a quick summary of the preparations you should already have made:
+//原文：Here's a quick summary of the preparations you should already have made:
+以下は、すでに準備を終えているべき項目の一覧です。
 
-* Chosen and downloaded an IDE.
-* Downloaded the latest version of the _AIR SDK_.
-* Downloaded the latest version of the _Flash Player Projector_.
-* Downloaded the latest version of _Starling_.
-* Configured your IDE to use the correct SDK and player.
+* IDE を選んでダウンロードする。
+* _AIR SDK_ の最新バージョンをダウンロードする。
+* _Flash Player Projector_ の最新バージョンをダウンロードする。
+* _Starling_ の最新バージョンをダウンロードする。
+* IDE が正しい SDK と Flash Player を使うように設定する。
 
-Configuring the IDE and setting up a project is done slightly different in each IDE.
-To help you with that, I created a specific how-to for each IDE in the http://wiki.starling-framework.org/manual/[Starling Wiki].
-Please follow the appropriate tutorial before you continue.
+IDE の設定とプロジェクトのセットアップを行うやり方は それぞれの IDE で多少違います。
+//原文：To help you with that, I created a specific how-to for each IDE in
+手助けになるよう、それぞれの IDE でのやり方について、Wiki ページにチュートリアルを記しておきました。
+http://wiki.starling-framework.org/manual/[Starling Wiki].
 
-NOTE: Admittedly, all of those set-up procedures are a pain. But bear with me: you only need to do this very rarely.
+//原文：Please follow the appropriate tutorial before you continue.
+この先に進む前に、（必要であれば）適切なチュートリアルにしたがってください。
 
-=== Startup Code
+//原文：NOTE:, all of those set-up procedures are a pain. But bear with me: you only need to do this very rarely.
+NOTE: 確かに、このようなセットアップの手続きはとても面倒なものです。でも我慢してください。
+このような手続きは滅多に必要になりません。
 
-Create a new project or module in your IDE; I recommend you start with a _Flash Player_ project (target platform: _Web_) with the name "Hello World".
-As part of the initialization process, your IDE will also setup a minimal startup class for you.
-Let's open it up and modify it as shown below.
-(Typically, that class is named like your project, so exchange the class name below with the correct one.)
+=== 最初のコーディング
+
+新しいプロジェクト、もしくはモジュールを あなたの IDE 上で作成してください。
+最初は _Flash Player_ 向けの（ _Web_ 向けの）"Hello World" プロジェクトを作ることをオススメします。
+//原文：As part of the initialization process, your IDE will also setup a minimal startup class for you.
+プロジェクトを作ると同時に、あなたの IDE は小さなクラスを１つ作るでしょう。
+そのクラスを開いて下記の例の用に編集して見ましょう。
+//原文：(Typically, that class is named like your project, so exchange the class name below with the correct one.)
+（一般的に、そのクラスはプロジェクト名と似たような名前で作られます。下記の例にあるクラスの名前は実際のクラス名に適切に置き換えて考えてください。）
 
 [source, as3]
 ----
@@ -50,13 +63,15 @@ package
 }
 ----
 
-This code creates a Starling instance and starts it right away.
-Note that we pass a reference to the “Game” class into the Starling constructor.
-Starling will instantiate that class once it is ready.
-(It's done that way so you don't have to take care about doing stuff in the right order.)
+このコードでは Starling クラスのインスタンスを作成し、すぐさま開始させています。
+Starling のコンストラクタ引数として、"Game" クラスを渡していることに注目してください。
+Starling は、その準備が出来次第、"Game" クラスをインスタンス化します。
+//原文：(It's done that way so you don't have to take care about doing stuff in the right order.)
+（そのように自動で処理が行われるので、実行順序が正しく行われるかなどをきにする必要はありません。）
 
-That class first needs to be written, of course.
+もちろんですが、その"Game" クラスの内容を先にで記述しておかないといけません。
 Add a new class called `Game` to your project and add the following code:
+プロジェクトに`Game`クラスを追加して、下記のコードを記述してください。
 
 [source, as3]
 ----
@@ -79,63 +94,74 @@ package
 }
 ----
 
-The class just displays a simple red quad to see if we've set up everything correctly.
+ここまでの作業がうまくいっていれば、このクラスは単純に赤い矩形を画面に表示します。
 
-IMPORTANT: Note that the Game class extends `starling.display.Sprite`, not `flash.display.Sprite`!
-This is crucial, because we're in the Starling world now.
-It's completely separate from the `flash.display` package.
+IMPORTANT: Game クラスは `starling.display.Sprite` クラスを継承するようにしてください！`flash.display.Sprite` ではありません。
+これは重要です。なぜなら今は（Flash の ディスプレイオブジェクトの世界ではなく）Starling の世界にいるからです。
+Starling の世界は、`flash.display` パッケージ空間と完全に切り離されています。
 
-=== First Launch
+=== 最初のローンチ
 
-Now start up the project.
-For some of you, the output might be a little anticlimactic, because you are seeing an error message like this:
+では、プロジェクトを実行して見ましょう。
+何人かの人は拍子抜けするかもしれません、下記のようなエラーメッセージが表示されるからです。
 
-.You might be greeted with this error instead of the expected quad.
+.この赤い矩形ではなく、このようなエラーメッセージがあなたをお出迎えしてくれるかもしれません。
 image::startup-error.png["Startup error message"]
 
-In that case, it was probably the browser that opened up instead of the standalone Flash Player.
+このエラーを見るケースでは、おそらくスタンドアロンの Flash Player ではなく、ブラウザが起動していることでしょう。
 Check the run/debug configuration and make sure the _Flash Player Projector_ (debug version) is used, not the browser.
-That should fix the problem.
+run/debug 設定を確認して、ブラウザではなく、デバッグ版の _Flash Player Projector_ が立ち上がるように設定してください。
+おそらくはそれで問題が解決します。
 
-==== Fixing the browser error
+==== ブラウザ上でも動くようにする
 
-One day, though, you'll want to embed your SWF file into an HTML page.
+しかし、そのうちブラウザの HTML 上でも Starling で作った SWF コンテンツを動かしたくなる事もあるでしょう。
+
 In that case, you can fix the error by changing the `wmode` Flash parameter to `direct` in the HTML file that's embedding the SWF file.
+その場合、`wmode` というパラメータ値を `direct` という値に変更する事で、上記のエラーが起こらないようにする事ができます。パラメータ設定は SWF を埋め込んだ HTML ファイルのコード中に記述されています。
 Typically, this means you have to make the following change:
+通常は、下記のような編集を行なう事になります。
 
 [source, js]
 ----
-// find the following line ...
+// このような記述がある場所を見つけ…
 var params = {};
 
-// ... and add that one directly below:
+// …直接このような記述を追加します。
 params.wmode = "direct";
 ----
 
-==== Fixing the AIR error
+==== AIRアプリでのエラーを修正する
 
-You will also see this error if you created an AIR application instead of an SWF file.
-In that case, you will need to edit the AIR application descriptor, which is probably called `HelloWorld-app.xml` or similar.
-Find and the `renderMode` XML node (which might be commented out) and change its value to `direct`.
+SWF ファイルではなく、AIR アプリケーションを書き出した場合も、同様のエラーを見る事になるでしょう。
+//原文：In that case, you will need to edit the AIR application descriptor, which is probably called `HelloWorld-app.xml` or similar.
+この場合、_AIR application descriptor_ と呼ばれるファイルを編集する必要があるでしょう。そして、それは今回の場合、`HelloWorld-app.xml`か、それと似たような名前で存在するはずです。
+その XML ファイルの中にある、`renderMode` という記述を探してください。（おそらくコメントアウトされています）
+そして、その値を `direct` に変更しましょう。
 
 [source, xml]
 ----
-Find this:
+この記述を見つけます:
 <!-- <renderMode></renderMode> -->
 
-Replace with this:
+このように置き換えます:
 <renderMode>direct</renderMode>
 ----
 
-NOTE: What we've been doing here is allowing the runtime to access the GPU.
-Without those changes, _Stage3D_ is simply not accessible.
+NOTE: この作業によって、flash ランタイムが GPU にアクセスする事が許可されます。
+初期状態のままでは、_Stage3D_ は利用できないのです。
 
-=== Fixed Launch
+=== 修正したローンチ
 
-Congratulations! You have successfully compiled and run your first Starling based project.
+おめでとうございます！
+これで、無事に最初の Starling コンテンツをコンパイルして実行できたかと思います。
 
-.Fantastic: a red Starling in a red box.
+//原文：.Fantastic: a red Starling in a red box.
+//ここはジョークを言っているのだろうか
+.赤い Starling（ムクドリ）が 赤い箱の中にいる素晴らしい情景ですね！
 image::hello-world.png["Hello World"]
 
-Seriously: the most daunting part now lies behind you.
-Finally, we are ready to dig into a real project!
+//原文：Seriously: the most daunting part now lies behind you.
+冗談はさておき、最も気が滅入る作業はすでに終わりました。
+//原文：Finally, we are ready to dig into a real project!
+ついに、実際のプロジェクト作成に取りかかる時がやってきました！
