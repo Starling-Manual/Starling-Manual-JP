@@ -3,28 +3,32 @@ ifndef::imagesdir[:imagesdir: ../../img]
 
 たった数年前まで、Adobe の _Flash Player_ で再生されるコンテンツは web のいたるところで見る事ができました。その頃は、web で動くインタラクティブであったりアニメーションを含むコンテンツを作るには、_Flash Player_ を使う事が当たり前で唯一の選択でした。
 //原文：Browsers had very limited capabilities when it came to video, sound, and animation;
-ブラウザ上でビデオやサウンド、アニメーションを再生するのは技術的な制限が多かったのです。
+ブラウザ上でビデオやサウンド、アニメーションというようなマルチメディアコンテンツを再生するのは技術的な制限が多かったのです。
 //原文：and the few features they had were plagued by browser incompatibilities.
-そして、数少ない関連機能は、ブラウザ間の非互換性という問題に悩まされていました。
+そして、数少ないブラウザに実装されたマルチメディア関連機能は、ブラウザ間の非互換性という問題に悩まされていました。
 端的に言えば、メチャクチャな状態でした。
 
 _Adobe Flash_ が持てはやされていた理由はここにあります。
 脚注：[ _Flash_ は元々 _Macromedia_ 社により開発され, 2005年に Adobe 社の１製品に仲間入りしました。 ]
 
 //原文：It allowed designers and developers to create multimedia content in an intuitive authoring program (now called _Adobe Animate_), and ensured that it would look the same across all platforms.
-Flash（現在の _Adobe Animate_ ）によって、デザイナとデベロッパーは直感的に扱えるオーサリングツール上でマルチメディアコンテンツを作成する事ができ、出来上がったコンテンツは全てのプラットフォームで確実に同じ見た目で動作させる事ができました。
+Flash（現在は _Adobe Animate_ という名前に変わりました）によって、デザイナやデベロッパーは直感的なオーサリングツール上でマルチメディアコンテンツを作成する事ができ、出来上がったコンテンツは全てのプラットフォームで確実に同じ見た目で動作させる事ができました。
 //原文：With _ActionScript 3_, it also featured a language that was both easy to learn, and very powerful.
-_ActionScript 3_ も習うのが簡単でパワフルな言語として取り上げられました。
+_ActionScript 3_ も習うのが簡単で、かつパワフルな言語として取り上げられました。
 
-このプラットフォームの人気を受けて、Adobe はこのテクノロジーをブラウザ外でも用いて、単独のアプリケーションを作りたいという要望がある事に気づきました。
+このプラットフォームが人気であるため、Adobe はある要望がある事に気づきました。
+この技術をブラウザ外でも用い、単独のアプリケーションとしても動くようにしたいという要望です。
 これに応じる技術が、 _Adobe AIR_ ランタイムなのです。
 
 _AIR SDK_ を用いて作られたアプリケーションはデスクトップ（_Windows_ と _macOS_）及びモバイル（_Android_ と _iOS_）上で動かす事ができます。
 
-AIR の標準ライブラリは、Flashのスーパーセットであり、_Flash_ で可能な事は _AIR_ 上でも全てそのまま利用できます。さらに  アプリケーション window の制御や、システムファイルへのアクセスなど、たくさんの追加 API も提供します。
+AIR の標準ライブラリは、Flashのスーパーセットであり、_Flash_ で可能な事は _AIR_ 上でも全てそのまま動作可能です。
+さらにアプリケーション window の制御や、システムファイルへのアクセスなど、たくさんの追加 API をも提供します。
 
-もちろん、デスクトップアプリケーションを作る際にもグラフィカルなユーザーインターフェースを作る方法は必要ですよね？
-通常の Flash にはこの要求を強く満たす機能を持ち合わせていなかっため、さらに新たな SDK が用意されました。それが _Flex_（現在の _Apache Flex_）です。Flex では _MXML_ と呼ばれる XML ベースのマークアップ言語で、ユーザーインターフェースのレイアウトを指定する事ができます。
+当然デスクトップアプリケーションを作る際にも、グラフィカルなユーザーインターフェースを作る方法は必要ですね？
+Flash はこの要求を強くマッチする機能を持ち合わせていなかっため、さらに別の SDK が用意されました。
+それが _Flex_（現在の _Apache Flex_）です。
+Flex では _MXML_ と呼ばれる XML ベースのマークアップ言語を用いて、ユーザーインターフェースのレイアウトを指定する事ができます。
 
 NOTE: Starling は _Flex_ を必要としません。_AIR SDK_ のみが必要です。
 
@@ -32,27 +36,29 @@ NOTE: Starling は _Flex_ を必要としません。_AIR SDK_ のみが必要�
 
 //原文：At the time of its introduction, _AIR_ was part of a trend summarized under the term "rich Internet applications" (_RIA_) -- a buzzword that was all the rage in the late 2000's.
 //ちょっと厳密に訳すのが難しい..
-その導入の時期において、AIR は "rich Internet applications" (_RIA_) という流行、2000年代後半のバズワードであった言葉、それの一部でした。
-そこには Adobe の _AIR_ と Microsoft の _Silverlight_ 間での（そして同様に Sun の _JavaFX_ との）強烈な競争がありました。
+その導入の時期において、AIR は "rich Internet applications" (_RIA_) という流行…2000年代後半のバズワード…その一部でした。
+そこには Adobe _AIR_ と Microsoft _Silverlight_ 間での（そして同様に Sun _JavaFX_ との）強烈な競争がありました。
 
-しかしながら、時は現在となり、世の中の流行は明らかに移り変わりました。
-The winner is clearly _HTML5/JavaScript_, which is now the most popular technology stack when building applications with web technologies.
-勝者は明白に _HTML5/JavaScript_ であり、これは web の技術でアプリケーションを作成する際の現在最も人気なテクノロジーです。
-Adobe でさえもこの流れに乗っ取り、ツールの _HTML5_ サポートをどんどんと強めていっています。
+しかし、時は現在となり、世の中の流行は明らかに移り変わりました。
+//原文：The winner is clearly _HTML5/JavaScript_, which is now the most popular technology stack when building applications with web technologies.
+勝者は明白に _HTML5/JavaScript_ であり、web 技術でアプリケーションを作成するケースでの現在最も人気なテクノロジーです。
+Adobe であっても、この流れに乗っ取り、ツールの _HTML5_ サポートをどんどんと強めていっています。
 
 //原文：TIP: When it comes to software development, don't fall into the trap of blindly following the masses.
-TIP: ソフトウェアの開発という点においては、一般の流れに盲目的に乗っかるという罠にはまってはいけません。
+TIP: ソフトウェアの開発という点では、一般の流行に盲目的に乗っかるという罠にはまらないようにしてください。
 //原文：For every problem, there are multiple solutions; some of them better suited than others.
 全ての問題には、いくつもの解法があります。ある解法は他のものよりもずっと適切です。
 //原文：Pick the tool you are most comfortable with; a tool that gets out of your way and lets you focus on the software you want to create.
 //ここの、gets out of your way あたりが訳せてない
-自身が最も快適に感じる、作りたいと思うソフトウェア開発に集中できるツールを選びましょう。
+自身が最も快適だと感じる、作りたいと思うソフトウェア開発に集中できるツールを選びましょう。
 
-今では"クールなやつ"と街で呼ばれないかもしれませんが、_AIR/Flash_ は現在でもソフトウェアを開発するのに非常に魅力的なプラットフォームです。
+今では "クールなやつ" と街で呼ばれないかもしれませんが、
+_AIR/Flash_ は現在でもソフトウェアを開発するのに非常に魅力的なプラットフォームです。
 
-* _HTML5_ の断片的な世界〜流行のライブラリがレディーガガの衣装よりも早く移り変わる場所〜そこと比べて _AIR/Flash_ は成熟していて使いやすいプラットフォームです。
-* _AIR/Flash_ プラットフォームには、毎日の開発に必要なツール全てを網羅した大規模な標準ライブラリが付属します。
+* _HTML5_ の断片的な世界…流行のライブラリがレディーガガの衣装よりも早く移り変わる場所…
+それと比べて _AIR/Flash_ は成熟していて使いやすいプラットフォームです。
+* _AIR/Flash_ プラットフォームには、毎日の開発に必要な機能全てを網羅した大規模な標準ライブラリが付属します。
 * Flash Player プラグインは毎日のウェブサイトで見る事が確かに減ってきてはいますが、今でもブラウザ上のゲームにおいての標準です。例えば、_Facebook_ ゲームの大多数は今でも Flash で作成されています。
-* 特に _Starling_ と _Feathers_（UIライブラリ） を組み合わせた場合は、デスクトップとモバイル両方をターゲットにしたシングルコードのクロスプラットフォーム開発において、最も円滑な開発手法の一つであると言えるでしょう。
+* 特に _Starling_ と _Feathers_（UIライブラリ） を組み合わせる事は、デスクトップとモバイル両方をターゲットにしたシングルコードのクロスプラットフォーム開発において、最も円滑な開発手法の一つであると言えるでしょう。
 
-さて、_Starling_ について考えると、これはどのように当てはまるでしょう？
+さて、ここから _Starling_ について考えます。これまでの話はどのように当てはまるでしょう？

@@ -15,37 +15,40 @@ ifndef::ebook-format[:leveloffset: 1]
 // MEMO for translator
 // いくつかの単語は翻訳せずそのまま英語表記で使う(例：Straling)
 // 英単語の前には半角スペースを入れる
+// "。。。"や"、、、"ではなく"…"で統一
+// 著者の一人称は"私"
 // 翻訳が難しい部分はコメントて原文を残して作業は先に進む
 // 翻訳する事で意味を伝えにくい文化的な内容の部分は、翻訳せずに進んでも良いが、原文は残しておく
 // サブタイトルなど何か翻訳せずを得ないが、翻訳が難しい部分は英語で残す
 // 訳注をつけう場合はかっこで囲み ※訳者注 の文言を先頭に置く
 // 翻訳を終えた英文は見通しをよくするため削除する
+
 // Masterにpushされた翻訳内容は15分程度の間隔で自動的に本サイトに適用されます
 // http://manual.starling-framework.org/jp/
 
 // introduction
 
-このマニュアルは http://www.starling-framework.org[Starling Framework] の本格的な紹介を目的とします。
-Starling は  _ActionScript 3_ を用いたクロスプラットフォームで動作する様々なアプリケーションを開発するために用いられるエンジンで、特に２Dゲーム開発を対象にしています。
+_※訳者注：日本語訳は順次進行中です。_
+
+このマニュアルは http://www.starling-framework.org[Starling Framework] の包括的な解説を目的とします。
+Starling は _ActionScript 3_ で記述されてた、クロスプラットフォームで動作するライブラリです。主に２Dゲーム開発を対象にしていますが、他にも様々なアプリケーションを開発する事ができます。
 
 ifdef::backend-html5[]
 TIP: このドキュメントの link:manual.pdf[PDFバージョン] がダウンロード可能です。
 endif::[]
 
-このガイドでは、下記について学ぶ事ができます。
+このマニュアルでは、下記について学ぶ事ができます。
 
 //原文：The technologies Starling was built upon and the principles it follows.
-* Starling が構築されている基盤テクノロジーや、開発理念について
-* 開発に使う IDE の選定や、プロジェクトの設定のやり方について
+* Starling の基盤テクノロジーや、開発理念について
+* 開発に使う IDE の選定や、プロジェクト設定のやり方について
 * ディスプレイリストやアニメーションシステムなどの基本コンセプトについて
 * フラグメントシェーダー・バーテックスシェーダーの扱いなど、上級テクニックニついて
 * フレームワークのベストパフォーマンスを引き出す方法
 * モバイルフォンやタブレットでゲームを動かすために必要な事
 
 //原文：Keep on reading to dive right into it!
-早速、それぞれの詳細について読み進んでいきましょう。
-
-_※訳者注：日本語訳は順次進行中です。_
+早速、詳細について読んで行きましょう！
 
 [NOTE]
 .Starling Handbook
@@ -53,13 +56,13 @@ _※訳者注：日本語訳は順次進行中です。_
 [.right]
 image::handbook-mockup.jpg[The Starling Handbook, 250]
 
-マニュアルの著者はこのマニュアルの内容に加えて、さらにたくさんの HOWTO やガイドを追記した本の執筆も行っています。
-A step-by-step tutorial will lead you through the development of a *complete game*.
-ステップ・バイ・ステップで記述されたチュートリアルは、ゲーム開発の最初から最後まで役に立つでしょう。
+このマニュアルの内容に加えて、さらにたくさんの HOWTO やガイドを追記した本の執筆も行われています。
+//原文：A step-by-step tutorial will lead you through the development of a *complete game*.
+ステップ・バイ・ステップで記述されたチュートリアルは、ゲーム開発の最初から最後までの手助けとなるでしょう。
 
 * 本について詳しくは http://gamua.com/blog/2016/09/the-starling-handbook/[Gamua ブログ] を参照してください。
-* http://bit.ly/2dfNIQF[本のお試しプレビュー] がダウンロード可能です。
-* ここに http://eepurl.com/chQGpD[サインアップ] すると本の完成時にお知らせを受ける事ができます！
+* 本の http://bit.ly/2dfNIQF[お試しプレビュー] がダウンロード可能です。
+* ここに http://eepurl.com/chQGpD[サインアップ] すれば、本が完成した際のお知らせを受ける事ができます！
 ====
 
 // include main chapters
@@ -83,27 +86,26 @@ include::mobile-development/index.adoc[]
 === Achievement Unlocked!
 
 //原文：You have successfully finished working through the _Starling Manual_.
-さて、ここまでで _Starling Manual_ は終了です。
-様々な分野をカバーできていたと思うのですが。
+さて、これで _Starling マニュアル_ は終了です。様々な分野をカバーできたかと思います。
 //原文：Pat yourself on the back and shave off that beard you've grown during the last hours.
 //そのまま訳して意味を伝えるのが難しい。。一旦翻訳なし
 
-読了、おめでとうございます！
+読了、お疲れ様でした！
 
 image::impressive.jpg[Impressive]
 
 === Getting Help
 
+まだわからない事があり、質問をしたいですか？
 身につけた知識をシェアしたいですか？
-それともまだわからない事があり、質問をしたいですか？
-Starling コミュニティはあなたの手助けを待っています。
+Starling コミュニティはあなたの手助けをしたいと思っています。
 ぜひ、オフィシャルのフォーラムを訪れてください。 http://forum.starling-framework.org[Starling Forum].
 
-=== まだ物足りない方へ
+=== 物足りない人へ
 
-Starling についてこのドキュメントの内容ではまだまだ不十分だと思う人は、ここに http://eepurl.com/chQGpD[サインアップ] してください。
+Starling の情報について、このドキュメントではまだ不十分だと思う人は、ここに http://eepurl.com/chQGpD[サインアップ] してください。
 http://gamua.com/blog/2016/09/the-starling-handbook/[Starling Handbook] の発売時にお知らせします！
-Starling Handbookは、このマニュアルの全てのコンテンツに加えて、さらにあなたのプロジェクト開発に役立つ情報をお伝えします。
+Starling Handbookは、このマニュアルの全内容に加えて、さらにプロジェクト開発に役立つ情報をお伝えします。
 //原文：And you’re supporting the continuing development of Starling at the same time!
 //本が売れると開発費用に当てられるという意味だろうか？
 そしてそれは同時に Starling の開発の継続をサポートする事になります！

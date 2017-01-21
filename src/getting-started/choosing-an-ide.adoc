@@ -1,36 +1,39 @@
 == IDE を選ぶ
 
-Starling でのゲームやアプリの開発は _Adobe AIR SDK_ を使って行うことはここまでで述べました。
-技術的には、テキストエディタとコマンドラインで AIR アプリをコンパイルすることは可能です。しかしあまりオススメはできません。
+Starling でのゲームやアプリの開発は _Adobe AIR SDK_ を使って行うことをここまで述べてきました。
+技術的には、テキストエディタとコマンドラインのみで AIR アプリをコンパイルすることは可能です。
+しかしあまりオススメはできません。
 //原文：Instead, you'll definitely want to use an integrated development environment (_IDE_).
 開発にはいわゆる _IDE_ を使うのが良いでしょう。
-IDE を使えば、デバッグやリファクタリングやデプロイ作業をずっと簡単に行うことができます。
-Thankfully, there are several to choose from.
+IDE を使えば、デバッグやリファクタリングやデプロイという作業を、ずっと簡単に行うことができます。
 ありがたい事に、いくつかの選択肢があります。早速それらを見てみましょう。
 
 === Adobe Flash Builder
 
-以前は _Flex Builder_ と呼ばれていたもので、 Adobe に寄って作られた IDE です。
+以前は _Flex Builder_ と呼ばれていたもので、 Adobe によって作られた IDE です。
 //原文：You can either purchase it as a standalone version (in a standard and premium edition) or get it as part of a _Creative Cloud_ subscription.
 //standardバージョンは現在購入できただろうか
 単独で（スタンダードもしくはプレミアムエディションを）購入することもできますし、_Creative Cloud_ 契約の一部として使うこともできます。
 //原文：Built upon _Eclipse_, it is a very powerful piece of software, supporting all the features you'd expect, like mobile debugging and refactoring.
-Flex Builder は _Eclipse_ （有名な IDE）を元に作られており、考えうる全ての機能、例えば、モバイル機器のデバッグ機能やリファクタリング機能などももつとてもパワフルなソフトウェアです。
+Flex Builder は _Eclipse_ という有名な IDE を元にして作られており、
+考えうる全ての機能、例えば、モバイル機器のデバッグ機能やリファクタリング機能なども持つ、とてもパワフルなソフトウェアです。
 
-プレミアムエディションには、とても役に立つパフォーマンスのプロファイラーも含んでいます。
+プレミアムエディションには、とても役に立つパフォーマンスプロファイラーも含んでいます。
 
 //原文：Personally, I used _Flash Builder_ for a very long time, and the Starling download even comes with suitable project files.
 個人的にも長い間 _Flash Builder_ を使ってきました。Starling のダウンロードファイルには Flash Builder のプロジェクトファイルもついてきます。
 //原文：However, there is one caveat: _Flash Builder_ has apparently been abandoned by Adobe. The last update (version 4.7) was released in late 2012, and it wasn't particularly stable.
-しかし、一つ注意すべき点があります。_Flash Builder_ の開発はもはや Adobe 内でストップしているようなのです。最後のアップデートであるバージョン4.7は2012年にリリースされました。そしてそれはあまり安定した動作をしません。
-この状態が近い未来に改善する兆候はなさそうです。
+しかし、一つ注意すべき点があります。_Flash Builder_ の開発はすでに Adobe 内で継続されていないようなのです。
+最後のアップデートであるバージョン4.7は2012年にリリースされました。そしてそれはあまり安定した動作をしません。
+この問題が近い未来に改善する見通しはなさそうです。
 
-よって、私が _Flex Builder_ をオススメするのは、あなたが _Creative Cloud_ ユーザーである場合と（それならば無料で手に入ります）、古いライセンスを手に入れている場合だけです。
+よって、私が _Flex Builder_ をオススメするのは、あなたがすでに _Creative Cloud_ ユーザーである場合と
+（それならば無料で手に入ります）、古いライセンスを手に入れている場合だけです。
 //原文：Don't get me wrong: it has a great set of features, and you will get stuff done with it.
 //you will get stuff doneをどう訳すか
-誤解しないで欲しいのですが、_Flash Builder_ は大変優れた機能を持っていますし、業務にも役立つでしょう。
+誤解しないで欲しいのですが、_Flash Builder_ は大変優れた機能を持っていますし、実際の業務にも役立つでしょう。
 
-しかし、しばしばのクラッシュに遭遇したり、AIR SDK の切り替えが手間であったりはしてしまうでしょう。
+しかし、しばしばクラッシュに遭遇したり、AIR SDK の切り替え作業が面倒であったりはします。
 
 * _対応プラットフォーム:_ Windows, macOS
 * _値段:_ USD 249 (スタンダードエディション)、 USD 699 (プレミアムエディション)
@@ -41,52 +44,53 @@ image::flash-builder.png["Adobe Flash Builder."]
 
 //原文：The next candidate might be called "the IDE to rule them all",
 //“One Ring to rule them all.”にかけている？
-次の候補は "全てのIDEを支配するIDE" と呼ばれます。
+この選択候補は、"全てのIDEを支配するIDE" と呼ばれます。
 //原文：because _IDEA_ supports a plethora of languages and platforms.
 なぜなら _IDEA_ はあまりにもたくさんのプラッフォームと言語をサポートするからです。
 AIR のサポートは、"Flash/Flex Support" というプラグインによって行われます。
 
-しばらく自分も IDEA を使って見ましたが、とても気に入りました。特にリファクタリング機能が強力です。
+しばらく私も IDEA を使ってみましたが、とても気に入りました。特にリファクタリング機能が強力です。
 //原文：Feature-wise, it feels just like it was built for AS3; all the important parts are in place.
 機能的にはまるで AS3 専用として開発されたかのようです。全ての重要な機能が含まれています。
 
  _Flash Builder_ とは異なり、この IDE はしばしばアップデートされます。
 //原文：Unfortunately, that's not the case for the Flash plug-in in particular, though.
-特に Flash 開発プラグインのアップデートという訳ではありませんが。。。
+まあ、特に Flash 開発プラグインのアップデートという訳ではありませんが。
 //原文：There are some (minor) deficits that have been waiting for a fix for quite a while.
 長い間修復が待たれているマイナーな不具合が多少存在します。
 
 しかしそれは粗探しというものです。
-IDEA はとても素晴らしい IDE ですし、もしもあなたが macOS を使っているのならば、この IDEを オススメします。
-唯一の問題となるかもしれないのは、料金体制です。_JetBrains_ は最近サブスクリプション型の支払いモデルに移行しました。
-人によってはそぐわないモデルかもしれません。
+IDEA はとても素晴らしい IDE ですし、もしもあなたが macOS を使っているのならば、私はこの IDE をオススメします。
+唯一の問題となるかもしれないのは、料金体制です。開発元の _JetBrains_ は最近、サブスクリプション型の支払いモデルに移行しました。
+人によっては不都合がある料金モデルかもしれません。
 
-この IDE には、フリーのコミュニティバージョンも存在します。しかし残念ながらそちらには _Flash/Flex_ プラグインが含まれていません。
+この IDE には、フリーのコミュニティバージョンも存在します。
+しかし、残念ながら _Flash/Flex_ プラグインが含まれていません。
 
 * _対応プラットフォーム:_ Windows, macOS
 * _値段:_ USD 499 (１年目)、 USD 399 (２年目)、 USD 299 (３年目以降)
 
 //原文：IP: The subscription model contains a so-called "perpetual fallback license", which means that after 12 months, you'll be able
-TIP: サブスクリプション型の支払いモデルには、"perpetual fallback license" と呼ばれるライセンスも含んでいます。
-これは、１年間の利用の後にはそのバージョンの IDEA を永久的に使うことができる権利のことです。その後にサブスクリプションをキャンセルしても、
-すでに永久利用ができる状態バージョンである IDEA は使い続けることができます。
+TIP: サブスクリプション型の支払いモデルには、"perpetual fallback license" と呼ばれるライセンスも含まれています。
+これは、１年間の利用の後にはそのバージョンの IDEA を永久的に使うことができる権利のことです。
+その後にサブスクリプションをキャンセルしても、すでに永久利用ができる状態であるバージョンの IDEA は使い続けることができます。
 個人的にはこの仕組みでサブスクリプションモデルのマイナス面を軽減できているかなと感じます。
 
 image::intellij-idea.png["IntelliJ IDEA"]
 
 === FlashDevelop
 
-自分は macOS で作業することが好きなのですが、ある部分では Windows ユーザが羨ましくなります。
-_FlashDevelop_ という素晴らしい IDE があるからです。無料でオープンソースで Starling の開発に使うことができます。
+私は macOS で作業することが好きなのですが、ある部分では Windows ユーザが羨ましくなります。
+_FlashDevelop_ という素晴らしい IDE があるからです。無料及びオープンソースで、Starling を使った開発に使うことができます。
 だいたい2005年からこの IDE は存在しますが、現在でも定期的なアップデートがなされています。
 //原文：If you're into _Haxe_, it has you covered, as well.
 もしあなたが _Haxe_ (プログラム言語の一種) に熱中しているのであれば、この IDE はそんなあなたもカバーしています。
 
 //原文：but from countless posts in the Starling forum, I've heard only good about it.
-自分は主に macOS を利用しているため、直接 _FlashDevelop_ を触ったことはあまりありません。
-しかし、たくさんの Starling フォーラムへの投稿を見ましたが、この IDE に関してはいい噂しか聞きません。
-Some people are even using it on the mac via a virtual machine (like _Parallels_).
-_Parallels_ などのソフトを使って、mac 上の バーチャルマシンで このソフトを使う人達もいるようです。
+私は主に macOS を利用しているため、直接 _FlashDevelop_ を触ったことはあまりありません。
+しかし、たくさんの Starling フォーラムへの投稿を見ましたが、この IDE に関しては良い噂しか聞きません。
+//原文：Some people are even using it on the mac via a virtual machine (like _Parallels_).
+_Parallels_ などのソフトを使って、mac のバーチャルマシン上で このソフトを使う人もいるようです。
 
 * _対応プラットフォーム:_ Windows のみ
 * _値段:_ 無料 かつ オープンソース
@@ -95,19 +99,19 @@ image::flashdevelop.png["FlashDevelop"]
 
 === PowerFlasher FDT
 
-_Flash Builder_ と同じように、 _FDT_ は _Eclipse_ のプラグインとして作られた IDE です。
-Thus, it's a great choice when moving away from _Flash Builder_, since it all looks and feels very similar.
+_Flash Builder_ と同じように、_FDT_ は _Eclipse_ のプラグインとして作られた IDE です。
 したがって、_Flash Builder_ からの移行先としては良い選択となります。_Flash Builder_ と _FDT_ は、とてもよく似ています。
 _Flash Builder_ のプロジェクトファイルをインポートすることさえできます。
 
 FDT は _Flash Builder_ よりも、いくつかの部分ではより機能が向上しています。
 
-例えば、_Flash_ から _AIR_ へと簡単にプロジェクトの種類を切り替えることができます。これは _Flash Builder_ では不可能です。
+例えば、_Flash_ から _AIR_ へと簡単にプロジェクトの種類を切り替えることができます。
+この作業を _Flash Builder_ で行うこと事は不可能です。
 
 さらに、_HTML5/JavaScript_、_Haxe_ 、_PHP_ など、他のいくつかの言語も追加でサポートしています。
 
 総じて、これはとても手堅い IDE です。
-もしも Eclipse が好きなのであれば、_FDT_ を使って間違いになることはないでしょう。
+もしも Eclipse が好きなのであれば、_FDT_ を使って損はないでしょう。
 
 FDT には無料のバージョンも存在します。最初に開発を始める際にはぴったりです。
 プロダクトページに書かれている内容とは異なり、無料バージョンであってもモバイル AIR の開発が可能です。
@@ -122,10 +126,11 @@ image::powerflasher-fdt.png["Powerflasher FDT"]
 もしもあなたがデザイナーもしくはデベロッパーで Flash の経験が長いのであれば、
 このリストに なぜ _Adobe Flash Professional_ がないのだろうか、と疑問に思うかもしれません。
 //原文：Well, here it is!
-それはまさに今あなたが読んでいるここの事です！
+それは、まさに今読んでいるここの事です！
 
 //原文：If you're not recognizing it, that's because Adobe recently renamed it to _Adobe Animate_.
-気づいていないかもしれませんが、Adobe は最近 Flash の名前を _Adobe Animate_ に変更しました。
+気づいていない人もいるかもしれません。
+Adobe は最近 Flash の名前を _Adobe Animate_ に変更しました。
 
 この新しい名前は現在のソフトウェアのアップデート内容を反映しており、合点が行くものです。
 
@@ -134,7 +139,6 @@ _Animate_ はまさに一般的なアニメーションを作成するツール�
 _Animate_ を Starling の開発に使うことは可能です。しかしオススメはできません。
 _Animate_ はデザイナーにとってとても素晴らしいツールですが、コードを書くのには向いていません。
 
-You'll be much better off using it just for the graphics, and writing the code in one of the other mentioned IDEs.
 Animate を使うのはグラフィック作成に留めておき、コードは上に述べた IDE を使って書くのが良いでしょう。
 
 * _対応プラットフォーム:_ Windows, macOS
