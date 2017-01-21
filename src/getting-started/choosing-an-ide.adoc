@@ -53,11 +53,9 @@ AIR のサポートは、"Flash/Flex Support" というプラグインによっ�
 //原文：Feature-wise, it feels just like it was built for AS3; all the important parts are in place.
 機能的にはまるで AS3 専用として開発されたかのようです。全ての重要な機能が含まれています。
 
- _Flash Builder_ とは異なり、この IDE はしばしばアップデートされます。
 //原文：Unfortunately, that's not the case for the Flash plug-in in particular, though.
-まあ、特に Flash 開発プラグインのアップデートという訳ではありませんが。
 //原文：There are some (minor) deficits that have been waiting for a fix for quite a while.
-長い間修復が待たれているマイナーな不具合が多少存在します。
+ _Flash Builder_ とは異なり、この IDE はしばしばアップデートされます。まあ、特に Flash 開発プラグインのアップデートという訳ではありませんが。。長い間、修復が待たれているマイナーなプラグインの不具合が多少存在します。
 
 しかしそれは粗探しというものです。
 IDEA はとても素晴らしい IDE ですし、もしもあなたが macOS を使っているのならば、私はこの IDE をオススメします。
