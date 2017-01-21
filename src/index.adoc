@@ -12,38 +12,56 @@ Daniel Sperl <http://www.gamua.com[Gamua]>
 :target-manual:
 ifndef::ebook-format[:leveloffset: 1]
 
+// MEMO for translator
+// いくつかの単語は翻訳せずそのまま英語表記で使う(例：Straling)
+// 英単語の前には半角スペースを入れる
+// "。。。"や"、、、"ではなく"…"で統一
+// 著者の一人称は"私"
+// 翻訳が難しい部分はコメントて原文を残して作業は先に進む
+// 翻訳する事で意味を伝えにくい文化的な内容の部分は、翻訳せずに進んでも良いが、原文は残しておく
+// サブタイトルなど何か翻訳せずを得ないが、翻訳が難しい部分は英語で残す
+// 翻訳を終えた英文は見通しをよくするため削除する
+
+// Masterにpushされた翻訳内容は15分程度の間隔で自動的に本サイトに適用されます
+// http://manual.starling-framework.org/jp/
+
 // introduction
 
-The goal of this manual is to provide an extensive introduction to the http://www.starling-framework.org[Starling Framework].
-Starling is a cross-platform engine for _ActionScript 3_ that can be used for all kinds of applications, with a special focus on 2D games.
+_※訳者注：日本語訳は順次進行中です。_
+
+このマニュアルは http://www.starling-framework.org[Starling Framework] の包括的な解説を目的とします。
+Starling は _ActionScript 3_ で記述されてた、クロスプラットフォームで動作するライブラリです。主に２Dゲーム開発を対象にしていますが、他にも様々なアプリケーションを開発する事ができます。
 
 ifdef::backend-html5[]
-TIP: Feel free to download a link:manual.pdf[PDF version] of this document.
+TIP: このドキュメントの link:manual.pdf[PDFバージョン] がダウンロード可能です。
 endif::[]
 
-In this guide, you will learn:
+このマニュアルでは、下記について学ぶ事ができます。
 
-* The technologies Starling was built upon and the principles it follows.
-* How to pick an IDE and set it up for your first project.
-* The basic concepts like the display list, events and the animation system.
-* Advanced techniques, like how to tap into the potential of fragment and vertex programs.
-* How to get the best performance out of the framework.
-* What's required to get your game to run on mobile phones and tablets.
+//原文：The technologies Starling was built upon and the principles it follows.
+* Starling の基盤テクノロジーや、開発理念について
+* 開発に使う IDE の選定や、プロジェクト設定のやり方について
+* ディスプレイリストやアニメーションシステムなどの基本コンセプトについて
+* フラグメントシェーダー・バーテックスシェーダーの扱いなど、上級テクニックニついて
+* フレームワークのベストパフォーマンスを引き出す方法
+* モバイルフォンやタブレットでゲームを動かすために必要な事
 
-Keep on reading to dive right into it!
+//原文：Keep on reading to dive right into it!
+早速、詳細について読んで行きましょう！
 
 [NOTE]
-.The Starling Handbook
+.Starling Handbook
 ====
 [.right]
 image::handbook-mockup.jpg[The Starling Handbook, 250]
 
-I'm also working on a book that contains not only the complete contents of this manual, but adds lots of additional HOW-TOs and guides.
-A step-by-step tutorial will lead you through the development of a *complete game*.
+このマニュアルの内容に加えて、さらにたくさんの HOWTO やガイドを追記した本の執筆も行われています。
+//原文：A step-by-step tutorial will lead you through the development of a *complete game*.
+ステップ・バイ・ステップで記述されたチュートリアルは、ゲーム開発の最初から最後までの手助けとなるでしょう。
 
-* Find out more about it on the http://gamua.com/blog/2016/09/the-starling-handbook/[Gamua Blog].
-* Or download a http://bit.ly/2dfNIQF[Book Preview] right away.
-* http://eepurl.com/chQGpD[Sign up] to get notified when it launches!
+* 本について詳しくは http://gamua.com/blog/2016/09/the-starling-handbook/[Gamua ブログ] を参照してください。
+* 本の http://bit.ly/2dfNIQF[お試しプレビュー] がダウンロード可能です。
+* ここに http://eepurl.com/chQGpD[サインアップ] すれば、本が完成した際のお知らせを受ける事ができます！
 ====
 
 // include main chapters
@@ -60,29 +78,35 @@ include::mobile-development/index.adoc[]
 
 :leveloffset: 0
 
-== Final Words
+== 最後に
 
+//原文：=== Achievement Unlocked!
+// 報酬ゲット？..このまま原文で良いのでは
 === Achievement Unlocked!
 
-You have successfully finished working through the _Starling Manual_.
-We covered a lot of ground, didn't we?
-Pat yourself on the back and shave off that beard you've grown during the last hours.
+//原文：You have successfully finished working through the _Starling Manual_.
+さて、これで _Starling マニュアル_ は終了です。様々な分野をカバーできたかと思います。
+//原文：Pat yourself on the back and shave off that beard you've grown during the last hours.
+//そのまま訳して意味を伝えるのが難しい。。一旦翻訳なし
 
-Congratulations!
+読了、お疲れ様でした！
 
 image::impressive.jpg[Impressive]
 
 === Getting Help
 
-Want to share the knowledge you have just acquired?
-Or do you have any questions that haven't been answered yet?
-The Starling community is eager to help you!
-Pay us a visit at the official http://forum.starling-framework.org[Starling Forum].
+まだわからない事があり、質問をしたいですか？
+身につけた知識をシェアしたいですか？
+Starling コミュニティはあなたの手助けをしたいと思っています。
+ぜひ、オフィシャルのフォーラムを訪れてください。 http://forum.starling-framework.org[Starling Forum].
 
-=== Want more?
+=== 物足りない人へ
 
-If you just can't get enough of Starling, don't forget to http://eepurl.com/chQGpD[sign up] for the launch of the http://gamua.com/blog/2016/09/the-starling-handbook/[Starling Handbook]!
-In addition to all the contents of this manual, it goes above and beyond to provide you with easy to follow recipes you can put to use in your own projects.
-And you're supporting the continuing development of Starling at the same time!
+Starling の情報について、このドキュメントではまだ不十分だと思う人は、ここに http://eepurl.com/chQGpD[サインアップ] してください。
+http://gamua.com/blog/2016/09/the-starling-handbook/[Starling Handbook] の発売時にお知らせします！
+Starling Handbookは、このマニュアルの全内容に加えて、さらにプロジェクト開発に役立つ情報をお伝えします。
+//原文：And you’re supporting the continuing development of Starling at the same time!
+//本が売れると開発費用に当てられるという意味だろうか？
+そしてそれは同時に Starling の開発の継続をサポートする事になります！
 
 image::handbook-mockup.jpg[The Starling Handbook]
