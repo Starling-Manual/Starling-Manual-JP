@@ -1,29 +1,36 @@
-== Multi-Resolution Development
+== マルチ解像度を扱う開発
 
-Oh, where are the days we developed games for a single screen?
-Back then, we had a small rectangular area in an HTML page, and that's where we placed our sprites, texts and images.
-A single resolution to work for -- wasn't that nice?
+１つの画面サイズでゲームを作ればよかった時代はどこへ行ってしまったのでしょう？
+当時は html 上の四角い小さなエリアに、スプライトやテキストや画像を表示していました。
+１つの画面解像度だけ考えて実装をすればよかったのです。いい時代ですよね。
 
-Alas ... the times they are a-changin'!
-Mobile phones come in all flavors and sizes, and even desktop computers and notebooks feature high density displays.
-This is great news for our consumer-selves, but it doesn't exactly make our lives as developers easier, that's for sure!
+//原文：Alas ... the times they are a-changin'!
+ああ、時代は変わってしまった！
+モバイル端末の大きさは様々です。そしてデスクトップコンピューターやノートPCであっても、細かい解像度のディスプレイを持つようになりました。
 
-But don't give up hope: you can manage that.
-It's just a matter of thinking ahead and making use of a few simple mechanisms provided by Starling.
+これは消費者としてはとても喜ぶべき事です、しかし、決して開発者の生活を楽にするものではありません。
 
-The problem is just that it's a little overwhelming at first.
+でも希望をしてないでください。どうにかする事は可能です。
+//原文：It's just a matter of thinking ahead and making use of a few simple mechanisms provided by Starling.
+単に事前に考慮して、 Starling が提供するいくつかのシンプルな機能を利用すればいいだけの事です。
+
+難しいのは、最初のうちはその問題にちょっと圧倒されてしまうという所です。
 That's why we'll do this in small steps -- and we will begin in 2007.
+ですので、まずは2007年の頃の状況に戻って考えて、少しずつ対応を進めていきます。
 
-Yes, you heard right: step into the DeLorean, start up the Flux Capacitor(TM) and hold tight while we hit those eighty miles per hour.
+//原文：Yes, you heard right: step into the DeLorean, start up the Flux Capacitor(TM) and hold tight while we hit those eighty miles per hour.
+ええ、聞き間違いではありません。デロリアンに乗り込んで、次元転送装置を起動しましょう。
+時速120km以上のスピードで問題にぶつかってていくので、引き締まっていきましょう！
 
 === iPhone
 
-The iPhone is arguably the most popular platform for casual games.
-Back in 2007, it was also the _only_ one you could easily develop for.
-This was the time of the big App Store gold rush!
+iPhone は間違いなく最近のゲームで最も人気なプラットフォームです。
+2007年の頃、iPhone は簡単に開発ができる _唯一の_ デバイスでした。
+それは App Store の大ゴールドラッシュと呼べるような時代でした。
 
-With its fixed resolution of 320×480 pixels, the first iPhone was super easy to develop for.
-Granted, Starling wasn't around back then, but you would have started it up like this:
+画面解像度が 320x480 に固定されていたので、最初の iPhone はとても開発がしやすかったのです。
+//原文：Granted, Starling wasn't around back then,but you would have started it up like this:
+もちろん、その頃に Starling は存在しませんでしたが、もしあったとすると下記のようなコードで実装を始めた事でしょう。
 
 [source, as3]
 ----
@@ -34,46 +41,54 @@ var viewPort:Rectangle = new Rectangle(0, 0, screenWidth, screenHeight);
 starling = new Starling(Game, stage, viewPort);
 ----
 
-We set the _viewPort_ to the full size of the screen: 320×480 pixels.
-Per default, the stage will have exactly the same dimensions.
+_viewPort_ の大きさを画面サイズ 320×480 の目一杯に設定します。
+デフォルトの状態では、Stage は画面解像度と全く同じ大きさを持ちます。
 
-.Our game on the original iPhone.
+.初代 iPhone で我々のゲームを動かした図
 image::iphone-penguflip.png[PenguFlip on the iPhone, 120]
 
-So far, so easy: this works just like in, say, a game for the browser.
-(That would be Internet Explorer 6, then, right?)
+ここまではとても簡単です。ブラウザでゲームを作るのと変わりません。
+（それはInternet Explorer 6 上であったかも知れませんね。）
 
-Next stop: 2010.
+では次に、2010年に移動してみましょう。
 
-=== iPhone Retina
+=== iPhone レティナ
 
-We park our DeLorean right around the corner of the old Apple campus and check out the App Store charts.
-Hurray! Apparently, our game was a huge success in 2007, and it's still in the top 10!
-There's no time to lose: we must make sure it looks well on the iPhone 4 that's going to come out in a few weeks.
+//原文：We park our DeLorean right around the corner of the old Apple campus and check out the App Store charts.
+古き Apple 学園の角のあたりにデロリアンを停めて、当時の App Store のランニングを見てみましょう。
+//原文：Hurray! Apparently, our game was a huge success in 2007, and it's still in the top 10!
+やりました！2007年に大成功した我々のゲームは、まだランキングトップ10に止まっているようです！
+//原文：There's no time to lose: we must make sure it looks well on the iPhone 4 that's going to come out in a few weeks.
+時間を無駄にしてはいけません、あと数週間でリリースされる iPhone 4 上でもきちんとした見た目になるよう、ゲームを調整しなくては。
 
-Since we're coming from the future, we know about its major innovation, the high-resolution screen dubbed "Retina Display" by the Apple marketing team.
-We fire up our game from 2007 and start it up on this yet-to-be released device.
+//原文：Since we're coming from the future, we know about its major innovation, the high-resolution screen dubbed "Retina Display" by the Apple marketing team.
+我々は未来からやってきたので、この大技術革新について知っています。Apple のマーケティングチームによって "レティナ ディスプレイ" と名付けられた、高解像度スクリーンの事です。
+//原文：We fire up our game from 2007 and start it up on this yet-to-be released device.
+2007年のゲームを起動して、未だリリースされていないこのデバイス上で動かしてみましょう。
 
-.That's definitely not intended.
+.全く意図しない状態になりました。
 image::iphone4-wrong.png[PenguFlip with a wrong scale on the iPhone4, 160]
 
-Damn, the game is now only taking up a quarter of the screen!
-Why is that?
+//原文：Damn, the game is now only taking up a quarter of the screen!
+なんとした事か、画面のたった1/4のエリアでしかゲームが動いていません。
+一体どういう事なのか？
 
-If you look back at the code we wrote in 2007, you'll see that we made the _viewPort_ just as big as the screen.
-With the iPhone 4, these values have doubled: its screen has 640×960 pixels.
-The code that placed display objects on the stage expected a coordinate system of just 320×480, though.
-So things that were placed on the very right (`x=320`) are now suddenly at the center instead.
+2007年のコードを見返してみると、_viewPort_ の大きさをスクリーンと同じ大きさにしたのがわかるでしょう。
+iPhone 4 では、スクリーンサイズは倍になっていて、640×960 ピクセルの大きさを持ちます。
+//原文：The code that placed display objects on the stage expected a coordinate system of just 320×480, though.
+しかし、ステージ上のディスプレイオブジェクトのコードは 320×480 の大きさを持つシステムで動いている事を期待しているのです。
+よって画面右端(`x=320`)に配置したつもりのオブジェクトは、突如として真ん中に現れるのです。
 
-That's easily solved, though.
-Remember: Starling's `viewPort` and `stageWidth/Height` properties can be set independently.
+でも、これは簡単に解決する事ができます。
 
-* The viewPort decides into which area of the screen Starling renders into.
-  It is always specified in pixels.
-* The stage size decides the size of the coordinate system that is displayed in that viewPort.
-  When your stage width is 320, any object with an x-coordinate between 0 and 320 will be within the stage, no matter the size of the viewPort.
+Starling の `viewPort` の値と `stageWidthとstageHeight` の値は、独立して設定できる事を思い出してください。
 
-With that knowledge, upscaling is trivial:
+* viewPort の設定はスクリーン上のどのエリアに Starling が描画すべきかを設定します。これはいつでもピクセルの単位で記述されます。
+//原文：* The stage size decides the size of the coordinate system that is displayed in that viewPort.
+//When your stage width is 320, any object with an x-coordinate between 0 and 320 will be within the stage, no matter the size of the viewPort.
+* stage サイズの値は、viewPort 内で描画されているシステムがどのくらいの大きさの解像度で動作するのを設定します。stage の幅を 320 と設定した場合、x座標を 0 から 320 の間で設定されたオブジェクトが画面内に表示されます。viewPort の大きさの設定値は関係ありません。
+
+この知識があれば、拡大表示をする事は簡単です。
 
 [source, as3]
 ----
@@ -86,23 +101,29 @@ starling.stage.stageWidth  = 320;
 starling.stage.stageHeight = 480;
 ----
 
-The viewPort is still dynamic, depending on the device the game is started on; but we added two lines at the bottom that hard-code the stage size to fixed values.
+//原文：The viewPort is still dynamic, depending on the device the game is started on;
+viewPort 値は依然動的であって、ゲームを動かすデバイスによって変わります。
+//原文：but we added two lines at the bottom that hard-code the stage size to fixed values.
+しかし、コードの最後の２行の部分にステージの大きさを静的な値としてハードコードしています。
 
-NOTE: Since those values no longer indicate pixels, we are now calling them _points_: our stage size is now 320×480 points.
+NOTE: これら stage の大きさの値は、もはやピクセル値を示さないので _ポイント_ という単位として考えることにしましょう。
+つまり、ステージサイズは 320 ポイント × 480 ポイントである、というように表せる事となります。
 
-On the iPhone 4, the game now looks like this:
+これで iPhone 4 でのゲームの見た目は下記のようになりました。
 
-.Better, but a little blurry.
+.良くなりました、が、ちょっとボケています。
 image::iphone4-scale-blurry.png[PenguFlip scaled up blurry, 285]
 
-That's better: we are now using the full screen size.
-However, it's also a little blurry.
-We're not really making any use of the big screen.
-I can already see the bad reviews coming in ... we need to fix this!
+全画面表示ができるようになったのは良いです。
+しかし、画像がボケて表示されてしまいました。
+まだこの大きな解像度の画面をうまく使いこなせていないのです。
 
-==== HD textures
+すでに、悪い内容のレビューが付いているのがわかります。修正しなくてはいけません。
 
-The solution for that problem is to provide special textures for the high resolution.
+==== HD テクスチャ
+
+このような問題を解決するには、高い解像度の画面に専用のテクスチャを用意すればいいのです。
+
 Depending on the pixel density, we will use either the low- or high-resolution texture set.
 The advantage: except for the logic that picks the textures, we don't need to change any of our code.
 
@@ -243,7 +264,7 @@ Simple, yet effective!
 We definitely earned ourselves another trip with the time machine.
 Hop in!
 
-=== iPhone 6 and Android
+=== iPhone 6 及び Android
 
 We're in 2014 now and ... Great Scott!
 Checking out the "App Store Almanac", we find out that our sales haven't been great after our last update.
@@ -571,13 +592,13 @@ It's the perfect starting point for any mobile application.
 TIP: If you are using _Feathers_, the class _ScreenDensityScaleFactorManager_ will do the job of the _ScreenSetup_ class we wrote above.
 In fact, the logic that's described here was heavily inspired by that class.
 
-=== iPad and other Tablets
+=== iPad 及び その他タブレット
 
 Back in the present, we're starting to wonder if it would make sense to port our game to tablets.
 The code from above will work just fine on a tablet; however, we will be facing a much larger stage, with much more room for content.
 How to handle that depends on the application you are creating.
 
-==== Some games can simply be scaled up.
+==== いくつかのゲームでは拡大しているだけ
 
 Games like _Super Mario Bros_ or _Bejeweled_ look great scaled to a big screen with detailed textures.
 In that case, you could ignore the screen density and calculate the scale factor based just on the amount of available pixels.
@@ -585,7 +606,7 @@ In that case, you could ignore the screen density and calculate the scale factor
 * The first iPad (resolution: 768×1024) would simply become a device with a stage size of 384×512 and a scale factor of "2".
 * A retina iPad (resolution: 1536×2048) would also have a stage size of 384×512, but a scale factor of "4".
 
-==== Others can display more content.
+==== よりたくさん物を表示するタイプも
 
 Think of _Sim City_ or _Command & Conquer_: such games could show the user much more of the landscape.
 The user interface elements would take up less space compared to the game's content.
