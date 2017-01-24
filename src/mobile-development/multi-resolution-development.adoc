@@ -6,8 +6,7 @@
 
 //原文：Alas ... the times they are a-changin'!
 ああ、時代は変わってしまった！
-モバイル端末の大きさは様々です。そしてデスクトップコンピューターやノートPCであっても、細かい解像度のディスプレイを持つようになりました。
-
+モバイル端末の大きさは様々です。そしてデスクトップコンピューターやノートPCであっても、細かい密度のディスプレイを持つようになりました。
 これは消費者としてはとても喜ぶべき事です、しかし、決して開発者の生活を楽にするものではありません。
 
 でも希望をしてないでください。どうにかする事は可能です。
@@ -122,38 +121,52 @@ image::iphone4-scale-blurry.png[PenguFlip scaled up blurry, 285]
 
 ==== HD テクスチャ
 
-このような問題を解決するには、高い解像度の画面に専用のテクスチャを用意すればいいのです。
+このような問題を解決するには、高いピクセル密度の画面には専用のテクスチャを用意すればいいのです。
 
-Depending on the pixel density, we will use either the low- or high-resolution texture set.
-The advantage: except for the logic that picks the textures, we don't need to change any of our code.
+ピクセル密度に合わせて、それぞれ低解像度と高解像度の両方のテクスチャセットを使います。
+//原文：The advantage: except for the logic that picks the textures, we don't need to change any of our code.
+この方法の良い点は、どちらのテクスチャセットを適用するか選択するロジック以外は、コードの変更が必要とされない、という事です。
 
-It's not enough to simply load a different set of files, though.
-After all, bigger textures will return bigger values for _width_ and _height_.
-With our fixed stage width of 320 points,
+//原文：It's not enough to simply load a different set of files, though.
+しかし、ただ単純に異なる解像度のテクスチャセットを読み込むだけではダメです。
+//原文：After all, bigger textures will return bigger values for _width_ and _height_.
+固定横幅320ポイントのステージ上でも、結局大きなテクスチャは大きな幅と高さを返します。
+//原文：With our fixed stage width of 320 points,
 
-* an SD texture with a width of 160 pixels will fill half of the stage;
-* a corresponding HD texture (width: 320 pixels) would fill the complete stage.
+//原文：* an SD texture with a width of 160 pixels will fill half of the stage;
+* 横幅160ピクセルの SD テクスチャはステージの半分のサイズとなります。
+//原文：* a corresponding HD texture (width: 320 pixels) would fill the complete stage.
+* 対応する横幅320ピクセルの HD テクスチャはステージ全体を覆います。
 
-What we want instead is for the HD texture to report the same size as the SD texture, but provide more detail.
+//原文：What we want instead is for the HD texture to report the same size as the SD texture, but provide more detail.
+理想の状態は、HD テクスチャも SD テクスチャと同じサイズだと計測され、しかし、より細かい詳細な見た目である事です。
 
-That's where Starling's _contentScaleFactor_ comes in handy.
-We implicitly set it up when we configured Starling's _stage_ and _viewPort_ sizes.
-With the setup shown above, run the following code on an iPhone 4:
+ここが Starling の _contentScaleFactor_ が役に立つ領域です。
+
+//原文：We implicitly set it up when we configured Starling's _stage_ and _viewPort_ sizes.
+私たちが Starling で _stage_ と _viewPort_ のサイズを設定した際、_contentScaleFactor_ 値は自動で設定されています。
+
+//原文：With the setup shown above, run the following code on an iPhone 4:
+設定のコードは上にあるもののままです。試しに、iPhone 4 で下記のコードを実行してください。
 
 [source, as3]
 ----
 trace(starling.contentScaleFactor); // → 2
 ----
 
-The _contentScaleFactor_ returns the _viewPort width_ divided by the _stage width_.
-On a retina device, it will be "2"; on a non-retina device, it will be "1".
-This tells us which textures to load at runtime.
+_contentScaleFactor_ は _viewPortの横幅_ を _stageの横幅_ で割った値を返します。
 
-NOTE: It's not a coincidence that the contentScaleFactor is a whole number.
-Apple exactly doubled the number of pixels per row / per column to avoid aliasing issues as much as possible.
+レティナ端末では、"2" を、非レティナ端末では、 "1" が返されます。
 
-The texture class has a similar property simply called `scale`.
-When set up correctly, the texture will work just like we want it to.
+//原文：This tells us which textures to load at runtime.
+この値を使って、どのテクスチャセットを読み込むか決定する事ができます。
+
+NOTE: contentScaleFactor 値が整数を返すのは、偶然ではありません。
+Apple は、できるだけアンチエイリアスの問題を避けるため、デバイスの横幅・縦幅をちょうど２倍に設定しています。
+
+texture クラスは単純に `scale` と呼ばれる、似たようなプロティを持っています。
+//原文：When set up correctly, the texture will work just like we want it to.
+設定が正しく終わると、texture は期待通りの振る舞いをします。
 
 [source, as3]
 ----
@@ -594,26 +607,34 @@ In fact, the logic that's described here was heavily inspired by that class.
 
 === iPad 及び その他タブレット
 
-Back in the present, we're starting to wonder if it would make sense to port our game to tablets.
-The code from above will work just fine on a tablet; however, we will be facing a much larger stage, with much more room for content.
-How to handle that depends on the application you are creating.
+//原文：Back in the present, we're starting to wonder if it would make sense to port our game to tablets.
+ここで現在に戻って、我々のゲームをタブレットに対応させる事がうまくいくのか考えてみましょう。
+上のコードはタブレットでもそのままうまく動作します。
+しかし、今までの例よりもずっと広いステージとよりたくさんのコンテンツを配置する空間を目にする事になります。
+これにどのように対応すべきかは、あなたが作っているアプリケーションによりけりです。
 
 ==== いくつかのゲームでは拡大しているだけ
 
-Games like _Super Mario Bros_ or _Bejeweled_ look great scaled to a big screen with detailed textures.
-In that case, you could ignore the screen density and calculate the scale factor based just on the amount of available pixels.
+//原文：Games like _Super Mario Bros_ or _Bejeweled_ look great scaled to a big screen with detailed textures.
+_Super Mario Bros_ や _Bejeweled_ のようなゲームは大きなスクリーンに対しても細かいテクスチャーとともに綺麗に拡大表示されます。
+//原文：In that case, you could ignore the screen density and calculate the scale factor based just on the amount of available pixels.
+このような場合、画面密度は無視して、表示可能なピクセル数のみから scale factor 値を計算すれば良いです。
 
-* The first iPad (resolution: 768×1024) would simply become a device with a stage size of 384×512 and a scale factor of "2".
-* A retina iPad (resolution: 1536×2048) would also have a stage size of 384×512, but a scale factor of "4".
+* 初代 iPad（解像度: 768×1024）は、画面サイズが 384×512 であり、scale factor が "2" のデバイスとして扱えます。
+* レティナ iPad (解像度: 1536×2048）も、画面サイズが 384×512 であり、scale factor が "4" のデバイスとして扱えます。
 
 ==== よりたくさん物を表示するタイプも
+_Sim City_ や _Command & Conquer_ のようなゲームについて考えてみましょう。
+//原文：such games could show the user much more of the landscape.
+そのようなゲームでは、大きな画面であれば街並みや風景をよりたくさん見せる事ができます。
+//原文：The user interface elements would take up less space compared to the game's content.
+ユーザーインターフェースの要素はゲームのコンテンツに対してより小さなスペースをしめるようになります。
 
-Think of _Sim City_ or _Command & Conquer_: such games could show the user much more of the landscape.
-The user interface elements would take up less space compared to the game's content.
+==== またある場合は全く異なったユーザーインターフェースを考える必要がある事も
 
-==== Some will need you to rethink the complete interface.
+特に実用アプリの場合、これは正しい事です。
+モバイルフォンの小さな画面上では、Eメールアプリは、メール本文か受信箱かメールボックスのどれか１つを表示する事になると思われます。
+一方、タブレット端末上ではその３つを同時に表示する事ができるでしょう。
 
-This is especially true for productivity-apps.
-On the small screen of a mobile phone, an email client will show either a single mail, the inbox, or your mailboxes.
-A tablet, on the other hand, can display all three of those elements at once.
-Don't underestimate the development effort this will cause.
+//原文：Don't underestimate the development effort this will cause.
+この対応をするのに必要な開発の労力を甘く見ないようにしましょう。
