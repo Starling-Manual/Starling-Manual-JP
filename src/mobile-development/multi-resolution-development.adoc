@@ -223,7 +223,7 @@ For example, here's what will happen with the game's full-screen background text
 //原文：Our player's will appreciate it, I'm sure of that.
 ゲームのプレイヤーは喜ぶに違いありません。
 
-.この図ではレティナディスプレイを使っています。
+.レティナディスプレイを使った例です。
 image::iphone4-scale-hd.png[PenguFlip on the iPhone, 285]
 
 TIP: https://www.codeandweb.com/texturepacker/starling?source=gamua[TexturePacker] のようなツールを使うと、今まで説明した手順を簡単に行う事ができます。
@@ -234,11 +234,15 @@ We celebrate our success at a http://gizmodo.com/5520438/how-apple-lost-the-next
 
 === iPhone 5
 
-In 2012, the iPhone has another surprise in store for us: Apple changed the screen's aspect ratio.
-Horizontally, it's still 640 pixels wide; but vertically, it's now a little bit longer (1136 pixels).
-It's still a retina display, of course, so our new logical resolution is 320×568 points.
+//原文：In 2012, the iPhone has another surprise in store for us: Apple changed the screen's aspect ratio.
+2012年、iPhone は更なる驚きを我々に用意してくれていました。Apple は画面サイズの縦横比を変えてしまったのです。
+横方向は640ピクセルのままでしたが、縦方向に少し伸びて1136ピクセルとなりました。
+//原文：It's still a retina display, of course, so our new logical resolution is 320×568 points.
+これはもちろんレティナディスプレイでもあります。よって我々の考えるベース解像度は320×568ポイントとなります。
 
-As a quick fix, we simply center our stage on the _viewPort_ and live with the black bars at the top and bottom.
+//原文：As a quick fix, we simply center our stage on the _viewPort_ and live with the black bars at the top and bottom.
+これに対応する簡単な対応として、単純に今までの _viewPort_ を真ん中に表示して、
+上下の空いた場所はそのまま黒いエリアとしてしまいましょう。
 
 [source, as3]
 ----
@@ -246,31 +250,37 @@ var offsetY:int = (1136 - 960) / 2;
 var viewPort:Rectangle = new Rectangle(0, offsetY, 640, 960);
 ----
 
-Mhm, that seems to work!
-It's even a fair strategy for all those Android smartphones that are beginning to pop up in this time line.
-Yes, our game might look a little blurry on some devices, but it's not too bad: the image quality is still surprisingly good.
-Most users won't notice.
+うむ。これでちゃんと動くようです！
+//原文：It's even a fair strategy for all those Android smartphones that are beginning to pop up in this time line.
+この対処方法は、この過去の旅に登場しはじめ用としている全てのAndroid スマートフォンに対しても有効です。
+//原文：Yes, our game might look a little blurry on some devices, but it's not too bad: the image quality is still surprisingly good.
+我々のゲームはいくつかのデバイス上では少しぼやけてしまうかもしれません。しかしものすごく悪い状態というわけでもありません。画像のクオリティはそれでもかなり良いのです。
+ほとんどのユーザーはその事に気がつかないでしょう。
 
-.Letterbox scaling.
+.レターボックス法。
 image::iphone5-letterbox.png[PenguFlip with letterbox bars, 160]
 
-I call this the *Letterbox Strategy*.
+私は、この対応のやり方を *レターボックス法* と呼びます。
 
-* Develop your game with a fixed stage size (like 320×480 points).
-* Add several sets of assets, depending on the scale factor (e.g. `1x`, `2x`, `3x`).
-* Then you scale up the application so that it fills the screen without any distortion.
+* ゲームは固定サイズ（例えば320×480ポイントの大きさ）で作成します。
+* いくつかの scale factor 値に対応したアセットを作成します。(`1x`, `2x`, `3x` など。)
+* 歪みなくスクリーン全体にフィットするよう、アプリのサイズを拡大します。
 
-This is probably the most pragmatic solution.
-It allows your game to run in an acceptable quality on all available display resolutions, and you don't have to do any extra work other than setting the viewPort to the right size.
+これがおそらく最も実用的な解決方法です。
 
-By the way, the latter is very easy when you use the _RectangleUtil_ that comes with Starling.
-To "zoom" your viewPort up, just create it with the following code:
+//原文：It allows your game to run in an acceptable quality on all available display resolutions,
+この方法であれば、どのような画面解像度の端末上であっても、そこそこのクオリティの見た目であなたのゲームを動かす事ができます。
+//原文： and you don't have to do any extra work other than setting the viewPort to the right size.
+このためにあなたがすべきことは、viewPort を正しいサイズに設定することだけです。
+
+ところで、Starling に付属する _RectangleUtil_ を使うと、後者はとても簡単に実現できます。
+viewPort を拡大するには、下記のようなコードを記述してください。
 
 [source, as3]
 ----
-const stageWidth:int  = 320; // points
+const stageWidth:int  = 320; // 単位：points
 const stageHeight:int = 480;
-const screenWidth:int  = stage.fullScreenWidth; // pixels
+const screenWidth:int  = stage.fullScreenWidth; // 単位：pixels
 const screenHeight:int = stage.fullScreenHeight;
 
 var viewPort:Rectangle = RectangleUtil.fit(
@@ -279,9 +289,9 @@ var viewPort:Rectangle = RectangleUtil.fit(
     ScaleMode.SHOW_ALL);
 ----
 
-Simple, yet effective!
-We definitely earned ourselves another trip with the time machine.
-Hop in!
+シンプルですが、効果的ですね！
+//原文：We definitely earned ourselves another trip with the time machine. //訳しづらい。。
+さて、当然タイムマシーンの旅には続きがあります。車に乗り込みましょう！
 
 === iPhone 6 及び Android
 
