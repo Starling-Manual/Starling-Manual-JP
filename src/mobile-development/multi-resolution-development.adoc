@@ -164,7 +164,7 @@ _contentScaleFactor_ は _viewPortの横幅_ を _stageの横幅_ で割った�
 NOTE: contentScaleFactor 値が整数を返すのは、偶然ではありません。
 Apple は、できるだけアンチエイリアスの問題を避けるため、デバイスの横幅・縦幅をちょうど２倍に設定しています。
 
-texture クラスは単純に `scale` と呼ばれる、似たようなプロティを持っています。
+texture クラスは単純に `scale` と呼ばれる、似たようなプロパティを持っています。
 //原文：When set up correctly, the texture will work just like we want it to.
 設定が正しく終わると、texture は期待通りの振る舞いをします。
 
@@ -181,21 +181,23 @@ assetManager.loadQueue(...);
 var texture:Texture = assetManager.getTexture("penguin"); // <4>
 trace(texture.scale); // → Either '1' or '2' <5>
 ----
-<1> Get the `contentScaleFactor` from the Starling instance.
-<2> Depending on the scale factor, the textures will be loaded from the directory `1x` or `2x`.
-<3> By assigning the same scale factor to the _AssetManager_, all textures will be initialized with that value.
-<4> When accessing the textures, you don't need to take care about the scale factor.
-<5> However, you can find out the scale of a texture anytime via the `scale` property.
+<1> Starling のインスタンスから `contentScaleFactor` の値を得ます。
+<2> scale factor 値に合わせて、`1x` または `2x` という名前のテクスチャを読み込む準備をします。
+<3> _AssetManager_ に先ほどの scale factor 値を設定します。読み込まれたテクスチャはこの値を利用して初期化されます。
+<4> 実際にテクスチャにアクセスする際は、scale factor について気をかける必要はありません。
+<5> テクスチャの `scale` プロパティにアクセスして、scale 値を確認する事は可能です。
 
-NOTE: Not using the _AssetManager_?
-Don't worry: all the `Texture.from...` methods contain an extra argument for the scale factor.
-It must be configured right when you create the texture; the value can't be changed later.
+NOTE: _AssetManager_ を使わないでプログラムをしていますか？
+問題ありません。全てのテクスチャ作成メソッド（`Texture.from...`で始まるメソッド）は scale factor を指定する引数を持っています。
+この値はテクスチャ作成時に設定しなくてはいけません。後から値を変える事は不可能です。
 
-The textures will now take the _scale factor_ into account when you query their width or height.
+//原文：The textures will now take the _scale factor_ into account when you query their width or height.
+テクスチャの縦幅・横幅を得ようとすると、内部計算で _scale factor_ が考慮された後の値を得る事ができます。
 For example, here's what will happen with the game's full-screen background texture.
+下記は、我々のゲームで使っている背景画像の大きさを取得した例です。
 
 |===
-|File |Size in Pixels |Scale Factor |Size in Points
+|ファイル名 |ピクセルサイズ |Scale Factor |ポイントでのサイズ
 
 |textures/1x/bg.jpg
 |320×480
@@ -209,20 +211,24 @@ For example, here's what will happen with the game's full-screen background text
 
 |===
 
-Now we have all the tools we need!
+さて、これで準備が整いました！
 
-* Our graphic designer on the back seat (call him Biff) creates all textures in a high resolution (ideally, as vector graphics).
-* In a preprocessing step, the textures are converted into the actual resolutions we want to support (`1x`, `2x`).
-* At runtime, we check Starling's _contentScaleFactor_ and load the textures accordingly.
+//原文：* Our graphic designer on the back seat (call him Biff) creates all textures in a high resolution (ideally, as vector graphics).
+* 後ろの席に座っているグラフィックデザイナー（Biffと呼びましょう）は全てのテクスチャをまず高解像度で作成します。理想としてはベクターグラフィクスであると良いです。
+//原文：* In a preprocessing step, the textures are converted into the actual resolutions we want to support (`1x`, `2x`).
+* 次に実際に利用するテクスチャを作ります。先ほどの高解像度テクスチャを(`1x`, `2x`)としてサポートできる解像度に変換します。
+* 実際の利用時は、Starling の _contentScaleFactor_ 値を確認し、対応したテクスチャをロードします。
 
-This is it: now we've got a crisp-looking retina game!
-Our player's will appreciate it, I'm sure of that.
+これで終了です。くっきりとした見た目のレティナディスプレイ対応ゲームを作る事ができました！
+//原文：Our player's will appreciate it, I'm sure of that.
+ゲームのプレイヤーは喜ぶに違いありません。
 
-.Now we're making use of the retina screen!
+.この図ではレティナディスプレイを使っています。
 image::iphone4-scale-hd.png[PenguFlip on the iPhone, 285]
 
-TIP: Tools like https://www.codeandweb.com/texturepacker/starling?source=gamua[TexturePacker] make this process really easy.
-Feed them with all your individual textures (in the highest resolution) and let them create multiple texture atlases, one for each scale factor.
+TIP: https://www.codeandweb.com/texturepacker/starling?source=gamua[TexturePacker] のようなツールを使うと、今まで説明した手順を簡単に行う事ができます。
+//原文：Feed them with all your individual textures (in the highest resolution) and let them create multiple texture atlases, one for each scale factor.
+ツールに、一番高解像度の個々のテクスチャを登録してください。そこからそれぞれの scale factor 用のテクスチャアトラスを書き出す事ができます。
 
 We celebrate our success at a http://gizmodo.com/5520438/how-apple-lost-the-next-iphone[bar] in Redwood, drink a beer or two, and move on.
 
@@ -616,7 +622,7 @@ In fact, the logic that's described here was heavily inspired by that class.
 ==== いくつかのゲームでは拡大しているだけ
 
 //原文：Games like _Super Mario Bros_ or _Bejeweled_ look great scaled to a big screen with detailed textures.
-_Super Mario Bros_ や _Bejeweled_ のようなゲームは大きなスクリーンに対しても細かいテクスチャーとともに綺麗に拡大表示されます。
+_Super Mario Bros_ や _Bejeweled_ のようなゲームは大きなスクリーンに対しても細かいテクスチャとともに綺麗に拡大表示されます。
 //原文：In that case, you could ignore the screen density and calculate the scale factor based just on the amount of available pixels.
 このような場合、画面密度は無視して、表示可能なピクセル数のみから scale factor 値を計算すれば良いです。
 
