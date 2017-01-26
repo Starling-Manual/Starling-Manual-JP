@@ -250,7 +250,7 @@ var offsetY:int = (1136 - 960) / 2;
 var viewPort:Rectangle = new Rectangle(0, offsetY, 640, 960);
 ----
 
-うむ。これでちゃんと動くようです！
+これでちゃんと動くようです！
 //原文：It's even a fair strategy for all those Android smartphones that are beginning to pop up in this time line.
 この対処方法は、この過去の旅に登場しはじめ用としている全てのAndroid スマートフォンに対しても有効です。
 //原文：Yes, our game might look a little blurry on some devices, but it's not too bad: the image quality is still surprisingly good.
@@ -295,17 +295,21 @@ var viewPort:Rectangle = RectangleUtil.fit(
 
 === iPhone 6 及び Android
 
-We're in 2014 now and ... Great Scott!
-Checking out the "App Store Almanac", we find out that our sales haven't been great after our last update.
-Apparently, Apple wasn't too happy with our letterbox-approach and didn't feature us this time.
-Damn.
+2014にやってきましたが、、、なんて事だ！
+App Store の年鑑を確認すると、我々のソフトの売り上げは最後のアップデートから著しくない事がわかりました。
 
-Well, I guess we have no other choice now: let's bite the bullet and make use of that additional screen space.
-So long, hard-coded coordinates!
-From now on, we need to use relative positions for all our display objects.
+どうやら Apple はレターボックスのやり方が気にくわなかったようで、今回はアプリをフューチャーしてくれませんでした。ムムム…。
 
-I will call this strategy *Smart Object Placement*.
-The startup-code is still quite similar:
+//原文：Well, I guess we have no other choice now: let's bite the bullet and make use of that additional screen space.
+どうやらこうするしかないようです、なんとか追加のスクリーンスペースも利用してましょう。
+
+//原文：So long, hard-coded coordinates!
+自動調整機能よ、さようなら！
+
+これからは、全てのディスプレイオブジェクトに対して、相対座標を用いて扱っていきます。
+
+私はこのやり方を、*スマート オブジェクト プレースメント* と、呼ぼうと思います。
+最初のコーディングは今までの物ととても似ています。
 
 [source, as3]
 ----
@@ -316,13 +320,15 @@ starling.stage.stageWidth  = 320;
 starling.stage.stageHeight = isIPhone5() ? 568 : 480;
 ----
 
-Yeah, I smell it too.
-Hard coding the stage height depending on the device we're running ... that's not a very smart idea.
-Promised, we're going to fix that soon.
+//原文：Yeah, I smell it too.
+ええ、ちょっとこれも臭いますね。。
+デバイスによるステージの高さの違いをハードコードしています。これはあまり賢いアイデアではありません。
+//原文：Promised, we're going to fix that soon.
+ここは、後ほどすぐに修正する事を約束します。
 
-For now, it works, though: both _viewPort_ and _stage_ have the right size.
-But how do we make use of that?
-Let's look at the _Game_ class now, the class acting as our Starling root.
+しかしこれは今の所正しく動きます。_viewPort_ も _stage_ も正しいサイズです。
+しかしどのように利用しましょう？
+ここで、_Game_ クラスをみてみましょう。このクラスは Starling の root ディスプレイオブジェクトとして振る舞います。
 
 [source, as3]
 ----
@@ -350,34 +356,57 @@ public class Game extends Sprite
     }
 }
 ----
-<1> When the constructor of game is called, it's not yet connected to the stage. So we postpone initialization until we are.
-<2> We call our custom `setup` method and pass the stage size along.
-<3> Exemplary, we create a _LifeBar_ instance (a custom user interface class) at the bottom of the screen.
+<1> Game クラスのコンストラクタがよばれた際、まだ Game インスタンスは Stage 上に配置されていません。
+//原文：So we postpone initialization until we are.
+なので、実際の初期化処理は準備ができるまで遅らせます。
+<2> 準備をできた後、setup メソッドを飛ぶときにステージのサイズを引数に渡します。
+//原文：<3> Exemplary, we create a _LifeBar_ instance (a custom user interface class) at the bottom of the screen.
+<3> ゲームでよく見かけるような _ライフバー_を、画面の下部に配置します。
 
-All in all, that wasn't too hard, right?
-The trick is to always take the stage size into account.
-Here, it pays off if you created your game in clean components, with separate classes responsible for different interface elements.
-For any element where it makes sense, you pass the size along (like in the _LifeBar_ constructor above) and let it act accordingly.
+ざっと見た所、難しくはないですよね？
+//原文：The trick is to always take the stage size into account.
+種は、ステージサイズを計算に入れるという事です。
 
-.No more letterbox bars: the complete screen is put to use.
+//原文：Here, it pays off if you created your game in clean components,
+//原文：with separate classes responsible for different interface elements.
+さて、もしもあなたの作ったゲームが、整理された構成をしており、
+それぞれのユーザーインターフェースのオブジェクトにはそれぞれ専用のクラスが用意してあるなら、
+このようなやり方でうまくいきます。
+
+//原文：For any element where it makes sense,
+//原文：you pass the size along (like in the _LifeBar_ constructor above) and let it act accordingly.
+ユーザーインターフェースのオブジェクトのうち、調整して意味があるもの全てに対して、
+（_LifeBar_ のコンストラクタの例のように）ステージのサイズを受け渡して、
+それに応じてうまく大きさや位置を変えて振る舞うようにするのです。
+
+.No more レータボックスの帯のエリアはもうありません。画面全体が利用されています。
 image::iphone5-smart-objects.png[PenguFlip without letterbox bars, 160]
 
-That works really well on the iPhone 5.
-We should have done that in 2012, dammit!
-Here, in 2014, things have become even more complicated.
+iPhone 5 でこの方法はとてもうまく動きます。
+2012年の時点でこのように対応しておけばよかった！
+//原文：Here, in 2014, things have become even more complicated.
+2014現在では自体はもっと複雑になっています。
 
-* Android is quickly gaining market share, with phones in all different sizes and resolutions.
-* Even Apple introduced bigger screens with the _iPhone 6_ and _iPhone 6 Plus_.
-* Did I mention tablet computers?
+//原文：* Android is quickly gaining market share, with phones in all different sizes and resolutions.
+//原文：* Even Apple introduced bigger screens with the _iPhone 6_ and _iPhone 6 Plus_.
+//原文：* Did I mention tablet computers?
+* Android はマーケット上でどんどんとシェアを伸ばしてきており、端末毎に大きさも解像度も異なっています。
+* Apple も _iPhone 6_ と _iPhone 6 Plus_ という端末でさらに大きな画面を導入しました。
+* タブレット端末についてはもう説明しましたっけ？
 
-By organizing our display objects relative to the stage dimensions, we already laid the foundations to solve this.
-Our game will run with almost any stage size.
+//原文：By organizing our display objects relative to the stage dimensions,
+//原文：we already laid the foundations to solve this.
+ディスプレイオブジェクトの配置をステージの大きさに合わせて、整理する事により、
+すでに問題に対する基本対応方針はできあがっています。
+我々のゲームは色々なステージサイズの端末で動作する事でしょう。
 
-The remaining problem is which values to use for stage size and content scale factor.
-Looking at the range of screens we have to deal with, this seems like a daunting task!
+//原文：The remaining problem is which values to use for stage size and content scale factor.
+残った問題は、どの値をステージの大きさと scale factor 値のために使うかという事です。
+//原文：Looking at the range of screens we have to deal with, this seems like a daunting task!
+扱うスクリーンの種類の多さを見ると、気持ちが折れてしまいそうです。
 
 |===
-|Device |Screen Size |Screen Density |Resolution
+|デバイス |スクリーンサイズ |スクリーン密度 |解像度
 
 |iPhone 3
 |3,50"
@@ -438,7 +467,7 @@ We take that as the basis for our calculations: for any device, we divide the de
 Let's make a sanity check of that approach.
 
 |===
-|Device |Screen Size |Screen Density |Scale Factor |Stage Size
+|デバイス |スクリーンサイズ |スクリーン密度 |Scale Factor 値 |ステージサイズ
 
 |iPhone 3
 |3,50"
