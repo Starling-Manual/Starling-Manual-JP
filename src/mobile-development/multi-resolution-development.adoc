@@ -230,7 +230,7 @@ TIP: https://www.codeandweb.com/texturepacker/starling?source=gamua[TexturePacke
 //原文：Feed them with all your individual textures (in the highest resolution) and let them create multiple texture atlases, one for each scale factor.
 ツールに、一番高解像度の個々のテクスチャを登録してください。そこからそれぞれの scale factor 用のテクスチャアトラスを書き出す事ができます。
 
-We celebrate our success at a http://gizmodo.com/5520438/how-apple-lost-the-next-iphone[bar] in Redwood, drink a beer or two, and move on.
+この Redwood City にある http://gizmodo.com/5520438/how-apple-lost-the-next-iphone[バー] で、１〜２杯のビールでも飲んで成功を祝ってから、先に進みましょう。
 
 === iPhone 5
 
@@ -321,7 +321,7 @@ starling.stage.stageHeight = isIPhone5() ? 568 : 480;
 ----
 
 //原文：Yeah, I smell it too.
-ええ、ちょっとこれも臭いますね。。
+うーん、ちょっとこれも嫌な臭いがしますね。
 デバイスによるステージの高さの違いをハードコードしています。これはあまり賢いアイデアではありません。
 //原文：Promised, we're going to fix that soon.
 ここは、後ほどすぐに修正する事を約束します。
@@ -406,7 +406,7 @@ iPhone 5 でこの方法はとてもうまく動きます。
 扱うスクリーンの種類の多さを見ると、気持ちが折れてしまいそうです。
 
 |===
-|デバイス |スクリーンサイズ |スクリーン密度 |解像度
+|デバイス |スクリーンサイズ |ピクセル密度 |解像度
 
 |iPhone 3
 |3,50"
@@ -455,19 +455,18 @@ iPhone 5 でこの方法はとてもうまく動きます。
 
 |===
 
-The key to figuring out the scale factor is to take the screen's density into account.
+ピクセル密度を計算に入れる事が scale factor 値を決定するキーとなります。
 
-* The higher the density, the higher the scale factor.
-  In other words: we can infer the scale factor from the density.
-* From the scale factor, we can calculate the appropriate stage size.
-  Basically, we reverse our previous approach.
+* より高いピクセル密度では、高い scale factor 値になります。つまり、その密度から scale factor 値が推測できます。
+* scale factor 値からは適切なステージサイズを計算する事ができます。通常上記と逆のやり方となります。
 
-The original iPhone had a screen density of about 160 dpi.
-We take that as the basis for our calculations: for any device, we divide the density by 160 and round the result to the next integer.
-Let's make a sanity check of that approach.
+最初の iPhone のピクセル密度はおおよそ160 dpi でした。
+これを元に計算を進めてみましょう。
+どのデバイスでもピクセル密度を160で割り、小数点以下を切り上げて整数値を得ます。
+このやり方で、それぞれの端末を確認してみましょう。
 
 |===
-|デバイス |スクリーンサイズ |スクリーン密度 |Scale Factor 値 |ステージサイズ
+|デバイス |スクリーンサイズ |ピクセル密度 |Scale Factor 値 |ステージサイズ(単位：ポイント)
 
 |iPhone 3
 |3,50"
@@ -525,16 +524,21 @@ Let's make a sanity check of that approach.
 
 |===
 
-Look at the resulting stage sizes: they are now ranging from 320×480 to 414×736 points.
-That's a moderate range, and it also makes sense: a screen that's physically bigger is supposed to have a bigger stage.
-The important thing is that, by choosing appropriate scale factors, we ended up with reasonable coordinate systems.
-This is a range we can definitely work with!
+計算結果のステージサイズに注目してみましょう。
+それぞれが、320×480から414×736の範疇に収まっています。
+//原文：That's a moderate range,
+これが、調整されたスクリーンサイズの範囲となります。
+//原文：and it also makes sense: a screen that's physically bigger is supposed to have a bigger stage.
+そしてまた、物理的に大きな画面の端末は大きなスレージを持っている、というのも事実です。
+//原文：The important thing is that,by choosing appropriate scale factors, we ended up with reasonable coordinate systems.
+重要なことは、適切な scale factors 値を選択することで、合理的な座標系を得られると言う事です。
+//原文：This is a range we can definitely work with!
+これが、開発時に実際に扱う事となる範囲です。
 
-NOTE: You might have noticed that the scale factor of the _Galaxy S1_ is not an integer value.
-This was necessary to end up with an acceptable stage size.
+NOTE: _Galaxy S1_ の scale factor 値が整数値でないのに気づいていたでしょうか。これは、現実的なステージサイズを得るために必要となった物でした。
 
-Let's see how I came up with those scale values.
-Create a class called `ScreenSetup` and start with the following contents:
+では、どのようにしてこのスケール値を得たのか実際に見てみましょう。
+`ScreenSetup` という名前でクラスを作り、下記のような内容としてください。
 
 [source, as3]
 ----
@@ -561,21 +565,22 @@ public class ScreenSetup
 }
 ----
 
-This class is going to figure out the _viewPort_ and _stage size_ Starling should be configured with.
-Most properties should be self-explanatory -- except for the `assetScale`, maybe.
+このクラスは Starling の設定を行う元となる _viewPort_ 値と _stage size_ 値を求めます。
+`assetScale` 以外のプロパティーについては説明はいらないでしょう。
 
-The table above shows that we're going to end up with scale factors ranging from "1" to "4".
-However, we probably don't want to create our textures in all those sizes.
-The pixels of the densest screens are so small that your eyes can't possibly differentiate them, anyway.
-Thus, you'll often get away with just providing assets for a subset of those scale factors (say, 1-2 or 1-3).
+上に出した表では、scale factors 値は1〜4の間に設定されています。
+しかし、おそらく全ての値に対応したそれぞれテクスチャを用意したくは無いことでしょう。
+最も密度が高い画面のピクセルはとても小さいので、その違いを認識することはどっちみちできません。
 
-* The `assetScales` argument in the constructor is supposed to be an array filled with the scale factors for which you created textures.
-* The `assetScale` property will tell you which of those asset-sets you need to load.
+したがって、大抵は全ての scale factors 値に合わせてテクスチャセットを用意することはなく、1〜2 または 1〜3 の分だけ用意する事になるでしょう。
 
-TIP: Nowadays, it's even rare for an application to require scale factor "1".
-However, that size comes in handy during development, because you can preview your interface without requiring an extremely big computer screen.
+* コンストラクタの `assetScales` 引数には、テクスチャを用意してある scale factors 値を配列で羅列します。
+* `assetScale` プロパティはどのテクスチャをロードすべきかを教えてくれます。
 
-Let's get to the implementation of that constructor, then.
+TIP: 最近は、scale factor 値が "1" である事をアプリケーションがケアすることはほとんどなくなりました。
+しかし、この設定値は開発時に重宝するでしょう。なぜなら、広い画面のモニタがなくても動作確認ができるからです。
+
+次に、コンスタクター部分の実装に取り掛かりましょう。
 
 [source, as3]
 ----
@@ -606,16 +611,20 @@ public function ScreenSetup(
     _viewPort = new Rectangle(0, 0, _stageWidth * _scale, _stageHeight * _scale);
 }
 ----
-<1> We need to add a small workaround for the Apple iPad. We want it to use the same set of scale factors you get natively on iOS.
-<2> Our base density is 160 dpi (or 130 dpi on iPads). A device with such a density will use scale factor "1".
-<3> Our scale factors should be integer values or `1.5`. This code picks the closest one.
-<4> Here, we decide the set of assets that should be loaded.
+<1> Apple iPad 用にちょっとした対応を施さなくてはいけません。
+We want it to use the same set of scale factors you get natively on iOS.
+<2> 基準とするピクセル密度は160 dpi (iPadの場合、130 dpi)です。このような密度の端末は scale factor 値を"1"とします。
+<3> scale factors 値は整数値、もしくは`1.5`の値を取ります。このコードではそのうち最も近いものを選択します。
+<4> ここで、ロードすべきアセットのセット(1倍、2倍、3倍…)を決定します。
 
-TIP: If you want to see the results of this code if run on the devices I used in the tables above, please refer to this https://gist.github.com/PrimaryFeather/505fc4f120c06d09d2c56910476ab710[Gist].
-You can easily add some more devices to this list and check out if you are pleased with the results.
+//原文：TIP: If you want to see the results of this code if run on the devices I used in the tables above, please refer to this https://gist.github.com/PrimaryFeather/505fc4f120c06d09d2c56910476ab710[Gist].
+TIP: 上で表にしたデバイスに対するこのコードの実際の動作結果を見たいのならば、 https://gist.github.com/PrimaryFeather/505fc4f120c06d09d2c56910476ab710[Gist] ページを参照してください。
+//原文：You can easily add some more devices to this list and check out if you are pleased with the results.
+参照先の実行結果に満足したのであれば、デバイス一覧にさらに項目を追加して、簡単に動作確認する事ができます。
 
-Now that everything is in place, we can adapt the startup-code of Starling.
-This code presumes that you are providing assets with the scale factors "1" and "2".
+さてここで全ての準備ができたので、Starling の起動コードに適用する事ができます。
+
+下記コードでは、scale factors 値の "1" か "2" に対応したアセットを用意している事を仮定しています。
 
 [source, as3]
 ----
@@ -627,7 +636,7 @@ _starling.stage.stageWidth  = screen.stageWidth;
 _starling.stage.stageHeight = screen.stageHeight;
 ----
 
-When loading the assets, make use of the `assetScale` property.
+アセットをロードする際は、ScreenSetup インスタンスの `assetScale` プロパティを利用してください。
 
 [source, as3]
 ----
@@ -640,15 +649,14 @@ assetManager.enqueue(appDir.resolvePath(texturePath));
 assetManager.loadQueue(...);
 ----
 
-That's it!
-You still have to make sure to set up your user interface with the stage size in mind, but that's definitely manageable.
+以上です！
+ユーザインターフェースの調整をまだ行わなくてはいけない事は忘れないように。しかし、それはそれほど難しくはないでしょう。
 
-TIP: The Starling repository contains a project called _Mobile Scaffold_ that contains all this code.
-It's the perfect starting point for any mobile application.
-(If you can't find the _ScreenSetup_ class in your download yet, please have a look at the head revision of the GitHub project.)
+TIP: Starling のリポジトリには、_Mobile Scaffold_ と言う名前のプロジェクトが存在します。そのプロジェクトにはここで開設したコード全てが含まれています。全てのモバイル開発の雛形として最適です。
+(ダウンロード済みのファイルに _ScreenSetup_ がIf クラスが見つからない場合は、GitHub 上の最新のリビジョンで探してみてください。)
 
-TIP: If you are using _Feathers_, the class _ScreenDensityScaleFactorManager_ will do the job of the _ScreenSetup_ class we wrote above.
-In fact, the logic that's described here was heavily inspired by that class.
+TIP: もしあなたが _Feathers_ を使っているのなら、_ScreenDensityScaleFactorManager_ というクラスが _ScreenSetup_ クラスと同じ処理を行ってくれます。
+実際、ここに書いた処理内容は、_ScreenDensityScaleFactorManager_ に強くインスパイアされて作られた物です。
 
 === iPad 及び その他タブレット
 
@@ -663,7 +671,7 @@ In fact, the logic that's described here was heavily inspired by that class.
 //原文：Games like _Super Mario Bros_ or _Bejeweled_ look great scaled to a big screen with detailed textures.
 _Super Mario Bros_ や _Bejeweled_ のようなゲームは大きなスクリーンに対しても細かいテクスチャとともに綺麗に拡大表示されます。
 //原文：In that case, you could ignore the screen density and calculate the scale factor based just on the amount of available pixels.
-このような場合、画面密度は無視して、表示可能なピクセル数のみから scale factor 値を計算すれば良いです。
+このような場合、ピクセル密度は無視して、表示可能なピクセル数のみから scale factor 値を計算すれば良いです。
 
 * 初代 iPad（解像度: 768×1024）は、画面サイズが 384×512 であり、scale factor が "2" のデバイスとして扱えます。
 * レティナ iPad (解像度: 1536×2048）も、画面サイズが 384×512 であり、scale factor が "4" のデバイスとして扱えます。
