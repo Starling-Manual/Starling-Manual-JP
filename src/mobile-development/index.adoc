@@ -1,22 +1,22 @@
 = モバイルの開発
 
-_Adobe AIR_ は事クロスプラットフォームの開発となれば、現在最もパワフルな開発手法の一つです。
-今日では、"クロスプラットフォーム" と言った場合、それはたいてい _iOS_ と _Android_ を意味します。
+事クロスプラットフォームの開発となれば、_Adobe AIR_ は現在最もパワフルな開発手法の一つです。
+近年、"クロスプラットフォーム" と言った場合、それはたいてい _iOS_ と _Android_ を意味します。
 
-そのようなモバイル開発を行うことは、とてもチャレンジングになる事があります。
-世の中にはあまりにもたくさんの種類のデバイスがありすぎます。
+モバイル開発は、とてもチャレンジングになる事があります。
+世の中にはあまりにもたくさんの種類のデバイスがありすぎるのです。
 //原文：featuring screen resolutions that range from _insult to the eye_ to _insanely high_ and aspect ratios that defy any logic.
-画面解像度をとってみても、_目に失礼なレベル_ から _極めて細かいレベル_ まで色々ありますし、アスペクト比の構成にルールはありません。
+画面解像度をとってみても、_目に失礼_ なレベルから _極めて細かい_ レベルまで色々ありますし、アスペクト比の構成に明確なルールはありません。
 //原文：To add insult to injury, some of them are equipped with CPUs that clearly were never meant to power anything else than a pocket calculator.
 //ちとうまく訳せない。。
-さらに悪いことに、いくつかの機種は複数 CPU を積んでいますが、それら CPU はポケット電卓程度のパワーしか持ち得ていません。
+さらに悪いことに、いくつかのデバイスは複数 CPU を積んではいるのですが、個々の CPU はポケット電卓程度のパワーしか持っていないのです。
 
 //原文：As a developer, you can only shrug your shoulders, roll up your sleeves, and jump right in.
-開発者としてできることは、肩をすくめ、袖をまくり、真っ正面に取り組むことだけです。
+開発者としてできることは、肩をすくめ、袖をまくり、真正面からその問題に取り組むことだけです。
 //原文：At least you know that fame and fortune lie on the journey!
 //原文：footnote:[Don't pin me down to that, though.]
 あなたは、富と名声がこの旅路の向こう側に転がっている事を、少なくとも知っているでしょう！
-footnote:[あまり突っ込んで説明を求めないように。]
+footnote:[あまり個々について詳しい説明を求めないように。]
 
 include::multi-resolution-development.adoc[]
 
@@ -26,13 +26,13 @@ include::device-rotation.adoc[]
 
 == まとめ
 
-間違いなく、モバイル開発は大変なものです。
+モバイル開発は、間違いなく大変なものです。
 
-たくさんの種類のハードウェアが存在する事で、事前に実装プランをよく練り、コードをスマートな構造にする必要があるのです。
-さらに、アプリのマーケットにはかなりたくさんのライバルがいます。
-よってあなたのデザインは、有象無象の中からずば抜けている必要もあるでしょう。
+たくさんの種類のハードウェアが存在する事で、実装プランを事前によく練り、コードをスマートな構造にする必要があるのです。
+また、アプリのマーケットには、とてもたくさんのライバルがいます。
+よってあなたのアプリのデザインレベルは、有象無象の中からずば抜けている必要もあるでしょう。
 
 //原文：Starling does what it can to help you with this process!
 Starling はこのプロセスであなたを手助けします。
 //原文：With the tools you learned in this chapter, you will be able to master this challenge.
-この章で学んだツールとともに、この挑戦を成功させる事ができるでしょう。
+この章で学んだツールとともに、このチャレンジを成功させる事ができるでしょう。

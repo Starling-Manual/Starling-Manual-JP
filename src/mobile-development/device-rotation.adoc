@@ -1,10 +1,10 @@
 == デバイスの回転
 
-今日のスマートフォンとタブレットのとても素晴らしい機能に、デバイスの空間的な回転方向を認識して、
-ユーザーインターフェースの向きを良い感じに調整してくれる、というものがあります。
+スマートフォンとタブレットは、デバイスの空間的な回転方向を認識して、
+ユーザーインターフェースを良い感じに調整してくれる、とても素晴らしい機能を持っています。
 
-Starling 上で回転方向の変化を認識するには、まず最初に AIR の設定ファイルを編集する必要があります。
-下記のような設定としてください。
+Starling で回転方向の変化を認識するには、まず最初に AIR の設定ファイルを編集する必要があります。
+下記のような設定をしてください。
 
 [source, xml]
 ----
@@ -12,14 +12,14 @@ Starling 上で回転方向の変化を認識するには、まず最初に AIR 
 <autoOrients>true</autoOrients> <2>
 ----
 <1> aspectRatio の設定を、`portrait`、`landscape`、`any`のいずれかにします。
-<2> アプリの起動時に自動回転機能有効にするかどうかを指定します。
+<2> アプリの起動時に自動回転機能有効にする指定します。
 
-上記設定がうまくいけば、Starling の stage オブジェクトから `RESIZE` イベントを受け取ることができます。
-このイベントは回転方向が変化した際に毎回発行されます。
-結局のところ、回転方向の変化は必ず Stage サイズの変更も引き起こします。_幅_ と _高さ_ の入れ替わりです。
+この設定が適用されると、Starling の stage オブジェクトから `RESIZE` イベントを受け取ることができます。
+このイベントは回転方向が変化した際に必ず発行されます。
+結局のところ、回転方向の変化は必ず Stage サイズの変更も引き起こすからです。_幅_ と _高さ_ が入れ替わるのです。
 
 //原文：Update the dimensions of the Starling viewPort and stage in the corresponding event handler.
-イベントを受け取った際には、Starling の描画エリアとStageの大きさを更新しましょう。
+このイベントを受け取った際は、Starling の描画エリアとStageの大きさを調整しましょう。
 
 [source, as3]
 ----
@@ -58,11 +58,11 @@ private function updatePositions(width:int, height:int):void // <3>
 上のコードはその問題を解決します。どんな scale factor 値でもうまく動作するでしょう。
 
 //原文：The last part is going to be much harder: updating your user interface so that it fits into the new stage dimensions.
-最後のステップは多少難しいかもしれません。あなたのアプリのインターフェースをうまく調整することです。
+最後の対応の、アプリのインターフェースを変化した画面方向に合わせてうまく調整すること、は多少難しいかもしれません。
 //原文：This does not make sense for all games -- but if it does, you should consider the additional effort.
-全てのゲームでうまく調整できるわけではありませんが、うまくいく場合、ここに労力をかけるべきです。
+全てのゲームでうまく調整できるわけではありませんが、うまくいく場合、ここにさらなる労力を費やすべきです。
 //原文：Your users will appreciate it!
-ユーザー視点で見れば喜ぶべき事です。
+ユーザー視点で見れば嬉しい事ですから！
 
 //原文：TIP: The _Scaffold_ project coming with Starling contains a possible implementation of this feature.
-TIP: Starling を利用して作られたフレームワークの中にはすでにこの機能が実装されている場合もあるかと思います。
+TIP: Starling を利用して作られたフレームワークの中にはすでにこのような機能が実装されている場合もあるでしょう。
