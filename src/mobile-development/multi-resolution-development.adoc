@@ -1,31 +1,30 @@
-== マルチ解像度を扱う開発
+== 様々な解像度への対応
 
-１つの画面サイズでゲームを作ればよかった時代はどこへ行ってしまったのでしょう？
-当時は html 上の四角い小さなエリアに、スプライトやテキストや画像を表示していました。
-１つの画面解像度だけ考えて実装をすればよかったのです。いい時代ですよね。
+固定の画面サイズでゲームを作ればよかった時代はどこへ行ってしまったのでしょう？
+昔は html 上の四角い小さなエリアに、スプライトやテキストや画像を表示していました。
+１つの画面解像度だけ考えて開発をすればよかったのです。いい時代でしたね。
 
 //原文：Alas ... the times they are a-changin'!
-ああ、時代は変わってしまった！
-モバイル端末の大きさは様々です。そしてデスクトップコンピューターやノートPCであっても、細かい密度のディスプレイを持つようになりました。
-これは消費者としてはとても喜ぶべき事です、しかし、決して開発者の生活を楽にするものではありません。
+しかしああ、時代は変わってしまったのです！
+モバイル端末の大きさは様々です。そしてデスクトップコンピューターやノートPCも、細かい密度のディスプレイを持つようになりました。
+これはユーザーとしてはとても嬉しい事で。しかし、開発者の生活を楽にするものではありません。
 
-でも希望をしてないでください。どうにかする事は可能です。
+希望をしてないでください。なんとかする事はできます。
 //原文：It's just a matter of thinking ahead and making use of a few simple mechanisms provided by Starling.
-単に事前に考慮して、 Starling が提供するいくつかのシンプルな機能を利用すればいいだけの事です。
+事前によく考慮して、 Starling が提供するいくつかのシンプルな機能を利用すればいいだけの事です。
 
-難しいのは、最初のうちはその問題にちょっと圧倒されてしまうという所です。
-That's why we'll do this in small steps -- and we will begin in 2007.
+しかし、最初はその対応内容にちょっと圧倒されてしまいます。
 ですので、まずは2007年の頃の状況に戻って考えて、少しずつ対応を進めていきます。
 
 //原文：Yes, you heard right: step into the DeLorean, start up the Flux Capacitor(TM) and hold tight while we hit those eighty miles per hour.
-ええ、聞き間違いではありません。デロリアンに乗り込んで、次元転送装置を起動しましょう。
+聞き間違いではありませんよ。デロリアンに乗り込んで、次元転送装置を起動しましょう。
 時速120km以上のスピードで問題にぶつかってていくので、引き締まっていきましょう！
 
 === iPhone
 
-iPhone は間違いなく最近のゲームで最も人気なプラットフォームです。
-2007年の頃、iPhone は簡単に開発ができる _唯一の_ デバイスでした。
-それは App Store の大ゴールドラッシュと呼べるような時代でした。
+間違いなく iPhone は近年で最も人気なゲームプラットフォームです。
+2007年の頃、iPhone は _唯一_ 存在したデバイスで、簡単に開発ができました。
+App Store の大ゴールドラッシュと呼べるような時代でした。
 
 画面解像度が 320x480 に固定されていたので、最初の iPhone はとても開発がしやすかったのです。
 //原文：Granted, Starling wasn't around back then,but you would have started it up like this:
@@ -43,42 +42,43 @@ starling = new Starling(Game, stage, viewPort);
 _viewPort_ の大きさを画面サイズ 320×480 の目一杯に設定します。
 デフォルトの状態では、Stage は画面解像度と全く同じ大きさを持ちます。
 
-.初代 iPhone で我々のゲームを動かした図
+.初代 iPhone で私達のゲームを動かした図
 image::iphone-penguflip.png[PenguFlip on the iPhone, 120]
 
 ここまではとても簡単です。ブラウザでゲームを作るのと変わりません。
-（それはInternet Explorer 6 上であったかも知れませんね。）
+（当時は、Internet Explorer 6 上で動くゲームを作っていたかも知れませんね。）
 
 では次に、2010年に移動してみましょう。
 
 === iPhone レティナ
 
 //原文：We park our DeLorean right around the corner of the old Apple campus and check out the App Store charts.
-古き Apple 学園の角のあたりにデロリアンを停めて、当時の App Store のランニングを見てみましょう。
+伝統ある Apple 学園の角にデロリアンを停めて、App Store のランニングを見てみましょう。
 //原文：Hurray! Apparently, our game was a huge success in 2007, and it's still in the top 10!
-やりました！2007年に大成功した我々のゲームは、まだランキングトップ10に止まっているようです！
+よかった！2007年に大成功した私達のゲームは、まだランキングトップ10に止まっているようです！
 //原文：There's no time to lose: we must make sure it looks well on the iPhone 4 that's going to come out in a few weeks.
-時間を無駄にしてはいけません、あと数週間でリリースされる iPhone 4 上でもきちんとした見た目になるよう、ゲームを調整しなくては。
+しかし、時間を無駄にしてはいけません。
+あと数週間でリリースされる iPhone 4 上でも私達のゲームがきちんとした見た目になるよう、ゲームを調整しなくては。
 
 //原文：Since we're coming from the future, we know about its major innovation, the high-resolution screen dubbed "Retina Display" by the Apple marketing team.
-我々は未来からやってきたので、この大技術革新について知っています。Apple のマーケティングチームによって "レティナ ディスプレイ" と名付けられた、高解像度スクリーンの事です。
+私達は未来からやってきたので、この大技術革新について知っています。Apple のマーケティングチームによって "レティナ ディスプレイ" と名付けられた、高解像度スクリーンの事です。
 //原文：We fire up our game from 2007 and start it up on this yet-to-be released device.
-2007年のゲームを起動して、未だリリースされていないこのデバイス上で動かしてみましょう。
+2007年にリリースした私達のゲームを起動して、まだリリースされていないこのデバイス上で動かしてみましょう。
 
-.全く意図しない状態になりました。
+.全く意図しない状態となりました。
 image::iphone4-wrong.png[PenguFlip with a wrong scale on the iPhone4, 160]
 
 //原文：Damn, the game is now only taking up a quarter of the screen!
-なんとした事か、画面のたった1/4のエリアでしかゲームが動いていません。
-一体どういう事なのか？
+うーん、画面のたった1/4のエリアでしかゲームが動いていません！
+一体どういう事なのでしょうか？
 
-2007年のコードを見返してみると、_viewPort_ の大きさをスクリーンと同じ大きさにしたのがわかるでしょう。
-iPhone 4 では、スクリーンサイズは倍になっていて、640×960 ピクセルの大きさを持ちます。
+2007年の際のコードを見返してみると、_viewPort_ の大きさをスクリーンと同じ大きさにしていたのがわかります。
+iPhone 4 のスクリーンサイズは倍になっていて、640×960 ピクセルの大きさを持ちます。
 //原文：The code that placed display objects on the stage expected a coordinate system of just 320×480, though.
-しかし、ステージ上のディスプレイオブジェクトのコードは 320×480 の大きさを持つシステムで動いている事を期待しているのです。
+しかし、ステージ上のディスプレイオブジェクトは 320×480 の大きさを持つシステムで動いている事を期待しているのです。
 よって画面右端(`x=320`)に配置したつもりのオブジェクトは、突如として真ん中に現れるのです。
 
-でも、これは簡単に解決する事ができます。
+しかし、これは簡単に解決する事ができます。
 
 Starling の `viewPort` の値と `stageWidthとstageHeight` の値は、独立して設定できる事を思い出してください。
 
@@ -87,7 +87,7 @@ Starling の `viewPort` の値と `stageWidthとstageHeight` の値は、独立�
 //When your stage width is 320, any object with an x-coordinate between 0 and 320 will be within the stage, no matter the size of the viewPort.
 * stage サイズの値は、viewPort 内で描画されているシステムがどのくらいの大きさの解像度で動作するのを設定します。stage の幅を 320 と設定した場合、x座標を 0 から 320 の間で設定されたオブジェクトが画面内に表示されます。viewPort の大きさの設定値は関係ありません。
 
-この知識があれば、拡大表示をする事は簡単です。
+この知識があれば、拡大して表示をするのは簡単です。
 
 [source, as3]
 ----
@@ -101,36 +101,35 @@ starling.stage.stageHeight = 480;
 ----
 
 //原文：The viewPort is still dynamic, depending on the device the game is started on;
-viewPort 値は依然動的であって、ゲームを動かすデバイスによって変わります。
+viewPort 値はここでも動的であって、ゲームを動かすデバイスによって変わります。
 //原文：but we added two lines at the bottom that hard-code the stage size to fixed values.
-しかし、コードの最後の２行の部分にステージの大きさを静的な値としてハードコードしています。
+しかし、コードの最後の２行でステージの大きさを静的な値としてハードコードしています。
 
-NOTE: これら stage の大きさの値は、もはやピクセル値を示さないので _ポイント_ という単位として考えることにしましょう。
-つまり、ステージサイズは 320 ポイント × 480 ポイントである、というように表せる事となります。
+NOTE: これら stage の大きさの値は、もはやピクセル値を示さないので _ポイント_ という単位で表していると考えることにしましょう。
+つまり、ステージサイズは 320 ポイント × 480 ポイントである、というように言う事ができます。
 
 これで iPhone 4 でのゲームの見た目は下記のようになりました。
 
-.良くなりました、が、ちょっとボケています。
+.大きさは良くなりましたが、ちょっとボケていますね。
 image::iphone4-scale-blurry.png[PenguFlip scaled up blurry, 285]
 
-全画面表示ができるようになったのは良いです。
-しかし、画像がボケて表示されてしまいました。
-まだこの大きな解像度の画面をうまく使いこなせていないのです。
+全画面表示ができるようになったのは良いです。しかし、画像がボケて表示されてしまいました。
+私たちはまだ、この大きな画面をうまく使いこなせていないのです。
 
-すでに、悪い内容のレビューが付いているのがわかります。修正しなくてはいけません。
+すでに、良く無い内容のレビューが付いているようです。修正しなくてはいけませんね。
 
 ==== HD テクスチャ
 
-このような問題を解決するには、高いピクセル密度の画面には専用のテクスチャを用意すればいいのです。
+この問題を解決するには、高いピクセル密度の画面には専用の高解像度テクスチャを用意すればいいのです。
 
-ピクセル密度に合わせて、それぞれ低解像度と高解像度の両方のテクスチャセットを使います。
+ピクセル密度に合わせて、低解像度と高解像度の両方それぞれのテクスチャセットを使いわけます。
 //原文：The advantage: except for the logic that picks the textures, we don't need to change any of our code.
-この方法の良い点は、どちらのテクスチャセットを適用するか選択するロジック以外は、コードの変更が必要とされない、という事です。
+この方法の良い点は、どちらのテクスチャセットを適用するか選択するロジック以外は、コードを変更する必要がない、という事です。
 
 //原文：It's not enough to simply load a different set of files, though.
 しかし、ただ単純に異なる解像度のテクスチャセットを読み込むだけではダメです。
 //原文：After all, bigger textures will return bigger values for _width_ and _height_.
-固定横幅320ポイントのステージ上でも、結局大きなテクスチャは大きな幅と高さを返します。
+結局、固定横幅320ポイントのステージ上でも、大きなテクスチャは大きな幅と高さを返します。
 //原文：With our fixed stage width of 320 points,
 
 //原文：* an SD texture with a width of 160 pixels will fill half of the stage;
@@ -139,15 +138,15 @@ image::iphone4-scale-blurry.png[PenguFlip scaled up blurry, 285]
 * 対応する横幅320ピクセルの HD テクスチャはステージ全体を覆います。
 
 //原文：What we want instead is for the HD texture to report the same size as the SD texture, but provide more detail.
-理想の状態は、HD テクスチャも SD テクスチャと同じサイズだと計測され、しかし、より細かい詳細な見た目である事です。
+理想の状態は、HDテクスチャを扱っても、SDテクスチャを扱ってもプログラム上では同じサイズとして扱う事ができ、しかし、HDテクスチャの方がより細かく詳細な見た目を持っている事です。
 
-ここが Starling の _contentScaleFactor_ が役に立つ領域です。
+ここで、Starling の _contentScaleFactor_ というプロパティが役に立ちます。
 
 //原文：We implicitly set it up when we configured Starling's _stage_ and _viewPort_ sizes.
-私たちが Starling で _stage_ と _viewPort_ のサイズを設定した際、_contentScaleFactor_ 値は自動で設定されています。
+私達が Starling で _stage_ と _viewPort_ のサイズを設定した際、_contentScaleFactor_ 値は自動で設定されています。
 
 //原文：With the setup shown above, run the following code on an iPhone 4:
-設定のコードは上にあるもののままです。試しに、iPhone 4 で下記のコードを実行してください。
+試しに、先のコードに足す形で iPhone 4 で下記のコードを実行してください。
 
 [source, as3]
 ----
@@ -159,14 +158,14 @@ _contentScaleFactor_ は _viewPortの横幅_ を _stageの横幅_ で割った�
 レティナ端末では、"2" を、非レティナ端末では、 "1" が返されます。
 
 //原文：This tells us which textures to load at runtime.
-この値を使って、どのテクスチャセットを読み込むか決定する事ができます。
+この値によって、どのテクスチャセットを読み込むかを決める事ができます。
 
 NOTE: contentScaleFactor 値が整数を返すのは、偶然ではありません。
-Apple は、できるだけアンチエイリアスの問題を避けるため、デバイスの横幅・縦幅をちょうど２倍に設定しています。
+Apple は、できるだけアンチエイリアス関連の問題を避けるため、デバイスの横幅・縦幅をちょうど２倍に設定しています。
 
 texture クラスは単純に `scale` と呼ばれる、似たようなプロパティを持っています。
 //原文：When set up correctly, the texture will work just like we want it to.
-設定が正しく終わると、texture は期待通りの振る舞いをします。
+設定が正しくされると、texture は私達が先ほど期待した通りの振る舞いをしてくれます。
 
 [source, as3]
 ----
@@ -184,17 +183,17 @@ trace(texture.scale); // → Either '1' or '2' <5>
 <1> Starling のインスタンスから `contentScaleFactor` の値を得ます。
 <2> scale factor 値に合わせて、`1x` または `2x` という名前のテクスチャを読み込む準備をします。
 <3> _AssetManager_ に先ほどの scale factor 値を設定します。読み込まれたテクスチャはこの値を利用して初期化されます。
-<4> 実際にテクスチャにアクセスする際は、scale factor について気をかける必要はありません。
+<4> 実際にテクスチャを扱う際は、scale factor 値について考える必要はありません。
 <5> テクスチャの `scale` プロパティにアクセスして、scale 値を確認する事は可能です。
 
-NOTE: _AssetManager_ を使わないでプログラムをしていますか？
-問題ありません。全てのテクスチャ作成メソッド（`Texture.from...`で始まるメソッド）は scale factor を指定する引数を持っています。
-この値はテクスチャ作成時に設定しなくてはいけません。後から値を変える事は不可能です。
+NOTE: _AssetManager_ を使わないでファイルを読み込む実装をしていますか？
+その場合でも問題ありません。
+全てのテクスチャ作成メソッド（`Texture.from...`で始まるメソッド）は scale factor を指定する任意の引数を持っています。
+ただし、この値はテクスチャ作成時に設定しなくてはいけません。後から値を変える事は不可能です。
 
 //原文：The textures will now take the _scale factor_ into account when you query their width or height.
-テクスチャの縦幅・横幅を得ようとすると、内部計算で _scale factor_ が考慮された後の値を得る事ができます。
-For example, here's what will happen with the game's full-screen background texture.
-下記は、我々のゲームで使っている背景画像の大きさを取得した例です。
+テクスチャの縦幅・横幅をプログラムで得ようとすると、内部計算で _scale factor_ が考慮され、調整された後の値を得る事ができます。
+下記は、私達のゲームで使っている背景画像の大きさを取得した例です。
 
 |===
 |ファイル名 |ピクセルサイズ |Scale Factor |ポイントでのサイズ
@@ -214,35 +213,36 @@ For example, here's what will happen with the game's full-screen background text
 さて、これで準備が整いました！
 
 //原文：* Our graphic designer on the back seat (call him Biff) creates all textures in a high resolution (ideally, as vector graphics).
-* 後ろの席に座っているグラフィックデザイナー（Biffと呼びましょう）は全てのテクスチャをまず高解像度で作成します。理想としてはベクターグラフィクスであると良いです。
+* 後ろの席に座っているグラフィックデザイナー（Biffと呼んでください）は全てのテクスチャをまず高解像度で作成します。
+理想としてはベクターグラフィクスであると良いです。
 //原文：* In a preprocessing step, the textures are converted into the actual resolutions we want to support (`1x`, `2x`).
-* 次に実際に利用するテクスチャを作ります。先ほどの高解像度テクスチャを(`1x`, `2x`)としてサポートできる解像度に変換します。
-* 実際の利用時は、Starling の _contentScaleFactor_ 値を確認し、対応したテクスチャをロードします。
+* 次に実際にデバイス上で読み込むテクスチャを作ります。先ほどの高解像度テクスチャをちょうど(`1x`, `2x`)として扱える解像度に変換します。
+* 実際の利用時は、Starling の _contentScaleFactor_ 値を確認し、その値に対応したテクスチャをロードします。
 
 これで終了です。くっきりとした見た目のレティナディスプレイ対応ゲームを作る事ができました！
 //原文：Our player's will appreciate it, I'm sure of that.
-ゲームのプレイヤーは喜ぶに違いありません。
+ゲームのユーザーはきっとこれを喜ぶでしょう。
 
 .レティナディスプレイを使った例です。
 image::iphone4-scale-hd.png[PenguFlip on the iPhone, 285]
 
 TIP: https://www.codeandweb.com/texturepacker/starling?source=gamua[TexturePacker] のようなツールを使うと、今まで説明した手順を簡単に行う事ができます。
 //原文：Feed them with all your individual textures (in the highest resolution) and let them create multiple texture atlases, one for each scale factor.
-ツールに、一番高解像度の個々のテクスチャを登録してください。そこからそれぞれの scale factor 用のテクスチャアトラスを書き出す事ができます。
+ツールには一番の高解像度で個々のイメージパーツを登録してください。それぞれの scale factor 値に対応したテクスチャアトラファイルを書き出す事ができます。
 
-この Redwood City にある http://gizmodo.com/5520438/how-apple-lost-the-next-iphone[バー] で、１〜２杯のビールでも飲んで成功を祝ってから、先に進みましょう。
+さあ、Redwood City のこの http://gizmodo.com/5520438/how-apple-lost-the-next-iphone[バー] で、１〜２杯のビールでも飲んで成功を祝って、また、先に進みましょう。
 
 === iPhone 5
 
 //原文：In 2012, the iPhone has another surprise in store for us: Apple changed the screen's aspect ratio.
-2012年、iPhone は更なる驚きを我々に用意してくれていました。Apple は画面サイズの縦横比を変えてしまったのです。
+2012年、iPhone は更なる驚きを私達に与えてくれました。Apple は画面サイズの縦横比を変えてしまったのです。
 横方向は640ピクセルのままでしたが、縦方向に少し伸びて1136ピクセルとなりました。
 //原文：It's still a retina display, of course, so our new logical resolution is 320×568 points.
-これはもちろんレティナディスプレイでもあります。よって我々の考えるベース解像度は320×568ポイントとなります。
+もちろん、これはレティナディスプレイでもあります。よって私達の考えるベース解像度は320×568ポイントとなります。
 
 //原文：As a quick fix, we simply center our stage on the _viewPort_ and live with the black bars at the top and bottom.
-これに対応する簡単な対応として、単純に今までの _viewPort_ を真ん中に表示して、
-上下の空いた場所はそのまま黒いエリアとしてしまいましょう。
+この問題に簡単に対応するため、単純に今までの _viewPort_ を真ん中に表示して、
+上下の空いた箇所はそのまま黒い帯のエリアとして放置してしまいましょう。
 
 [source, as3]
 ----
@@ -250,23 +250,23 @@ var offsetY:int = (1136 - 960) / 2;
 var viewPort:Rectangle = new Rectangle(0, offsetY, 640, 960);
 ----
 
-これでちゃんと動くようです！
+この対応できちんと動くようです！
 //原文：It's even a fair strategy for all those Android smartphones that are beginning to pop up in this time line.
-この対処方法は、この過去の旅に登場しはじめ用としている全てのAndroid スマートフォンに対しても有効です。
+この対処方法は、この時間の旅にそろそろ登場しはじめる全てのAndroid スマートフォンに対しても有効です。
 //原文：Yes, our game might look a little blurry on some devices, but it's not too bad: the image quality is still surprisingly good.
-我々のゲームはいくつかのデバイス上では少しぼやけてしまうかもしれません。しかしものすごく悪い状態というわけでもありません。画像のクオリティはそれでもかなり良いのです。
-ほとんどのユーザーはその事に気がつかないでしょう。
+私達のゲームはいくつかのデバイス上では少しぼやけてしまうかもしれません。しかし、ものすごく悪い状態というわけでもありません。
+画像のクオリティはぼやけたとしても依然かなり良いのです。ほとんどのユーザーはその事に気がつかないでしょう。
 
 .レターボックス法。
 image::iphone5-letterbox.png[PenguFlip with letterbox bars, 160]
 
-私は、この対応のやり方を *レターボックス法* と呼びます。
+私は、この対応のやり方を *レターボックス法* と呼んでいます。
 
 * ゲームは固定サイズ（例えば320×480ポイントの大きさ）で作成します。
-* いくつかの scale factor 値に対応したアセットを作成します。(`1x`, `2x`, `3x` など。)
+* いくつかの scale factor 値に対応したアセットを作成します。(`1x`, `2x`, `3x`、、)
 * 歪みなくスクリーン全体にフィットするよう、アプリのサイズを拡大します。
 
-これがおそらく最も実用的な解決方法です。
+おそらくこれが、最も実用的な解決方法です。
 
 //原文：It allows your game to run in an acceptable quality on all available display resolutions,
 この方法であれば、どのような画面解像度の端末上であっても、そこそこのクオリティの見た目であなたのゲームを動かす事ができます。
@@ -295,21 +295,22 @@ var viewPort:Rectangle = RectangleUtil.fit(
 
 === iPhone 6 及び Android
 
-2014にやってきましたが、、、なんて事だ！
-App Store の年鑑を確認すると、我々のソフトの売り上げは最後のアップデートから著しくない事がわかりました。
+2014年にやってきましたが…、なんという事だ！
+App Store 年鑑を確認すると、私達のソフトの売り上げは最後のアップデートからずっと冷え込んでいる事がわかりました。
 
-どうやら Apple はレターボックスのやり方が気にくわなかったようで、今回はアプリをフューチャーしてくれませんでした。ムムム…。
+どうやら Apple はレターボックスのやり方が気にいらなかった様子で、
+今回は私達のアプリをフューチャーしてくれませんでした。残念です。
 
 //原文：Well, I guess we have no other choice now: let's bite the bullet and make use of that additional screen space.
-どうやらこうするしかないようです、なんとか追加のスクリーンスペースも利用してましょう。
+どうやらやるしかないようです、追加の余ったスクリーンスペースもなんとか利用してましょう。
 
-//原文：So long, hard-coded coordinates!
+//原文：So long, hard-coded coordinates! //翻訳難しい
 自動調整機能よ、さようなら！
 
-これからは、全てのディスプレイオブジェクトに対して、相対座標を用いて扱っていきます。
+これからは、全てのディスプレイオブジェクトに対して、相対的な座標を用いて扱っていきます。
 
 私はこのやり方を、*スマート オブジェクト プレースメント* と、呼ぼうと思います。
-最初のコーディングは今までの物ととても似ています。
+最初のコーディング内容は今までのコードととても似ています。
 
 [source, as3]
 ----
@@ -321,12 +322,12 @@ starling.stage.stageHeight = isIPhone5() ? 568 : 480;
 ----
 
 //原文：Yeah, I smell it too.
-うーん、ちょっとこれも嫌な臭いがしますね。
-デバイスによるステージの高さの違いをハードコードしています。これはあまり賢いアイデアではありません。
+うーん、ちょっとこれは嫌な感じがしますね。
+デバイスによるステージの高さの違いをハードコードしています。これはあまり賢いやり方ではありません。
 //原文：Promised, we're going to fix that soon.
-ここは、後ほどすぐに修正する事を約束します。
+これについては、すぐ後で修正する事を約束します。
 
-しかしこれは今の所正しく動きます。_viewPort_ も _stage_ も正しいサイズです。
+しかし今の所このコードは正しく動きます。_viewPort_ も _stage_ も正しいサイズです。
 しかしどのように利用しましょう？
 ここで、_Game_ クラスをみてみましょう。このクラスは Starling の root ディスプレイオブジェクトとして振る舞います。
 
@@ -356,28 +357,27 @@ public class Game extends Sprite
     }
 }
 ----
-<1> Game クラスのコンストラクタがよばれた際、まだ Game インスタンスは Stage 上に配置されていません。
+<1> Game クラスのコンストラクタが実行されたタイミングでは、まだ Game インスタンスは Stage 上に配置されていません。
 //原文：So we postpone initialization until we are.
-なので、実際の初期化処理は準備ができるまで遅らせます。
-<2> 準備をできた後、setup メソッドを飛ぶときにステージのサイズを引数に渡します。
+なので、実際の初期化処理は準備ができるまで待ちます。
+<2> 準備ができた後、setup メソッドを飛ぶ祭にステージのサイズを引数に渡します。
 //原文：<3> Exemplary, we create a _LifeBar_ instance (a custom user interface class) at the bottom of the screen.
-<3> ゲームでよく見かけるような _ライフバー_を、画面の下部に配置します。
+<3> よくゲームのユーザーインターフェースであるような _ライフバー_を、画面の下部に配置します。
 
-ざっと見た所、難しくはないですよね？
+ここまでざっくりと見て所、特に難しくはないですよね？
 //原文：The trick is to always take the stage size into account.
-種は、ステージサイズを計算に入れるという事です。
+ポイントは、ステージサイズを計算に入れるという事です。
 
 //原文：Here, it pays off if you created your game in clean components,
 //原文：with separate classes responsible for different interface elements.
-さて、もしもあなたの作ったゲームが、整理された構成をしており、
+さて、もしもあなたの作ったゲーム実装の構成がよく整理されていて、
 それぞれのユーザーインターフェースのオブジェクトにはそれぞれ専用のクラスが用意してあるなら、
 このようなやり方でうまくいきます。
 
 //原文：For any element where it makes sense,
 //原文：you pass the size along (like in the _LifeBar_ constructor above) and let it act accordingly.
-ユーザーインターフェースのオブジェクトのうち、調整して意味があるもの全てに対して、
-（_LifeBar_ のコンストラクタの例のように）ステージのサイズを受け渡して、
-それに応じてうまく大きさや位置を変えて振る舞うようにするのです。
+ユーザーインターフェースのオブジェクトのうち、意味があるもの全てに対して、
+（_LifeBar_ の例のように）ステージのサイズを受け渡して、うまく大きさや位置を調整して振る舞うようにするのです。
 
 .No more レータボックスの帯のエリアはもうありません。画面全体が利用されています。
 image::iphone5-smart-objects.png[PenguFlip without letterbox bars, 160]
@@ -385,23 +385,23 @@ image::iphone5-smart-objects.png[PenguFlip without letterbox bars, 160]
 iPhone 5 でこの方法はとてもうまく動きます。
 2012年の時点でこのように対応しておけばよかった！
 //原文：Here, in 2014, things have become even more complicated.
-2014現在では自体はもっと複雑になっています。
+2014年には自体はもっと複雑になっていました。
 
 //原文：* Android is quickly gaining market share, with phones in all different sizes and resolutions.
 //原文：* Even Apple introduced bigger screens with the _iPhone 6_ and _iPhone 6 Plus_.
 //原文：* Did I mention tablet computers?
-* Android はマーケット上でどんどんとシェアを伸ばしてきており、端末毎に大きさも解像度も異なっています。
-* Apple も _iPhone 6_ と _iPhone 6 Plus_ という端末でさらに大きな画面を導入しました。
-* タブレット端末についてはもう説明しましたっけ？
+* Android はマーケット上でシェアをどんどんと伸ばしており、端末毎に大きさも解像度も異なります。
+* Apple も _iPhone 6_ と _iPhone 6 Plus_ というさらに大きな画面の端末を導入しました。
+* タブレット端末については…もう説明しましたっけ？
 
 //原文：By organizing our display objects relative to the stage dimensions,
 //原文：we already laid the foundations to solve this.
-ディスプレイオブジェクトの配置をステージの大きさに合わせて、整理する事により、
+ディスプレイオブジェクトの位置をステージの大きさに合わせて調整するというやり方で、
 すでに問題に対する基本対応方針はできあがっています。
-我々のゲームは色々なステージサイズの端末で動作する事でしょう。
+私達のゲームは様々なステージサイズの端末で動作する事でしょう。
 
-//原文：The remaining problem is which values to use for stage size and content scale factor.
-残った問題は、どの値をステージの大きさと scale factor 値のために使うかという事です。
+//原文：The remaining problem is which values to use for stage size and content scale factor. // 翻訳怪しい
+残った問題は、ステージの大きさと scale factor 値をどのように決定するか、という事です。
 //原文：Looking at the range of screens we have to deal with, this seems like a daunting task!
 扱うスクリーンの種類の多さを見ると、気持ちが折れてしまいそうです。
 
@@ -455,14 +455,13 @@ iPhone 5 でこの方法はとてもうまく動きます。
 
 |===
 
-ピクセル密度を計算に入れる事が scale factor 値を決定するキーとなります。
+ピクセル密度を計算に入れる事が scale factor 値を決定するカギとなります。
 
-* より高いピクセル密度では、高い scale factor 値になります。つまり、その密度から scale factor 値が推測できます。
-* scale factor 値からは適切なステージサイズを計算する事ができます。通常上記と逆のやり方となります。
+* より高いピクセル密度では、より高い scale factor 値になります。つまり、ピクセル密度から scale factor 値が推測できます。
+* scale factor 値からは適切なステージサイズを計算する事ができます。上記と逆の求め方となります。
 
 最初の iPhone のピクセル密度はおおよそ160 dpi でした。
-これを元に計算を進めてみましょう。
-どのデバイスでもピクセル密度を160で割り、小数点以下を切り上げて整数値を得ます。
+これを元に計算を進めてみましょう。どのデバイスもピクセル密度を160で割り、小数点以下を切り上げて整数値を得ます。
 このやり方で、それぞれの端末を確認してみましょう。
 
 |===
@@ -524,21 +523,21 @@ iPhone 5 でこの方法はとてもうまく動きます。
 
 |===
 
-計算結果のステージサイズに注目してみましょう。
-それぞれが、320×480から414×736の範疇に収まっています。
+計算結果のステージサイズに注目してみましょう。それぞれが、320×480から414×736の範疇に収まっています。
 //原文：That's a moderate range,
-これが、調整されたスクリーンサイズの範囲となります。
+これが、実際に扱うべきスクリーンサイズの範囲です。
 //原文：and it also makes sense: a screen that's physically bigger is supposed to have a bigger stage.
-そしてまた、物理的に大きな画面の端末は大きなスレージを持っている、というのも事実です。
+そして、物理的に大きな画面の端末は大きなステージサイズを持っている、という事が言えます。
 //原文：The important thing is that,by choosing appropriate scale factors, we ended up with reasonable coordinate systems.
-重要なことは、適切な scale factors 値を選択することで、合理的な座標系を得られると言う事です。
+大事なことは、適切な scale factors 値を選択することで、合理的に利用できる座標系を得る事ができる、と言う点です。
 //原文：This is a range we can definitely work with!
-これが、開発時に実際に扱う事となる範囲です。
+これは、実際に開発時に扱う事となる大きさの範囲です。
 
-NOTE: _Galaxy S1_ の scale factor 値が整数値でないのに気づいていたでしょうか。これは、現実的なステージサイズを得るために必要となった物でした。
+NOTE: _Galaxy S1_ の scale factor 値が整数値でないのに気づいていたでしょうか。
+これは、現実的に扱うことができるステージサイズを算出するために必要となった値でした。
 
 では、どのようにしてこのスケール値を得たのか実際に見てみましょう。
-`ScreenSetup` という名前でクラスを作り、下記のような内容としてください。
+`ScreenSetup` という名前でクラスを作り、下記のような記述内容としてください。
 
 [source, as3]
 ----
@@ -565,22 +564,23 @@ public class ScreenSetup
 }
 ----
 
-このクラスは Starling の設定を行う元となる _viewPort_ 値と _stage size_ 値を求めます。
-`assetScale` 以外のプロパティーについては説明はいらないでしょう。
+このクラスでは Starling 設定の基準となる _viewPort_ 値と _stage size_ 値を求める事ができます。
+`assetScale` 以外のプロパティーについては特に説明はいらないでしょう。
 
-上に出した表では、scale factors 値は1〜4の間に設定されています。
-しかし、おそらく全ての値に対応したそれぞれテクスチャを用意したくは無いことでしょう。
-最も密度が高い画面のピクセルはとても小さいので、その違いを認識することはどっちみちできません。
+上の表では、scale factor 値は1〜4の間で設定されています。
+しかし、それぞれ全ての scale factor 値に対応して、たくさんのテクスチャセットを用意したくは無いことでしょう。
+最も密度が高い画面のピクセルはとても小さいので、あなたの目でそれを認識することはどっちみちできないかと思われます。
 
-したがって、大抵は全ての scale factors 値に合わせてテクスチャセットを用意することはなく、1〜2 または 1〜3 の分だけ用意する事になるでしょう。
+したがって、大抵は scale factors 値に対応した全てのテクスチャセットを用意することはなく、
+1〜2 または 1〜3 の範囲だけに対応したテクスチャセットを用意する事になるでしょう。
 
-* コンストラクタの `assetScales` 引数には、テクスチャを用意してある scale factors 値を配列で羅列します。
-* `assetScale` プロパティはどのテクスチャをロードすべきかを教えてくれます。
+* コンストラクタ引数の `assetScales` には、用意してあるテクスチャセットに対応する scale factors 値一覧を配列で指定します。
+* ScreenSetup インスタンスの `assetScale` プロパティは、どのテクスチャセットをロードすべきか教えてくれます。
 
-TIP: 最近は、scale factor 値が "1" である事をアプリケーションがケアすることはほとんどなくなりました。
-しかし、この設定値は開発時に重宝するでしょう。なぜなら、広い画面のモニタがなくても動作確認ができるからです。
+TIP: 最近は、scale factor 値 "1" をアプリケーションがサポートする必要はほとんどなくなりました。
+しかし、この値は開発時には重宝するでしょう。なぜなら、広い画面のモニタがなくてもPC上でアプリの動作確認ができるからです。
 
-次に、コンスタクター部分の実装に取り掛かりましょう。
+さて次に、コンストラクタ部分の実装に取り掛かりましょう。
 
 [source, as3]
 ----
@@ -611,20 +611,22 @@ public function ScreenSetup(
     _viewPort = new Rectangle(0, 0, _stageWidth * _scale, _stageHeight * _scale);
 }
 ----
-<1> Apple iPad 用にちょっとした対応を施さなくてはいけません。
-We want it to use the same set of scale factors you get natively on iOS.
-<2> 基準とするピクセル密度は160 dpi (iPadの場合、130 dpi)です。このような密度の端末は scale factor 値を"1"とします。
+<1> Apple iPad 用にちょっとした特別対応を施します。
+//原文：We want it to use the same set of scale factors you get natively on iOS.
+iOS 上では iPhone であっても iPad であっても、同じ scale factor のセットを扱うようにしたいのです。
+<2> 基準とするピクセル密度は160 dpi (iPadの場合、130 dpi)です。このような密度の端末は scale factor 値を "1" とします。
 <3> scale factors 値は整数値、もしくは`1.5`の値を取ります。このコードではそのうち最も近いものを選択します。
 <4> ここで、ロードすべきアセットのセット(1倍、2倍、3倍…)を決定します。
 
 //原文：TIP: If you want to see the results of this code if run on the devices I used in the tables above, please refer to this https://gist.github.com/PrimaryFeather/505fc4f120c06d09d2c56910476ab710[Gist].
-TIP: 上で表にしたデバイスに対するこのコードの実際の動作結果を見たいのならば、 https://gist.github.com/PrimaryFeather/505fc4f120c06d09d2c56910476ab710[Gist] ページを参照してください。
+TIP: このコードによって計算された 上の表のデバイスそれぞれに対する assetScale 値を確認したいのならば、 https://gist.github.com/PrimaryFeather/505fc4f120c06d09d2c56910476ab710[Gist] ページを参照してください。
 //原文：You can easily add some more devices to this list and check out if you are pleased with the results.
-参照先の実行結果に満足したのであれば、デバイス一覧にさらに項目を追加して、簡単に動作確認する事ができます。
+//この辺り翻訳かなり苦しい
+assetScale 値一覧に満足したならば、調査デバイスを自ら追加して、assetScale の値を簡単に求める事ができます。
 
-さてここで全ての準備ができたので、Starling の起動コードに適用する事ができます。
+これで準備が整いました。Starling の起動コードに処理を取り込みましょう。
 
-下記コードでは、scale factors 値の "1" か "2" に対応したアセットを用意している事を仮定しています。
+下記のコードは、scale factors 値 "1" 及び "2" に対応したアセットを用意した場合のサンプルとなっています。
 
 [source, as3]
 ----
@@ -650,26 +652,28 @@ assetManager.loadQueue(...);
 ----
 
 以上です！
-ユーザインターフェースの調整をまだ行わなくてはいけない事は忘れないように。しかし、それはそれほど難しくはないでしょう。
+まだユーザインターフェースの位置調整を行わなくてはいけない事を忘れないように。
+しかしそれは、そんなに難しくないでしょう。
 
-TIP: Starling のリポジトリには、_Mobile Scaffold_ と言う名前のプロジェクトが存在します。そのプロジェクトにはここで開設したコード全てが含まれています。全てのモバイル開発の雛形として最適です。
-(ダウンロード済みのファイルに _ScreenSetup_ がIf クラスが見つからない場合は、GitHub 上の最新のリビジョンで探してみてください。)
+TIP: Starling のリポジトリには、_Mobile Scaffold_ と言う名前のプロジェクトが存在します。
+そのプロジェクトにはここで解説したコード全てが含まれています。モバイル開発の雛形として最適です。
+(ダウンロード済みのファイルに _ScreenSetup_ クラスが見つからない場合は、GitHub 上の最新のリビジョンで探してみてください。)
 
 TIP: もしあなたが _Feathers_ を使っているのなら、_ScreenDensityScaleFactorManager_ というクラスが _ScreenSetup_ クラスと同じ処理を行ってくれます。
-実際、ここに書いた処理内容は、_ScreenDensityScaleFactorManager_ に強くインスパイアされて作られた物です。
+実際、ここに書いた処理内容は、_ScreenDensityScaleFactorManager_ クラスに強くインスパイアされて作られた物です。
 
 === iPad 及び その他タブレット
 
 //原文：Back in the present, we're starting to wonder if it would make sense to port our game to tablets.
-ここで現在に戻って、我々のゲームをタブレットに対応させる事がうまくいくのか考えてみましょう。
-上のコードはタブレットでもそのままうまく動作します。
-しかし、今までの例よりもずっと広いステージとよりたくさんのコンテンツを配置する空間を目にする事になります。
-これにどのように対応すべきかは、あなたが作っているアプリケーションによりけりです。
+ここで現在に戻って、私達のゲームがうまくタブレットに対応できるのか考えてみましょう。
+実際、上のコードはタブレットでもそのまま動作します。
+しかし、今までよりもずっと広いステージとよりたくさんのコンテンツを配置する空間が目につく事になります。
+どのように対応すべきかは、あなたが作っているアプリケーションによりけりです。
 
 ==== いくつかのゲームでは拡大しているだけ
 
 //原文：Games like _Super Mario Bros_ or _Bejeweled_ look great scaled to a big screen with detailed textures.
-_Super Mario Bros_ や _Bejeweled_ のようなゲームは大きなスクリーンに対しても細かいテクスチャとともに綺麗に拡大表示されます。
+_Super Mario Bros_ や _Bejeweled_ のようなゲームは大きなスクリーンでも細かいテクスチャで綺麗に拡大表示されます。
 //原文：In that case, you could ignore the screen density and calculate the scale factor based just on the amount of available pixels.
 このような場合、ピクセル密度は無視して、表示可能なピクセル数のみから scale factor 値を計算すれば良いです。
 
@@ -679,15 +683,15 @@ _Super Mario Bros_ や _Bejeweled_ のようなゲームは大きなスクリー
 ==== よりたくさん物を表示するタイプも
 _Sim City_ や _Command & Conquer_ のようなゲームについて考えてみましょう。
 //原文：such games could show the user much more of the landscape.
-そのようなゲームでは、大きな画面であれば街並みや風景をよりたくさん見せる事ができます。
+そのようなゲームでは、大きな画面であれば街並みや風景をよりたくさん表示する事ができます。
 //原文：The user interface elements would take up less space compared to the game's content.
-ユーザーインターフェースの要素はゲームのコンテンツに対してより小さなスペースをしめるようになります。
+つまり、ユーザーインターフェースはゲームのコンテンツに対してより小さなスペースをしめるようになります。
 
-==== またある場合は全く異なったユーザーインターフェースを考える必要がある事も
+==== 全く異なるユーザーインターフェースの考察が必要な事も
 
-特に実用アプリの場合、これは正しい事です。
-モバイルフォンの小さな画面上では、Eメールアプリは、メール本文か受信箱かメールボックスのどれか１つを表示する事になると思われます。
+実用アプリの場合、特にこれは正しいと言えます。
+例えば、モバイルフォンの小さな画面上では、Eメールアプリは、メール本文か受信箱かメールボックスのどれか１つを表示する事になるでしょう。
 一方、タブレット端末上ではその３つを同時に表示する事ができるでしょう。
 
 //原文：Don't underestimate the development effort this will cause.
-この対応をするのに必要な開発の労力を甘く見ないようにしましょう。
+このような対応をするのに必要な開発の労力は甘く見ないようにしましょう。
