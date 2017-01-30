@@ -1,23 +1,25 @@
-== Device Rotation
+== デバイスの回転
 
-A very cool feature of today's smartphones and tablets is that they recognize the orientation of the device in the physical world and may update the user interface accordingly.
+スマートフォンとタブレットは、デバイスの空間的な回転方向を認識して、
+ユーザーインターフェースを良い感じに調整してくれる、とても素晴らしい機能を持っています。
 
-To detect orientation changes in Starling, you first need to update your application's AIR configuration file.
-Make sure that it includes the following settings:
+Starling で回転方向の変化を認識するには、まず最初に AIR の設定ファイルを編集する必要があります。
+下記のような設定をしてください。
 
 [source, xml]
 ----
 <aspectRatio>any</aspectRatio> <1>
 <autoOrients>true</autoOrients> <2>
 ----
-<1> The initial aspect ratio (`portrait`, `landscape` or `any`).
-<2> Indicates whether the app will begin auto-orienting on launch.
+<1> aspectRatio の設定を、`portrait`、`landscape`、`any`のいずれかにします。
+<2> アプリの起動時に自動回転機能有効にする指定します。
 
-When that's in place, you can listen for a `RESIZE` event on the Starling stage.
-It is dispatched whenever the orientation changes.
-After all, an orientation change always causes the stage size to change, as well (exchanging _width_ and _height_).
+この設定が適用されると、Starling の stage オブジェクトから `RESIZE` イベントを受け取ることができます。
+このイベントは回転方向が変化した際に必ず発行されます。
+結局のところ、回転方向の変化は必ず Stage サイズの変更も引き起こすからです。_幅_ と _高さ_ が入れ替わるのです。
 
-Update the dimensions of the Starling viewPort and stage in the corresponding event handler.
+//原文：Update the dimensions of the Starling viewPort and stage in the corresponding event handler.
+このイベントを受け取った際は、Starling の描画エリアとStageの大きさを調整しましょう。
 
 [source, as3]
 ----
@@ -46,16 +48,21 @@ private function updatePositions(width:int, height:int):void // <3>
     // Update the positions of the objects that make up your game.
 }
 ----
-<1> This event handler is called when the device rotates.
-<2> Updates the size of stage and viewPort depending on the current screen size in pixels.
-<3> Updates your user interface so that it fits the new orientation.
+<1> デバイスが回転した際、このイベントハンドラが呼び出されます。
+<2> 現在のスクリーンサイズの大きさに合わせて、Stage と viewPort の大きさを調節します。
+<3> 新しい回転の向きにマッチするよう、あなたのゲームのユーザーインターフェースを調整します。
 
-Note that we had to update _viewPort_ and _stage size_ manually in the event listener.
-Per default, they will remain unchanged, which means that your application will appear cropped.
-The code above fixes that; it works for every scale factor.
+イベントハンドラ内で、_viewPort_ と _stage の大きさ_ 両方を手動で更新しなくてはいけないことに注意してください。
 
-The last part is going to be much harder: updating your user interface so that it fits into the new stage dimensions.
-This does not make sense for all games -- but if it does, you should consider the additional effort.
-Your users will appreciate it!
+デフォルトのままでは何の処理も行われません。つまり、アプリケーションの画面の一部がかけたような状態になってしまうでしょう。
+上のコードはその問題を解決します。どんな scale factor 値でもうまく動作するでしょう。
 
-TIP: The _Scaffold_ project coming with Starling contains a possible implementation of this feature.
+//原文：The last part is going to be much harder: updating your user interface so that it fits into the new stage dimensions.
+最後の対応の、アプリのインターフェースを変化した画面方向に合わせてうまく調整すること、は多少難しいかもしれません。
+//原文：This does not make sense for all games -- but if it does, you should consider the additional effort.
+全てのゲームでうまく調整できるわけではありませんが、うまくいく場合、ここにさらなる労力を費やすべきです。
+//原文：Your users will appreciate it!
+ユーザー視点で見れば嬉しい事ですから！
+
+//原文：TIP: The _Scaffold_ project coming with Starling contains a possible implementation of this feature.
+TIP: Starling を利用して作られたフレームワークの中にはすでにこのような機能が実装されている場合もあるでしょう。

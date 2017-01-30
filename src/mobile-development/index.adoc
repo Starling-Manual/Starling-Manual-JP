@@ -1,13 +1,22 @@
-= Mobile Development
+= モバイルの開発
 
-_Adobe AIR_ is one of the most powerful solutions available today when it comes to cross-platform development.
-And when somebody says "cross-platform" nowadays, it typically means: _iOS_ and _Android_.
+事クロスプラットフォームの開発となれば、_Adobe AIR_ は現在最もパワフルな開発手法の一つです。
+近年、"クロスプラットフォーム" と言った場合、それはたいてい _iOS_ と _Android_ を意味します。
 
-Developing for such mobile platforms can be extremely challenging: there's a plethora of different device types around, featuring screen resolutions that range from _insult to the eye_ to _insanely high_ and aspect ratios that defy any logic.
-To add insult to injury, some of them are equipped with CPUs that clearly were never meant to power anything else than a pocket calculator.
+モバイル開発は、とてもチャレンジングになる事があります。
+世の中にはあまりにもたくさんの種類のデバイスがありすぎるのです。
+//原文：featuring screen resolutions that range from _insult to the eye_ to _insanely high_ and aspect ratios that defy any logic.
+画面解像度をとってみても、_目に失礼_ なレベルから _極めて細かい_ レベルまで色々ありますし、アスペクト比の構成に明確なルールはありません。
+//原文：To add insult to injury, some of them are equipped with CPUs that clearly were never meant to power anything else than a pocket calculator.
+//ちとうまく訳せない。。
+さらに悪いことに、いくつかのデバイスは複数 CPU を積んではいるのですが、個々の CPU はポケット電卓程度のパワーしか持っていないのです。
 
-As a developer, you can only shrug your shoulders, roll up your sleeves, and jump right in.
-At least you know that fame and fortune lie on the other side of the journey!footnote:[Don't pin me down to that, though.]
+//原文：As a developer, you can only shrug your shoulders, roll up your sleeves, and jump right in.
+開発者としてできることは、肩をすくめ、袖をまくり、真正面からその問題に取り組むことだけです。
+//原文：At least you know that fame and fortune lie on the journey!
+//原文：footnote:[Don't pin me down to that, though.]
+あなたは、富と名声がこの旅路の向こう側に転がっている事を、少なくとも知っているでしょう！
+footnote:[あまり個々について詳しい説明を求めないように。]
 
 include::multi-resolution-development.adoc[]
 
@@ -15,11 +24,15 @@ include::device-rotation.adoc[]
 
 // == Native Extensions
 
-== Summary
+== まとめ
 
-Make no mistake: developing for mobile platforms is not easy.
-The variety of the hardware makes it necessary to plan ahead and structure your code smartly.
-Furthermore, the market is extremely competitive, so your design needs to stand out from the masses.
+モバイル開発は、間違いなく大変なものです。
 
-Starling does what it can to help you with this process!
-With the tools you learned in this chapter, you will be able to master this challenge.
+たくさんの種類のハードウェアが存在する事で、実装プランを事前によく練り、コードをスマートな構造にする必要があるのです。
+また、アプリのマーケットには、とてもたくさんのライバルがいます。
+よってあなたのアプリのデザインレベルは、有象無象の中からずば抜けている必要もあるでしょう。
+
+//原文：Starling does what it can to help you with this process!
+Starling はこのプロセスであなたを手助けします。
+//原文：With the tools you learned in this chapter, you will be able to master this challenge.
+この章で学んだツールとともに、このチャレンジを成功させる事ができるでしょう。
