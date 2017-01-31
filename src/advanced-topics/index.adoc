@@ -1,16 +1,18 @@
-= Advanced Topics
+= 上級トピックス
 
-With all the things we learned in the previous chapters, you are already well equipped to start using Starling in real projects.
-However, while doing so, you might run into a few things that might be puzzling.
-For example,
+前の章で学んだ内容で、あなたはに実際の Starling プロジェクトを開始する準備が十分にできています。
+しかし、実際にプロジェクトを開始すると、ちょっと困った事に出くわすかもしれません。
+例えば、
 
-* Your textures are quickly consuming all available memory.
-* You are encountering a _context loss_ from time to time. WTF!?footnote:[My editor said it's not polite to swear, but (1) I used an acronym and (2) context loss really s*cks.]
-* You are actually a little disappointed by the performance of your application. You want more speed!
-* Or you might be one of those masochists who like to write their own vertex and fragment shaders, but didn't know where to start.
+* テクスチャが利用可能なメモリをすぐに消費してしまう
+* 時々、_コンテキストロス_ というエラーに遭遇する。何なんだ一体！WTF!?
+//原文：My editor said it's not polite to swear, but (1) I used an acronym and (2) context loss really s*cks.
+footnote:[私が文章を書くのに使っているエディターが下品な表現だと忠告してきていますが、(1)単語として短縮系を使いましたし、(2) 実際コンテキストロスは **** なのです。]
+* 出来上がったアプリの動作スピードに満足がいかない。もっとサクサク動いて欲しい！
+* もしや、あなたは頂点シェーダーと断片シェーダーを自ら書きたいというマゾヒストかもしれない。しかしやり方がわからない。
 
-Funny enough, that perfectly summarizes what this chapter is about.
-Buckle up Dorothy, we are now jumping into some advanced topics!
+面白いことに、それらはこの章の内容をうまく要約しています。
+ドロシー、シートベルトを閉めるんだ！上級トピックスに突入するぞ！
 
 include::atf-textures.adoc[]
 
@@ -26,16 +28,19 @@ include::custom-styles.adoc[]
 
 include::distance-field-rendering.adoc[]
 
-== Summary
+== まとめ
 
-Pat yourself on the back: we just covered a lot of quite advanced topics.
+//原文：Pat yourself on the back: we just covered a lot of quite advanced topics.
+お疲れ様です！ここまで、たくさんの上級トピックスを学び終えました。
 
-* You are now familiar with ATF textures, which are not only very memory efficient, but load faster than standard PNGs.
-* You know how to recover from a context loss: by relying on the _AssetManager_ or providing your own restoration-code.
-* You've got a feeling about how to make sure you are not wasting any memory, and how to avoid and find memory leaks.
-* When performance becomes an issue, your first look is at the draw count. You know ways to make sure batching is not disrupted.
-* The low-level rendering code is far less frightening that you thought at first. Heck, you just wrote your own filter and style!
-* Distance field rendering is a useful technique to keep in mind for scalable fonts or other monochrome shapes.
+* ATF テクスチャについて詳しくなりました。PNGファイルでのテクスチャよりも低メモリで読込みが早いテクスチャです。
+* コンテキストロスから復帰する方法を学びました。_AssetManager_ の機能に任せるか、自分のコードで復帰させるか。
+//原文：* You've got a feeling about how to make sure you are not wasting any memory, and how to avoid and find memory leaks.
+* メモリを浪費せずに使う方法を学びました。合わせて、メモリーリークの避け方と見つけ方も学びました。
+* パフォーマンスの低下が問題となった時、まずはドローコールの回数を確認しましょう。確実にバッチを分断させない方法を学びました。
+//原文：* The low-level rendering code is far less frightening that you thought at first. Heck, you just wrote your own filter and style!
+* 低レベルのレンダリングコードは思っていたよりも恐るるに足らないものでした。カスタムフィルターやカスタムスタイルを流来る事ができました。
+* Distance フィールドレンダリングはフォントや単色のシェイプを拡大する際に、役に立つテクニックでした。
 
-This knowledge will save you a lot of time and trouble in any of your upcoming projects.
-And I bet some of them are going to have to run on mobile hardware, right ...?
+これらの知識は今後何かのプロジェクトに取り組む際、トラブルから救ってくれたり、たくさんの時間を節約してくれる事でしょう。
+そのプロジェクウトのうちいくつかはモバイル端末上で動かさなくてはいけなくなるはずです。。
