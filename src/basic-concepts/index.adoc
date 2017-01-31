@@ -1,19 +1,28 @@
-= Basic Concepts
+= 基本コンセプト
 
-Starling might be a compact framework, but it still boasts a significant number of packages and classes.
-It is built around several basic concepts that are designed to complement and extend each other.
-Together, they provide you with a set of tools that empower you to create any application you can imagine.
+Starling はコンパクトなフレームワークかもしれません。
+それでも、内部にたくさんのパッケージやクラスを持っている事を誇りと思っています。
+//原文：It is built around several basic concepts that are designed to complement and extend each other.
+それらクラスやパッケージは、いくつかの基本コンセプトに乗っ取って作られており、お互いに保管しあったり、拡張しあったりしています。
 
-Display Programming:: Every object that is rendered on the screen is a _display object_, organized in the _display list_.
-Textures & Images:: To bring pixels, forms and colors to the screen, you will learn to use the _Texture_ and _Image_ classes.
-Dynamic Text:: Rendering of dynamic text is a basic task in almost every application.
-Event Handling:: Communication is key! Your display objects need to talk to each other, and they can do that via Starling's powerful event system.
-Animation:: Bring some motion into the picture! There are different strategies to animate your display objects.
-Asset Management:: Learn how to load and organize all kinds of assets, like textures and sounds.
-Special Effects:: Effects and filters that will make your graphics stand out.
-Utilities:: A number of helpers to make your life easier.
+//原文：Together, they provide you with a set of tools that empower you to create any application you can imagine.
+同時に、どんなアプリケーションの作成にも力となるツール類が提供されます。
 
-We've got a lot of ground to cover, so, in the words of Super Mario: "Lets-a-go!"
+//原文：Display Programming::
+ディスプレイリスト:: 画面上に表示されている全てのオブジェクトは _ディスプレイオブジェクト_ であり、_ディスプレイリスト_ の中で管理されます。
+//原文：To bring pixels, forms and colors to the screen,
+テクスチャとイメージ:: スクリーン上のピクセルに様々な色や形を表示するには_Texture_ と _Image_ クラスの使い方を覚えなくてはいけません。
+動的なテキストフィールド:: 動的な内容のテキストを表示する処理は、ほとんどのアプリケーションの基本処理となります。
+イベントのハンドリング:: コミュニケーションがカギです！ディスプレイオブジェクトはお互いに連携をとって動作する必要があります。
+その連携は、Starling  のパワフルなイベントシステムによって行われるものです。
+アニメーション:: 画像に動きを与えましょう！ディスプレイオブジェクトをアニメさせるには、いくつかのやり方があります。
+アセットの管理:: どうやってテクスチャやサウンドファイルのような外部アセットをロードして管理すればいいのか、これを学びます。
+スペシャルエフェクト:: エフェクト機能とフィルター機能は、あなたのアプリのグラフィックスを際立たせてくれます。
+ユーティリティ:: あなたの人生を楽にする、たくさんのヘルパークラスです。
+
+//原文：We've got a lot of ground to cover, so, in the words of Super Mario: "Lets-a-go!"
+たくさんの領域をカバーして学ぶ必要があります。
+スーパーマリオのセリフを借りつつ挑みましょう。"レッツ・ア・ゴー！"
 
 include::configuring-starling.adoc[]
 
@@ -39,10 +48,12 @@ include::sprite3d.adoc[]
 
 include::utilities.adoc[]
 
-== Summary
+== まとめ
 
-You are now familiar with all the basic concepts of the Starling Framework.
-This is all the knowledge you need to get started with that game you have in your head, or with that app that's waiting to be created.
+Starling フレームワークの 基本コンセプトについて、詳しくなったかと思います。
+それは、あなたが作りはじめようと思っているゲームやアプリのために必要な全ての知識です。
 
-On the other hand, there are still a few tricks up the sleeves of our little bird (birds have sleeves?).
-If you're ready to jump into those advanced topics, please follow my lead.
+//原文：On the other hand, there are still a few tricks up the sleeves of our little bird (birds have sleeves?).
+一方、まだ私たちの小さな鳥が袖をまくるような（鳥に袖なんてあったかな？）いくつかのテクニックがあります。
+//原文：If you're ready to jump into those advanced topics, please follow my lead.
+上級テクニックの話題へ乗り込んでいく準備はできていますか？私と一緒にさらに先へと進んで行きましょう。
