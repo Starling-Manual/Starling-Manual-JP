@@ -108,30 +108,37 @@ NOTE: 一つだけ制限があります。これらのモードは組み合わ�
 しかしながら、合わせてフラグメントフィルターを用いる事で（※訳者注：アウトラインを distance field で描画し、
 ドロップシャドウをフィルタで描画するなど）実現する事ができます。
 
-=== Distance Field Fonts
+=== Distance Field フォント
 
-The characteristics of distance field rendering makes it perfect for text.
-Good news: Starling's standard bitmap font class works really well with the distance field style.
-It's just a little cumbersome to create the actual font texture, I'm afraid.
+//原文:The characteristics of distance field rendering makes it perfect for text.
+distance field レンダリングの特徴はテキストの表示にもってこいです。
+ここで良い知らせです。 distance field スタイルは、Starling のビットマップフォントに対してとてもうまく機能します。
+//原文:It's just a little cumbersome to create the actual font texture, I'm afraid.
+ただ、フォント用に実際のテクスチャを作成するのは、若干面倒だとは思います。
 
-Remember, a bitmap font consists of an atlas-texture that contains all the glyphs and an XML file describing the attributes of each glyph.
-You can't simply use _field agent_ to convert the texture in a post-processing step (at least not easily), since each glyph requires some padding around it to make up for the _spread_.
+ビットマップフォントが、全ての図形(文字)を含んだテクスチャアトラス画像と、それぞれの図形の情報を保持する XML ファイルから成り立っていることを思い出してください。
 
-Therefore, it's best to use a bitmap font tool that supports distance field textures natively.
-Here are some possible candidates:
+//原文：You can't simply use _field agent_ to convert the texture in a post-processing step
+単に _field agent_ を使うだけでは、テクスチャを前処理として変換する事はできません。（少なくとも簡単には。）
+なぜなら、それぞれの図形は広がるための領域としてある程度の余白を必要とするからです。
 
-* http://kvazars.com/littera/[Littera] -- a free online bitmap font generator.
-* http://github.com/libgdx/libgdx/wiki/Hiero[Hiero] -- a cross platform tool.
-* http://www.angelcode.com/products/bmfont/[BMFont] -- Windows-only, from AngelCode.
+それゆえ、distance field テクスチャをサポートする bitmap font 用のツールを使うのが一番良いでしょう。
+下記が、候補となるいくつかのツールです。
 
-Personally, I achieved the best results with _Hiero_, although its user interface isn't exactly a joy to work with.
-I hope that the offerings will improve in the future.
+* http://kvazars.com/littera/[Littera] -- 無料のオンライン bitmap フォントジェネレータ。
+* http://github.com/libgdx/libgdx/wiki/Hiero[Hiero] -- クロスプラットフォーム対応のフォントツール。
+* http://www.angelcode.com/products/bmfont/[BMFont] -- AngelCode がリリースしているフォントツール。Windows のみ。
 
-TIP: As for _Hiero_, https://github.com/libgdx/libgdx/wiki/Distance-field-fonts[here] is a very good introduction describing the process.
-Unfortunately, _Hiero_ can't export the XML format that Starling requires; this little https://gist.github.com/tluyben/4984856[perl script] might help, though.
+個人的には、_Hiero_ を使った場合が一番良い出力を得ました。ユーザーインターフェースがいまいちではあるのですが。
+//原文：I hope that the offerings will improve in the future.
+その辺りが将来改善されることを期待します。
 
-Whatever tool or process you use: at the end, you will have a texture and a `.fnt`-file, just as usual.
-As a reminder, here's the code to create and register a bitmap font:
+//原文：TIP: As for _Hiero_, https://github.com/libgdx/libgdx/wiki/Distance-field-fonts[here] is a very good introduction describing the process.
+TIP: _Hiero_ に対しては、 https://github.com/libgdx/libgdx/wiki/Distance-field-fonts[このページ] がちょうど良い処理の解説ページとなるでしょう。
+残念ながら、_Hiero_ は Starling に対応した XML 形式でのファイルを出力してくれません。しかし、この小さな https://gist.github.com/tluyben/4984856[perl スクリプト] が役に立つでしょう。
+
+どのような手続きやツールを使った場合でも、最終的にはいつも通りのテクスチャと `.fnt` ファイルがそれぞれ１つ出来上がります。
+念のため、下記にビットマップフォントを登録して利用するコードを貼っておきます。
 
 [source, as3]
 ----
@@ -151,8 +158,9 @@ textField.format.setTo(font.name, BitmapFont.NATIVE_SIZE);
 addChild(textField);
 ----
 
-Up until this point, there's nothing new.
-To switch to distance field rendering, we attach the appropriate style right to the TextField.
+//原文：Up until this point, there's nothing new.
+コードのここまで、新しい事は何もありません。
+distance field レンダリングに切り替えるには、テキストフィールドに適切なスタイル設定をしてやります。
 
 [source, as3]
 ----
@@ -160,8 +168,8 @@ var style:DistanceFieldStyle = new DistanceFieldStyle();
 textField.style = style;
 ----
 
-The reward for all this hard work: such a font can now be used at almost any scale, and with all the flexible render modes I showed above.
+このような努力の結果として出来上がったフォントは、どんなに拡大しても利用する事ができ、上で紹介した色々な装飾をつける事もできるのです。
 
-.A bitmap font using distance fields looks great at any scale.
+.distance field を使ったビットマップフォントは、どんな拡大率でも美しく見えます
 image::distance-field-scale.png[Scaled TextField with a Bitmap Font]
 
