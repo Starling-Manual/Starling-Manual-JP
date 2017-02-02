@@ -40,7 +40,7 @@ include::distance-field-rendering.adoc[]
 * パフォーマンスの低下が問題となった時、まずはドローコールの回数を確認しましょう。確実にバッチを分断させない方法を学びました。
 //原文：* The low-level rendering code is far less frightening that you thought at first. Heck, you just wrote your own filter and style!
 * 低レベルのレンダリングコードは思っていたよりも恐るるに足らないものでした。カスタムフィルターやカスタムスタイルを作る事ができました。
-* Distanceフィールドレンダリング はフォントや単色のシェイプを拡大する際に、役に立つテクニックでした。
+* Distance Field レンダリング はフォントや単色のシェイプを拡大する際に、役に立つテクニックでした。
 
 今後何かのプロジェクトに取り組む際、これらの知識が、トラブルから救ってくれたり、たくさんの業務時間を節約してくれる事でしょう。
 そのプロジェクウトのうちいくつかはモバイル端末上で動かさなくてはいけなくなるはず、と予測します。
