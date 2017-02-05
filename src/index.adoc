@@ -82,19 +82,20 @@ include::mobile-development/index.adoc[]
 == 最後に
 
 //原文：=== Achievement Unlocked!
-// 報酬ゲット？..このまま原文で良いのでは
-=== Achievement Unlocked!
+=== 全ては解き放たれた！
 
 //原文：You have successfully finished working through the _Starling Manual_.
 さて、これで _Starling マニュアル_ は終了です。様々な分野をカバーできたかと思います。
 //原文：Pat yourself on the back and shave off that beard you've grown during the last hours.
-//そのまま訳して意味を伝えるのが難しい。。一旦翻訳なし
+//そのまま訳して意味を伝えるのが難しい。。
+勉強中に生えてしまった髭を剃り落として、自分自身を褒めてあげましょう。
 
-読了、お疲れ様でした！
+読了、お疲れ様でした。
 
 image::impressive.jpg[Impressive]
 
-=== Getting Help
+//原文：=== Getting Help
+=== Starling コミュニティ
 
 まだわからない事があり、質問をしたいですか？
 身につけた知識をシェアしたいですか？
