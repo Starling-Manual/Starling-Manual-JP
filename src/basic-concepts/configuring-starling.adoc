@@ -18,33 +18,33 @@ public function Starling(
 rootClass:: _Stage3D_ の初期化が終わったタイミングですぐにインスタンス化されるクラスです。
 `starling.display.DisplayObject` のサブクラスでなくてはいけません。
 
-stage:: いつもの Flash の stage です。Starling で参照が保持されます。
+stage:: 従来の Flash の stage です。Starling で参照が保持され利用されます。
 これによって Starling と Flash の ディスプレイリストがお互いに接続されるようになります。
 
 viewPort:: Flash の stage 全体のうち、Starling が描画するエリアです。
-stage と同じ大きさにされる事が多いため、値を指定しないか `null` を指定する事で、自動的に stage 全体の大きさが使われます。
+stage と同じ大きさにされる事が多いため、値を指定しないか `null` を指定する事で、自動的に stage の大きさが使われます。
 
 stage3D:: 描画に使われる _Stage3D_ のインスタンスです。
 全ての Flash の stage は複数の _Stage3D_ インスタンスを持つ事ができるため、そのうちの一つを選択する事ができます。
 しかし、たいていの場合、デフォルトの null パラメータを渡せば（引数を省略すれば）十分です。
-自動的に 利用可能な _Stage3D_ オブジェクトの最初の一つが Starling に利用されるようになります。
+自動的に利用可能な _Stage3D_ オブジェクトの最初の一つが Starling で利用されるようになります。
 
 //原文：renderMode:: The whole idea behind _Stage3D_ is to provide hardware-accelerated rendering.
-renderMode:: _Stage3D_ の背後にある全てのアイデアは、ハードウェアを使って描画を行う事です。
+renderMode:: _Stage3D_ の目的は、ハードウェアを使って高速な描画を行う事です。
 //原文：However, there is also a software fallback mode; it may be forced by passing `Context3DRenderMode.SOFTWARE`.
 しかし、renderMode の引数に `Context3DRenderMode.SOFTWARE` を渡すごとにより、ソフトウェアのレンダリングモードに切り替えることもできます。
-といってもデフォルトの `auto` 値が推奨されます。
-`auto` 値の指定では、ハードウェアレンダリングが使えない状況のみ、自動でソフトウェアのレンダリングに切り替わります。
+というものの、デフォルトの `auto` 値が推奨されます。
+`auto` の指定とすると、ハードウェアレンダリングが使えない状況では自動的にソフトウェアのレンダリングに切り替わります。
 
 //原文：profile:: _Stage3D_ provides a set of capabilities that are grouped into different _profiles_
-profile:: _Stage3D_ は、いくつかの _プロファイル_ 設定 として そのGPUの能力をいくつかのグループに振り分けます。
-（ プロファイルは、Context3DProfile クラスの定数として設定されています。）
-良いハードウェアの上でアプリが動いているほど、プロファイルも良いものが選択可能になります。
-`auto` の設定では単純に一番良いプロファルを選択します。
+profile:: _Stage3D_ は、GPUの能力をグループに振り分けたいくつかの _プロファイル_ を提供します。
+（ 各プロファイルは、Context3DProfile クラスの定数として設定されています。）
+良いハードウェア上でアプリが動いているほど、プロファイルも良いものが選択可能になります。
+`auto` の設定では単純に一番良いプロファイルを選択します。
 
 たいていの引数はデフォルトの引数が適切に設定されています。よって全てを指定する必要はありません。
-下記のコードは、Starling を実行するわかりやすい例です。
-_Flash Player_ もしくは、_AIR_ プロジェクト用の _Main_ クラスを見ています。
+下記のコードは、Starling を開始する単純なやり方の例です。
+_Flash Player_ 用、もしくは _AIR_ プロジェクト用の _Main_ クラスを記述しています。
 
 [source, as3]
 ----
@@ -69,17 +69,18 @@ package
 }
 ----
 
-ここで Main クラスが `flash.display.Sprite` を継承しており、Starling の Sprite を継承しているのでは無い事に注目してください。
-_AS3_ で作られた全てのプロジェクトで _Main_ クラスはこのような形である必要があります。
+ここで Main クラスが `flash.display.Sprite` を継承しており、Starling の Sprite を継承していない事に注目してください。
+_AS3_ で作られた全てのプロジェクトで _Main_ クラスはこのような状態である必要があります。
 //原文：the logic is moved over to the _Game_ class, which builds our link to the `starling.display` world.
-しかし、Starling が初期化を終えるとすぐに、`starling.display` の世界を形作る _Game_ クラスに処理が移ります。
+しかし、Starling が初期化を終えるとすぐに、`starling.display` の世界を構築する _Game_ クラスへと処理が移ります。
 
 [NOTE]
 .フレームレートの設定
 ====
-いくつかの設定は class 定義より前の、"SWF" _MetaData_ タグで設定されています。フレームレートもそこで設定されます。
+いくつかのコンテンツの設定は class 定義より前にある "SWF" _MetaData_ タグにて設定されています。
+フレームレートもそこで設定できます。
 Starling 自体にはフレームレートの設定がありません、stage の _frameRate_ 値をそのまま利用します。
-`nativeStage` 値は `nativeStage` のプロパティ経由で動的に変更することもできます。
+`frameRate` 値は `nativeStage` のプロパティ経由で動的に変更することもできます。
 
 [source, as3]
 ----
@@ -87,9 +88,9 @@ Starling.current.nativeStage.frameRate = 60;
 ----
 ====
 
-Starling の初期化プロセスは非同期処理です。
+Starling の初期化プロセスは非同期の処理です。
 これは、Main 命令の最後の段階ではまだ Game インスタンスにアクセスできない事を意味します。
-Game インスタンスが作成されたタイミングは `ROOT_CREATED` を受け取ることで知る事ができます。
+Game インスタンスが作成されたタイミングは `ROOT_CREATED` イベントを受け取ることで知る事ができます。
 
 [source, as3]
 ----
@@ -102,22 +103,21 @@ public function Main()
 
 private function onRootCreated(event:Event, root:Game):void
 {
-    root.start(); // Game クラスには 'start' メソッドが定義されている前提です。
+    root.start(); // Game クラスには 'start' メソッドが定義されている想定です。
 }
 ----
 
-=== The ViewPort
+=== ViewPort
 
 _Stage3D_ は Starling に矩形の描画エリアを提供します。
-描画エリアは stage のどこでも構いません。つまり、_Flash Player_ 画面内のどこでも、_AIR_ の場合はアプリケーション画面内のどこでも、です。
+描画エリアは stage のどこでも構いません。つまり _Flash Player_ の画面内のどこでも、_AIR_ の場合はアプリケーション画面内のどこでも、です。
 
 Starling では、この描画エリアを _viewPort_ と呼びます。
-大抵は画面全体を使いたいかと思いますが、場合によってはエリアを制限した方が理にかないます。
+大抵は画面全体を使いたい事かと思いますが、場合によってはエリアを制限した方が有効なこともあります。
 
 4:3 のアスペクト比をもつゲームを 16:9 のそれをもつ画面上で動かすことを考えます。
-By centering the 4:3 _viewPort_ on the screen, you will end up with a "letterboxed" game,
 4:3 比率の _viewPort_ を画面の真ん中に配置する事で、"letterbox" されたゲーム、
-つまり、画面上下に何も表示しないエリアのもつゲームが出来上がります。
+つまり、画面上下に何も表示しないエリアをもつゲームが出来上がります。
 
 // TODO: add image
 
@@ -128,7 +128,7 @@ Starling の _stage_ を考えずに、_viewPort_ についてあれこれ言う
 これはもちろんとても理にかなっています。
 1024 × 768 ピクセルのディスプレイを持っているデバイスは同じ stage の大きさを持っているはずです。
 
-しかし、stage の大きさは、変更する事ができます。
+しかし、Starling の stage の大きさは、変更する事ができます。
 `stage.stageWidth` や `stage.stageHeight` のプロパティ値を変更する事で可能です。
 
 [source, as3]
@@ -140,40 +140,40 @@ stage.stageHeight = 768;
 しかし、これは何を意味するでしょう？
 描画エリアは _viewPort_ で定義されるのでしょうか？それとも _stageの大きさ_ で定義されるのでしょうか？
 
-慌てなくとも大丈夫です。描画エリアはそれでも 先に説明されたように _viewPort_ によって定義されます。
+慌てなくとも大丈夫です。描画エリアはやはり先に説明されたように _viewPort_ によって定義されます。
 `stageWidth` や `stageHeight` を変更しても描画エリアは全く変化しません。
 //原文：the stage is always stretched across the complete _viewPort_.
 _viewPort_ の値によってのみ、 stage は大きさを変えます。
 //原文：What you are changing, though, is the size of the stage's _coordinate system_.
-では、何を変更していたのでしょうか。それは stage の _coordinate システム_ のサイズです。
+では、何を変更したのでしょうか。それは stage の _coordinate システム_ のサイズです。
 
 //原文：That means that with a stage width of `1024`, an object with an x-coordinate of `1000` will be close to the right edge of the stage; no matter if the viewPort is `512`, `1024`, or `2048` pixels wide.
-つまり、stage の横幅が `1024` である時、x座標が `1000` であるあるオブジェクトはほぼ右端に表示されます。viewPort の値が `512` `1024` `2048` などどんなピクセル数であろうと関係ありません。
+stage の横幅が `1024` である時、x座標が `1000` であるあるオブジェクトはほぼ右端に表示されます。viewPort の値が `512`、`1024`、`2048` などどんなピクセル数であろうと関係ありません。
 
-これは _HiDPI_ スクリーンに対して開発をしている時に特に役に立ちます。
-例えば、_iPad_ にはノーマル解像度のものとレティナ解像度のものがありますが、後者は縦横のピクセル幅が倍で、トータル4倍のピクセル数を持っています。
-そのようなスクリーン上でのユーザーインターフェースは、小さくは表示されずに、よりきめ細かく表示されるべきです。
+これは _HiDPI_ スクリーンに対しての開発をしている時に特に役に立ちます。
+例えば、_iPad_ にはノーマル解像度のものとレティナ解像度のものがありますが、後者は縦横のピクセル幅が倍で、画面全体で言えば4倍のピクセル数を持っています。
+そのようなスクリーン上で、ユーザーインターフェースは小さくは表示されずに、よりきめ細かく表示されるべきです。
 
 //原文：By differentiating between the _viewPort_ and the _stage size_, this is easily reproduced in Starling.
-_viewPort_ と _stage サイズ_ の違いを理解する事で、この解像度の違いは 簡単に Starling 上で再現する事ができます。
+_viewPort_ と _stage サイズ_ の違いを理解する事で、このデバイス解像度の違いは 簡単に Starling 上で再現する事ができます。
 //原文：On both device types, the stage size will be 1024×768; the viewPort, on the other hand, will reflect the size of the screen in pixels.
 どちらのタイプの端末でも、stage サイズは 1024×768 になります。対して、viewPort 値は実際の端末のピクセル値となります。
 //原文：The advantage: you can use the same coordinates for your display objects, regardless of the device on which the application is running.
-さらに、この調整は画面上に表示しているオブジェクトに対しても適用する事ができます。どのようなデバイスでアプリケーションが動いているかに関わらず。
+さらに、この調整はどのようなデバイスでアプリケーションが動いているかに関わらず、画面上に表示しているオブジェクトに対しても適用する事ができます。
 
 [NOTE]
 .Points と Pixels
 ====
-この事についてよく理解をしたならば、そのようなレティナデバイス上では、x座標が 1 である表示オブジェクトは、
+上記についてよく理解をしたならば、そのようなレティナデバイス上では、x座標が 1 である表示オブジェクトが
 実際には 2 ピクセルの位置にある事がわかるでしょう。
-つまり、計測単位が変わったのです。
-もはやピクセルの単位ではなく、ポイントの単位で考えています。
+つまり、計測の単位が変わったのです。
+ピクセルの単位ではなく、ポイントの単位として考えます。
 低い解像度のスクリーンでは 1ピクセル ＝ 1ポイント ですが、HiDPI スクリーンでは 2ピクセル ＝ 1ポイントです。
-（端末によってはそれ以上となります。）
+（端末によってはそれ以上のピクセル数となります。）
 ====
 
-実際の幅をピクセル数で求めるには、単に `viewPort.width` 値を `stage.stageWidth` 値で割ってやれば良いです。
-もしくは Starling の contentScaleFactor プロパティ値を参照します。同じ計算をしてくれます。
+実際の幅をピクセル数で求めるには、単に `viewPort.width` 値を `stage.stageWidth` 値で割ってやればよいです。
+もしくは Starling の contentScaleFactor プロパティ値を参照します。内部で同じ計算をします。
 
 [source, as3]
 ----
@@ -189,9 +189,9 @@ trace(starling.contentScaleFactor); // -> 2.0
 
 Starling が動いているプラットフォームは、様々なグラフィックプロフェッサーを搭載しています。
 もちろん、それら GPU はそれぞれで異なった性能を持っています。
-問題は、どのようにしてそれらの性能差をランタイム上で見分ければいいか、という事です。
+ここで、どのようにしてそれらの性能差をランタイム上で見分ければいいか、という疑問が湧きます。
 
-それが _Context3D プロファイル_（_render プロファイル_ とも呼ばれます。）が存在する理由です。
+_Context3D プロファイル_（_render プロファイル_ とも呼ばれます。）が存在するのがその答えです。
 
 [NOTE]
 .Context3D とは何か？
@@ -203,97 +203,97 @@ _context_ は、このパイプラインをカプセル化する物です。
 テクスチャの作成、シェーダーのアップロード、三角ポリゴンのレンダリング、これらは全て context を通じて行われます。
 ====
 
-実際、Starling はプロファイルの制限を利用者から隠す事に力を尽くしています。
+実際、Starling はプロファイルの制限事項を利用者から隠す事に力を尽くしています。
 広い環境で確実に動くようにするため、一番性能の低いプロファイルであっても動くようにデザインされています。
-同時に、高機能なプロファイルとともに動く場合は、自動的にそのベストを引き出すように動きます。
+同時に、高機能なプロファイルとともに動く場合は、自動的にその能力を引き出すように動きます。
 
-しかし、それらプロファイルの基本機能について知っておくことは役にたつかもしれません。
+それらプロファイルの基本機能について知っておくことは役にたつかもしれません。
 下記はそれぞれのプロファイルの要約です。低機能な順に並んでいます。
 
-`BASELINE_CONSTRAINED`:: もしデバイスが Stage3D を完全サポートするなら、このプロファイルはサポートされていなければいけません。
+`BASELINE_CONSTRAINED`:: もしデバイスが Stage3D を完全サポートするなら、このプロファイルは最低限サポートされていなければいけません。
 このプロファイルには、いくつかの強い制限があります。例えば、テクスチャのサイズは縦横とも2の倍数のドット数でなければならない、
 シェーダープログラムの長さが著しく制限されている、などです。
 このプロファイルは古いデスクトップPCで見つかる事が多いです。
 
-`BASELINE`:: モバイル端末ではこのプロファイルが一番性能の低いものとなります。Starling はこのプロファイルを使ってうまく動作する事が可能です。
+`BASELINE`:: モバイル端末ではこのプロファイルが一番性能の低いものとなります。
+Starling はこのプロファイルを使ってうまく動作する事が可能です。
 テクスチャの縦横サイズが2の倍数でなくてはいけないという制限が消え去ったのでメモリを効率的に使う事ができます。
-また、シェーダープログラムの長さの制限も緩和したので十分実用的です。
+また、シェーダープログラムの長さの制限も緩和したので十分に実用的です。
 
 `BASLINE_EXTENDED`:: テクスチャの最大サイズが `2048x2048` から `4096x4096` ピクセルへと増加しました。
-これはハイレゾ画面を持つ端末には極めて重要な事です。
+これはハイレゾ画面を持つ端末には極めて重要な拡張です。
 
 `STANDARD_CONSTRAINED`, `STANDARD`, `STANDARD_EXTENDED`:: 現在、Starling はこれらのプロファイルが提供する機能を必要とはしません。
-これらのプロファイルは、追加のシェーダーコマンドとその他低レイヤーでの機能強化を提供します。
+これらのプロファイルは、追加のシェーダーコマンドと、その他低レベル基本機能の強化を提供します。
 
 //原文：simply let Starling pick the best available profile (`auto`) and let it deal with the implications.
-私のオススメは、設定を `auto` にして利用可能な一番高性能のプロファイルを自動選択させ、その選択でよしなに動作してもらうことです。
+私のオススメは、設定を `auto` にして利用可能な一番高性能のプロファイルを自動選択させ、その選択でよしなに動作させる事です。
 
 [NOTE]
 .テクスチャの最大サイズ
 ====
-利用時に気をつけないといけないことが一つだけあります。
-テクスチャサイズを大きくしすぎない事です。
-最大テクスチャサイズは `Texture.maxSize` 値で確認する事ができます。
-しかしその値が参照できるのは Starling の初期化が終わってからです。
+プロファイの利用時に気をつけないといけないことが一つだけあります。
+テクスチャサイズを大きくしすぎない事です。最大テクスチャサイズは `Texture.maxSize` 値で確認する事ができます。
+なお、その値が参照できるのは Starling の初期化が終わった後からです。
 ====
 
 //原文：=== Native Overlay
 === Flash描画の重ね合わせ
 
-Starling のメインコンセプトは Stage3D API を利用して描画を速くする、という事です。
-しかし、クラシック （元々のFlashの）ディスプレイリストには Starling では実現できない機能がたくさんあることは否定できません。
+Starling のメインコンセプトは Stage3D API を利用して高速な描画をする、という事です。
+しかし、クラシック（元々のFlashの）ディスプレイリストには Starling では実現できない様々な機能があることは否定できません。
 よって、両者を合わせて使ってやることは理にかなっています。
 
-`nativeOverlay` プロパティを扱うのが、それを行う簡単な方法です。
+`nativeOverlay` プロパティを使うと、それを簡単に行う事ができます。
 //原文：That's a conventional `flash.display.Sprite` that lies directly on top of Starling, taking _viewPort_ and _contentScaleFactor_ into account.
-_viewPort_ 値と _contentScaleFactor_ 値を考慮した状態で、Starlingの前面に従来の `flash.display.Sprite` が表示されます。
+_viewPort_ 値と _contentScaleFactor_ 値を考慮しつつ、Starling の前面に従来の `flash.display.Sprite` が表示されます。
 
-従来の Flash 描画オブジェクトを使いたい場合、この `nativeOverlay` にそれらを add してください。
+従来の Flash 描画オブジェクトを使いたい場合、この `nativeOverlay` にそれらを追加してください。
 
-しかし、従来の Flash 描画を _Stage3D_ 上に重ねると、いくつかの（モバイルの）端末ではパフォーマンスの低下を招く事には注意してください。
-For that reason, always remove all objects from the overlay when you don't need them any longer.
-この理由で、逆に必要がない場合は全ての Flash 描画オブジェクトを取り除くようにしましょう。
+しかし、Flash 描画を _Stage3D_ 上に重ねると、いくつかの（モバイルの）端末ではパフォーマンスの低下を招く事には注意してください。
+//原文：For that reason, always remove all objects from the overlay when you don't need them any longer.
+この理由で、特に必要がない場合は全ての Flash 描画オブジェクトを取り除くようにしましょう。
 
 [NOTE]
 ====
-質問される前に…Starling のディスプレイオブジェクトの背面に従来の Flash 描画オブジェクトを配置する事はできません。
-Stage3D の領域はいつでも最背面に存在します。それ以外の状態はありえないのです。
+質問される前に…Starling のディスプレイオブジェクトの背面に Flash 描画オブジェクトを配置する事はできません。
+Stage3D の領域はいつでも最背面に存在します。それ以外の状態はありえません。
 ====
 
 === 不必要な描画処理のスキップ
 
-数フレームの間、アプリケーションの画面が変化なくそのままでいる事は、驚くべきほどよくある事です。
+アプリケーションの画面が数フレームの間、変化がなくそのままである事はとてもよくある事です。
 例えば、アプリケーションは静的な画面を見せているのかもしれませんし、ユーザーの入力を待っているのかもしれません。
-このような場合に画面描画をなんども行う必要はあるでしょうか？
+同じ画面を表示するために、画面描画処理をなんども行う必要はあるでしょうか？
 
-これが、`skipUnchangedFrames` というプロパティがある理由です。
-これが有効とされると、更新処理のない事が認識され、現在の描画がそのまま保たれます。
+これが、`skipUnchangedFrames` というプロパティがポイントとする箇所です。
+このプロパティが有効に設定されると、画面更新命令がない事が認識されると、現在の描画がそのまま保たれます。
 //原文：On a mobile device, the impact of this feature can't be overestimated.
 モバイル端末では、この機能による効果はかなりのものがあります。
 バッテリー寿命を伸ばすのにこれ以上シンプルな良い方法はないでしょう！
 
-この機能が効果的ならな、なぜデフォルトで有効にしないのか？という意見がすでに聞こえてきています。
+この機能が効果的ならば、なぜデフォルトで有効にしないのか？という意見がすでに上がってきています。
 //原文：There must be a catch, right?
 これは、最もな意見です。
 
 しかし、この機能は _ビデオテクスチャ_ と _レンダーテクスチャ_ を使った場合うまく機能しないのです。
 //原文：Changes in those textures simply won't show up.
 それらのテクスチャに変更があった事は判定しづらいのです。
-しかし、ワークアラウンドは簡単です。それらのテクスチャを使う間は、`skipUnchangedFrames` を一時的に無効とするか、`stage.setRequiresRedraw()` 命令を実行して、テクスチャに変更があった際は、強制的に描画更新をしてしまえばいいのです。
+しかし、簡単なワークアラウンドがあります。それらのテクスチャを使う間は、`skipUnchangedFrames` を一時的に無効とするか、`stage.setRequiresRedraw()` 命令を実行して、テクスチャに変更があった際に強制的に描画更新をしてしまえばいいのです。
 
-この機能についてよくわかったのならば、いつもこのプロパティを有効にする事を習慣にしてしまいましょう！
+この機能についてよく理解をしたのならば、いつでも有効にする事を習慣にしてしまいましょう！
 //原文：In the meantime, I hope that I can solve the mentioned problems in a future Starling version.
-そのうち、上記の問題を回避できる処理を将来の Starling のバージョンで実装したいと思っています、
+そのうち、上記の問題を自動で回避できる実装を将来の Starling のバージョンで実現したいと思っています、
 
 //IMPORTANTを翻訳すると表示フォーマットが変わってしまうので、回避方法がわかるまでこのままにする
-IMPORTANT: モバイル端末では、知っておかなければいけない制限事項があります。`nativeOverlay` を使った場合など、Flash側 の stage に描画オブジェクトが存在する場合、Starling は 描画処理をスキップできません。これは Stage3D の仕組み上の制限によるものです。
+IMPORTANT: モバイル端末では、知っておくべき制限事項があります。`nativeOverlay` を使った場合など、Flash側 の stage に描画オブジェクトが存在する場合、Starling は 描画処理をスキップできません。これは Stage3D の仕組み上の制限によるものです。
 
 //原文：=== The Statistics Display
 === 使用メモリやFPSの画面表示
 
-アプリケーションの開発をしている際は、できる限り何が内部処理で起こっているかの情報が欲しいかと思います。
-それがわかるならば、事前に問題に気付けたり、後々に開発が行き詰まってしまうような事を避けることができます。
-statistics（stats）の表示はそのような際に役に立ちます。
+アプリケーションの開発をしている際は、できる限り何が内部処理で起こっているか把握していいたい事かと思います。
+そうであれば、事前に何かの問題に気付けたり、後々に開発が行き詰まってしまうような事態を避けることができます。
+statistics（stats）の表示はそのような場合に役に立ちます。
 
 [source, as3]
 ----
@@ -306,21 +306,22 @@ image::stats-display.png[The statistics display]
 これらの数値はそれぞれ何を意味するのでしょうか。
 
 * _framerate_ は説明するまでもないかもしれません。直前の数秒間の間に Starling が行った描画更新の回数です。
-* _Standard memory_ はつまり、_AS3_ のオブジェクトがどれだけ存在しているかを示します。_String_ 自体も _Sprite_ も _Bitmap_ も _Function_も、
-全てのオブジェクトは幾らかのメモリを消費します。単位は MBytes です。
-* _GPU memory_ は、上述のメモリとは別のものです。テクスチャはグラフィックメモリに格納されます。頂点バッファやシェーダープログラムも同様です。
-たいていの場合、テクスチャでほとんどのメモリを占めます。
+* _Standard memory_ は、_AS3_ のオブジェクトがどれだけ存在しているかを示します。
+_String_ 自体も _Sprite_ も _Bitmap_ も _Function_も、全てのオブジェクトは幾らかのメモリを消費します。単位は MBytes です。
+* _GPU memory_ は、上述のメモリとは別のものです。テクスチャはグラフィックメモリに格納されます。
+頂点バッファやシェーダープログラムも同様にグラフィックに格納されます。
+たいていの場合、テクスチャがほとんどのグラフィックメモリを占めます。
 * _draw calls_ 数は、毎フレームにどれだけの "draw" 命令が GPU に送られたかを示します。
 一般的には、draw call が少ない方がアプリケーションは高速に動きます。
 この数値については、 <<パフォーマンス チューニング>> の項目で詳しく説明します。
 
 stats 表示の背景色が、黒と緑で時々入れ替わる事に気づいたかもしれません。
-この些細な変化は `skipUnchangedFrames` 設定がどのように動いているかを示しています。
+このちょっとした変化は `skipUnchangedFrames` が今どのように動いているかを示しています。
 //原文：whenever the majority of the last couple of frames could be skipped, the box turns green.
 フレームスキップの仕組みが過去数フレームでうまく動いている場合は、背景色が緑になります。
 //原文：Make sure that it stays green whenever the stage is static;
-静的な画面である場合は緑色のままになるはずです。
+静的な画面が表示されている場合はここが緑色のままになるはずです。
 //if it doesn't, some logic is preventing frame skipping to kick in.
-もし緑にならないのであれば、フレームスキップを阻害しているプログラムの箇所があります。
+もし緑にならないのであれば、フレームスキップを阻害している実装箇所がどこかにあります。
 
 TIP: `showStatsAt` 命令を使う事によって、stats の表示位置を調整することができます。
