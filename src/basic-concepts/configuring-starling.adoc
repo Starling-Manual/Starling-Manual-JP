@@ -108,23 +108,28 @@ private function onRootCreated(event:Event, root:Game):void
 
 === The ViewPort
 
-_Stage3D_ provides Starling with a rectangular area to draw into.
-That area can be anywhere within the native stage, which means: anywhere within the area of the _Flash Player_ or the application window (in case of an _AIR_ project).
+_Stage3D_ は Starling に矩形の描画エリアを提供します。
+描画エリアは stage のどこでも構いません。つまり、_Flash Player_ 画面内のどこでも、_AIR_ の場合はアプリケーション画面内のどこでも、です。
 
-In Starling, that area is called the _viewPort_.
-Most of the time, you will want to use all of the available area, but sometimes it makes sense to limit rendering to a certain region.
+Starling では、この描画エリアを _viewPort_ と呼びます。
+大抵は画面全体を使いたいかと思いますが、場合によってはエリアを制限した方が理にかないます。
 
-Think of a game designed in an aspect ratio of 4:3, running on an 16:9 screen.
-By centering the 4:3 _viewPort_ on the screen, you will end up with a "letterboxed" game, with black bars at the top and bottom.
+4:3 のアスペクト比をもつゲームを 16:9 のそれをもつ画面上で動かすことを考えます。
+By centering the 4:3 _viewPort_ on the screen, you will end up with a "letterboxed" game,
+4:3 比率の _viewPort_ を画面の真ん中に配置する事で、"letterbox" されたゲーム、
+つまり、画面上下に何も表示しないエリアのもつゲームが出来上がります。
 
 // TODO: add image
 
-You can't talk about the _viewPort_ without looking at Starling's _stage_, as well.
-By default, the stage will be exactly the same size as the _viewPort_.
-That makes a lot of sense, of course: a device with a display size of 1024 × 768 pixels should have an equally sized stage.
+//原文：You can't talk about the _viewPort_ without looking at Starling's _stage_, as well.
+Starling の _stage_ を考えずに、_viewPort_ についてあれこれ言う事はできません。
+デフォルトでは stage の大きさと _viewPort_ の大きさは等しくなります。
 
-You can customize the stage size, though.
-That's possible via the `stage.stageWidth` and `stage.stageHeight` properties:
+これはもちろんとても理にかなっています。
+1024 × 768 ピクセルのディスプレイを持っているデバイスは同じ stage の大きさを持っているはずです。
+
+しかし、stage の大きさは、変更する事ができます。
+`stage.stageWidth` や `stage.stageHeight` のプロパティ値を変更する事で可能です。
 
 [source, as3]
 ----
@@ -132,35 +137,43 @@ stage.stageWidth = 1024;
 stage.stageHeight = 768;
 ----
 
-But wait, what does that even mean?
-Is the size of the drawing area now defined by the _viewPort_ or the _stage size_?
+しかし、これは何を意味するでしょう？
+描画エリアは _viewPort_ で定義されるのでしょうか？それとも _stageの大きさ_ で定義されるのでしょうか？
 
-Don't worry, that area is still only set up by the _viewPort_, as described above.
-Modifying the `stageWidth` and `stageHeight` doesn't change the size of the drawing area at all;
-the stage is always stretched across the complete _viewPort_.
-What you are changing, though, is the size of the stage's _coordinate system_.
+慌てなくとも大丈夫です。描画エリアはそれでも 先に説明されたように _viewPort_ によって定義されます。
+`stageWidth` や `stageHeight` を変更しても描画エリアは全く変化しません。
+//原文：the stage is always stretched across the complete _viewPort_.
+_viewPort_ の値によってのみ、 stage は大きさを変えます。
+//原文：What you are changing, though, is the size of the stage's _coordinate system_.
+では、何を変更していたのでしょうか。それは stage の _coordinate システム_ のサイズです。
 
-That means that with a stage width of `1024`, an object with an x-coordinate of `1000` will be close to the right edge of the stage; no matter if the viewPort is `512`, `1024`, or `2048` pixels wide.
+//原文：That means that with a stage width of `1024`, an object with an x-coordinate of `1000` will be close to the right edge of the stage; no matter if the viewPort is `512`, `1024`, or `2048` pixels wide.
+つまり、stage の横幅が `1024` である時、x座標が `1000` であるあるオブジェクトはほぼ右端に表示されます。viewPort の値が `512` `1024` `2048` などどんなピクセル数であろうと関係ありません。
 
-That becomes especially useful when developing for _HiDPI_ screens.
-For example, Apple's _iPad_ exists in a normal and a "retina" version, the latter doubling the number of pixel rows and columns (yielding four times as many pixels).
-On such a screen, the interface elements should not become smaller; instead, they should be rendered more crisply.
+これは _HiDPI_ スクリーンに対して開発をしている時に特に役に立ちます。
+例えば、_iPad_ にはノーマル解像度のものとレティナ解像度のものがありますが、後者は縦横のピクセル幅が倍で、トータル4倍のピクセル数を持っています。
+そのようなスクリーン上でのユーザーインターフェースは、小さくは表示されずに、よりきめ細かく表示されるべきです。
 
-By differentiating between the _viewPort_ and the _stage size_, this is easily reproduced in Starling.
-On both device types, the stage size will be 1024×768; the viewPort, on the other hand, will reflect the size of the screen in pixels.
-The advantage: you can use the same coordinates for your display objects, regardless of the device on which the application is running.
+//原文：By differentiating between the _viewPort_ and the _stage size_, this is easily reproduced in Starling.
+_viewPort_ と _stage サイズ_ の違いを理解する事で、この解像度の違いは 簡単に Starling 上で再現する事ができます。
+//原文：On both device types, the stage size will be 1024×768; the viewPort, on the other hand, will reflect the size of the screen in pixels.
+どちらのタイプの端末でも、stage サイズは 1024×768 になります。対して、viewPort 値は実際の端末のピクセル値となります。
+//原文：The advantage: you can use the same coordinates for your display objects, regardless of the device on which the application is running.
+さらに、この調整は画面上に表示しているオブジェクトに対しても適用する事ができます。どのようなデバイスでアプリケーションが動いているかに関わらず。
 
 [NOTE]
-.Points vs. Pixels
+.Points と Pixels
 ====
-If you think this through, you'll see that on such a retina device, an object with an x-coordinate of `1` will actually be two pixels away from the origin.
-In other words, the unit of measurement has changed.
-We are no longer talking about pixels, but _points_!
-On a low-resolution screen, one point equals one pixel; on a HiDPI screen, it's two pixels (or more, depending on the device).
+この事についてよく理解をしたならば、そのようなレティナデバイス上では、x座標が 1 である表示オブジェクトは、
+実際には 2 ピクセルの位置にある事がわかるでしょう。
+つまり、計測単位が変わったのです。
+もはやピクセルの単位ではなく、ポイントの単位で考えています。
+低い解像度のスクリーンでは 1ピクセル ＝ 1ポイント ですが、HiDPI スクリーンでは 2ピクセル ＝ 1ポイントです。
+（端末によってはそれ以上となります。）
 ====
 
-To find out the actual width (in pixels) of a point, you can simply divide `viewPort.width` by `stage.stageWidth`.
-Or you use Starling's `contentScaleFactor` property, which does just that.
+実際の幅をピクセル数で求めるには、単に `viewPort.width` 値を `stage.stageWidth` 値で割ってやれば良いです。
+もしくは Starling の contentScaleFactor プロパティ値を参照します。同じ計算をしてくれます。
 
 [source, as3]
 ----
@@ -169,7 +182,7 @@ starling.stage.stageWidth = 1024;
 trace(starling.contentScaleFactor); // -> 2.0
 ----
 
-I will show you how to make full use of this concept in the <<Mobile Development>> chapter.
+このコンセプトが実際にどのように役に立つかは <<モバイル開発>> の章で詳しく説明します。
 
 === Context3D Profiles
 
