@@ -248,29 +248,33 @@ For that reason, always remove all objects from the overlay when you don't need 
 Stage3D の領域はいつでも最背面に存在します。それ以外の状態はありえないのです。
 ====
 
-=== Skipping Unchanged Frames
+=== 不必要な描画処理のスキップ
 
-It happens surprisingly often in an application or game that a scene stays completely static for several frames.
-The application might be presenting a static screen or wait for user input, for example.
-So why redraw the stage at all in those situations?
+数フレームの間、アプリケーションの画面が変化なくそのままでいる事は、驚くべきほどよくある事です。
+例えば、アプリケーションは静的な画面を見せているのかもしれませんし、ユーザーの入力を待っているのかもしれません。
+このような場合に画面描画をなんども行う必要はあるでしょうか？
 
-That's exactly the point of the `skipUnchangedFrames`-property.
-If enabled, static scenes are recognized as such and the back buffer is simply left as it is.
-On a mobile device, the impact of this feature can't be overestimated.
-There's simply no better way to enhance battery life!
+これが、`skipUnchangedFrames` というプロパティがある理由です。
+これが有効とされると、更新処理のない事が認識され、現在の描画がそのまま保たれます。
+//原文：On a mobile device, the impact of this feature can't be overestimated.
+モバイル端末では、この機能による効果はかなりのものがあります。
+バッテリー寿命を伸ばすのにこれ以上シンプルな良い方法はないでしょう！
 
-I'm already hearing your objection: if this feature is so useful, why isn't it activated by default?
-There must be a catch, right?
+この機能が効果的ならな、なぜデフォルトで有効にしないのか？という意見がすでに聞こえてきています。
+//原文：There must be a catch, right?
+これは、最もな意見です。
 
-Indeed, there is: it doesn't work well with _Render-_ and _VideoTextures_.
-Changes in those textures simply won't show up.
-It's easy to work around that, though: either disable `skipUnchangedFrames` temporarily while using them, or call `stage.setRequiresRedraw()` whenever their content changes.
+しかし、この機能は _ビデオテクスチャ_ と _レンダーテクスチャ_ を使った場合うまく機能しないのです。
+//原文：Changes in those textures simply won't show up.
+それらのテクスチャに変更があった事は判定しづらいのです。
+しかし、ワークアラウンドは簡単です。それらのテクスチャを使う間は、`skipUnchangedFrames` を一時的に無効とするか、`stage.setRequiresRedraw()` 命令を実行して、テクスチャに変更があった際は、強制的に描画更新をしてしまえばいいのです。
 
-Now that you know about this feature, make it a habit to always activate it!
-In the meantime, I hope that I can solve the mentioned problems in a future Starling version.
+この機能についてよくわかったのならば、いつもこのプロパティを有効にする事を習慣にしてしまいましょう！
+//原文：In the meantime, I hope that I can solve the mentioned problems in a future Starling version.
+そのうち、上記の問題を回避できる処理を将来の Starling のバージョンで実装したいと思っています、
 
-IMPORTANT: On mobile platforms, there's another limitation you should be aware of: as soon as there's any content on the native (Flash) stage (e.g. via Starling's `nativeOverlay`), Starling can't skip any frames.
-That's the consequence of a Stage3D limitation.
+//IMPORTANTを翻訳すると表示フォーマットが変わってしまうので、回避方法がわかるまでこのままにする
+IMPORTANT: モバイル端末では、知っておかなければいけない制限事項があります。`nativeOverlay` を使った場合など、Flash側 の stage に描画オブジェクトが存在する場合、Starling は 描画処理をスキップできません。これは Stage3D の仕組み上の制限によるものです。
 
 === The Statistics Display
 
