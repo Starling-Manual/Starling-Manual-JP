@@ -1,4 +1,5 @@
 == Performance Optimization
+// TODO  他ページとの連携で 'パフォーマンス チューニング' と訳すこと
 
 While Starling mimics the classic display list of Flash, what it does behind the scenes is quite different.
 To achieve the best possible performance, you have to understand some key concepts of its architecture.

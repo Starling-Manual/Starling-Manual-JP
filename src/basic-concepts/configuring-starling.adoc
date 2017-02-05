@@ -276,34 +276,39 @@ Stage3D の領域はいつでも最背面に存在します。それ以外の状
 //IMPORTANTを翻訳すると表示フォーマットが変わってしまうので、回避方法がわかるまでこのままにする
 IMPORTANT: モバイル端末では、知っておかなければいけない制限事項があります。`nativeOverlay` を使った場合など、Flash側 の stage に描画オブジェクトが存在する場合、Starling は 描画処理をスキップできません。これは Stage3D の仕組み上の制限によるものです。
 
-=== The Statistics Display
+//原文：=== The Statistics Display
+=== 使用メモリやFPSの画面表示
 
-When developing an application, you want as much information as possible about what's going on.
-That way, you will be able to spot problems early and maybe avoid running into a dead end later.
-The statistics display helps with that.
+アプリケーションの開発をしている際は、できる限り何が内部処理で起こっているかの情報が欲しいかと思います。
+それがわかるならば、事前に問題に気付けたり、後々に開発が行き詰まってしまうような事を避けることができます。
+statistics（stats）の表示はそのような際に役に立ちます。
 
 [source, as3]
 ----
 _starling.showStats = true;
 ----
 
-.The statistics display (by default at the top left).
+.stats の表示 (デフォルトでは左上に表示されます。).
 image::stats-display.png[The statistics display]
 
-What's the meaning of those values?
+これらの数値はそれぞれ何を意味するのでしょうか。
 
-* The _framerate_ should be rather self-explanatory: the number of frames Starling managed to render during the previous second.
-* _Standard memory_ is, in a nutshell, what your _AS3_ objects fill up. Whether it's a _String_, a _Sprite_, a _Bitmap_, or a _Function_: all objects require some memory.
-  The value is given in megabytes.
-* _GPU memory_ is separate from that. Textures are stored in graphics memory, as are vertex buffers and shader programs.
-  Most of the time, textures will overshadow everything else.
-* The number of _draw calls_ indicates how many individual "draw"-commands are sent to the GPU in each frame.
-  Typically, a scene renders faster when there are fewer draw calls.
-  We will look in detail at this value when we talk about <<Performance Optimization>>.
+* _framerate_ は説明するまでもないかもしれません。直前の数秒間の間に Starling が行った描画更新の回数です。
+* _Standard memory_ はつまり、_AS3_ のオブジェクトがどれだけ存在しているかを示します。_String_ 自体も _Sprite_ も _Bitmap_ も _Function_も、
+全てのオブジェクトは幾らかのメモリを消費します。単位は MBytes です。
+* _GPU memory_ は、上述のメモリとは別のものです。テクスチャはグラフィックメモリに格納されます。頂点バッファやシェーダープログラムも同様です。
+たいていの場合、テクスチャでほとんどのメモリを占めます。
+* _draw calls_ 数は、毎フレームにどれだけの "draw" 命令が GPU に送られたかを示します。
+一般的には、draw call が少ない方がアプリケーションは高速に動きます。
+この数値については、 <<パフォーマンス チューニング>> の項目で詳しく説明します。
 
-You might notice that the background color of the statistics display alternates between black and dark green.
-That's a subtle clue that's referring to the `skipUnchangedFrames` property:
-whenever the majority of the last couple of frames could be skipped, the box turns green.
-Make sure that it stays green whenever the stage is static; if it doesn't, some logic is preventing frame skipping to kick in.
+stats 表示の背景色が、黒と緑で時々入れ替わる事に気づいたかもしれません。
+この些細な変化は `skipUnchangedFrames` 設定がどのように動いているかを示しています。
+//原文：whenever the majority of the last couple of frames could be skipped, the box turns green.
+フレームスキップの仕組みが過去数フレームでうまく動いている場合は、背景色が緑になります。
+//原文：Make sure that it stays green whenever the stage is static;
+静的な画面である場合は緑色のままになるはずです。
+//if it doesn't, some logic is preventing frame skipping to kick in.
+もし緑にならないのであれば、フレームスキップを阻害しているプログラムの箇所があります。
 
-TIP: You can customize the location of the statistics display on the screen via the method `showStatsAt`.
+TIP: `showStatsAt` 命令を使う事によって、stats の表示位置を調整することができます。
