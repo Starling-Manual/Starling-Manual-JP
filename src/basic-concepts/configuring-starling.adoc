@@ -185,44 +185,56 @@ trace(starling.contentScaleFactor); // -> 2.0
 このコンセプトが実際にどのように役に立つかは <<モバイル開発>> の章で詳しく説明します。
 //↑ここのアンカーリンク正しく動いていないが原文からしてそうなので一旦放置
 
-=== Context3D Profiles
+=== Context3D プロファイル
 
-The platforms Starling is running on feature a wide variety of graphics processors.
-Of course, those GPUs have different capabilities.
-The question is: how to differentiate between those capabilities at runtime?
+Starling が動いているプラットフォームは、様々なグラフィックプロフェッサーを搭載しています。
+もちろん、それら GPU はそれぞれで異なった性能を持っています。
+問題は、どのようにしてそれらの性能差をランタイム上で見分ければいいか、という事です。
 
-That's what _Context3D profiles_ (also called _render profiles_) are for.
-
-[NOTE]
-.What is a Context3D?
-====
-When using _Stage3D_, you are interacting with a rendering pipeline that features a number of properties and settings.
-The _context_ is the object that encapsulate that pipeline.
-Creating a texture, uploading shaders, rendering triangles -- that's all done through the context.
-====
-
-Actually, Starling makes every effort to hide any profile limitations from you.
-To ensure the widest possible reach, it was designed to work even with the lowest available profile.
-At the same time, when running in a higher profile, it will automatically make best use of it.
-
-Nevertheless, it might prove useful to know about their basic features.
-Here's an overview of each profile, starting with the lowest.
-
-`BASELINE_CONSTRAINED`:: If a device supports Stage3D at all, it must support this profile. It comes with several mean limitations, e.g. it only supports textures with side-lengths that are powers of two, and the length of shaders is very limited. That profile is mainly found on old desktop computers.
-
-`BASELINE`:: The minimum profile to be found on mobile devices. Starling runs well with this profile; the removal of the power-of-two limitation allows for more efficient memory usage, and the length of shader programs is easily sufficient for its needs.
-
-`BASLINE_EXTENDED`:: Raises the maximum texture size from `2048x2048` to `4096x4096` pixels, which is crucial for high-resolution devices.
-
-`STANDARD_CONSTRAINED`, `STANDARD`, `STANDARD_EXTENDED`:: Starling currently doesn't need any of the features coming with these profiles. They provide additional shader commands and other low-level enhancements.
-
-My recommendation: simply let Starling pick the best available profile (`auto`) and let it deal with the implications.
+それが _Context3D プロファイル_（_render プロファイル_ とも呼ばれます。）が存在する理由です。
 
 [NOTE]
-.Maximum Texture Size
+.Context3D とは何か？
 ====
-There's only one thing you need to take care of yourself: making sure that your textures are not too big.
-The maximum texture size is accessible via the property `Texture.maxSize`, but only _after_ Starling has finished initializing.
+//原文：you are interacting with a rendering pipeline that features a number of properties and settings.
+あなたが  _Stage3D_ を扱う際は、裏にあるレンダリングパイプラインと連携を取っています。
+レンダリングパイプラインはたくさんのプロパティやセッティングを持ちます。
+_context_ は、このパイプラインをカプセル化する物です。
+テクスチャの作成、シェーダーのアップロード、三角ポリゴンのレンダリング、これらは全て context を通じて行われます。
+====
+
+実際、Starling はプロファイルの制限を利用者から隠す事に力を尽くしています。
+広い環境で確実に動くようにするため、一番性能の低いプロファイルであっても動くようにデザインされています。
+同時に、高機能なプロファイルとともに動く場合は、自動的にそのベストを引き出すように動きます。
+
+しかし、それらプロファイルの基本機能について知っておくことは役にたつかもしれません。
+下記はそれぞれのプロファイルの要約です。低機能な順に並んでいます。
+
+`BASELINE_CONSTRAINED`:: もしデバイスが Stage3D を完全サポートするなら、このプロファイルはサポートされていなければいけません。
+このプロファイルには、いくつかの強い制限があります。例えば、テクスチャのサイズは縦横とも2の倍数のドット数でなければならない、
+シェーダープログラムの長さが著しく制限されている、などです。
+このプロファイルは古いデスクトップPCで見つかる事が多いです。
+
+`BASELINE`:: モバイル端末ではこのプロファイルが一番性能の低いものとなります。Starling はこのプロファイルを使ってうまく動作する事が可能です。
+テクスチャの縦横サイズが2の倍数でなくてはいけないという制限が消え去ったのでメモリを効率的に使う事ができます。
+また、シェーダープログラムの長さの制限も緩和したので十分実用的です。
+
+`BASLINE_EXTENDED`:: テクスチャの最大サイズが `2048x2048` から `4096x4096` ピクセルへと増加しました。
+これはハイレゾ画面を持つ端末には極めて重要な事です。
+
+`STANDARD_CONSTRAINED`, `STANDARD`, `STANDARD_EXTENDED`:: 現在、Starling はこれらのプロファイルが提供する機能を必要とはしません。
+これらのプロファイルは、追加のシェーダーコマンドとその他低レイヤーでの機能強化を提供します。
+
+//原文：simply let Starling pick the best available profile (`auto`) and let it deal with the implications.
+私のオススメは、設定を `auto` にして利用可能な一番高性能のプロファイルを自動選択させ、その選択でよしなに動作してもらうことです。
+
+[NOTE]
+.テクスチャの最大サイズ
+====
+利用時に気をつけないといけないことが一つだけあります。
+テクスチャサイズを大きくしすぎない事です。
+最大テクスチャサイズは `Texture.maxSize` 値で確認する事ができます。
+しかしその値が参照できるのは Starling の初期化が終わってからです。
 ====
 
 //原文：=== Native Overlay
