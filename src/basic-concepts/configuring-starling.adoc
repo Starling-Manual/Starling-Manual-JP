@@ -183,6 +183,7 @@ trace(starling.contentScaleFactor); // -> 2.0
 ----
 
 このコンセプトが実際にどのように役に立つかは <<モバイル開発>> の章で詳しく説明します。
+//↑ここのアンカーリンク正しく動いていないが原文からしてそうなので一旦放置
 
 === Context3D Profiles
 
@@ -224,22 +225,27 @@ There's only one thing you need to take care of yourself: making sure that your 
 The maximum texture size is accessible via the property `Texture.maxSize`, but only _after_ Starling has finished initializing.
 ====
 
-=== Native Overlay
+//原文：=== Native Overlay
+=== Flash描画の重ね合わせ
 
-The main idea behind Starling is to speed up rendering with its Stage3D driven API.
-However, there's no denying it: the classic display list has many features that Starling simply can't offer.
-Thus, it makes sense to provide an easy way to mix-and-match features of Starling and classic Flash.
+Starling のメインコンセプトは Stage3D API を利用して描画を速くする、という事です。
+しかし、クラシック （元々のFlashの）ディスプレイリストには Starling では実現できない機能がたくさんあることは否定できません。
+よって、両者を合わせて使ってやることは理にかなっています。
 
-The `nativeOverlay` property is the easiest way to do so.
-That's a conventional `flash.display.Sprite` that lies directly on top of Starling, taking _viewPort_ and _contentScaleFactor_ into account.
-If you need to use conventional Flash objects, add them to this overlay.
+`nativeOverlay` プロパティを扱うのが、それを行う簡単な方法です。
+//原文：That's a conventional `flash.display.Sprite` that lies directly on top of Starling, taking _viewPort_ and _contentScaleFactor_ into account.
+_viewPort_ 値と _contentScaleFactor_ 値を考慮した状態で、Starlingの前面に従来の `flash.display.Sprite` が表示されます。
 
-Beware, though, that conventional Flash content on top of _Stage3D_ can lead to performance penalties on some (mobile) platforms. For that reason, always remove all objects from the overlay when you don't need them any longer.
+従来の Flash 描画オブジェクトを使いたい場合、この `nativeOverlay` にそれらを add してください。
+
+しかし、従来の Flash 描画を _Stage3D_ 上に重ねると、いくつかの（モバイルの）端末ではパフォーマンスの低下を招く事には注意してください。
+For that reason, always remove all objects from the overlay when you don't need them any longer.
+この理由で、逆に必要がない場合は全ての Flash 描画オブジェクトを取り除くようにしましょう。
 
 [NOTE]
 ====
-Before you ask: no, you can't add any conventional display objects _below_ Starling display objects.
-The Stage3D surface is always at the bottom; there's no way around that.
+質問される前に…Starling のディスプレイオブジェクトの背面に従来の Flash 描画オブジェクトを配置する事はできません。
+Stage3D の領域はいつでも最背面に存在します。それ以外の状態はありえないのです。
 ====
 
 === Skipping Unchanged Frames
