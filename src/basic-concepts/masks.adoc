@@ -1,12 +1,13 @@
-== Masks
+== マスク処理
 
-Masks can be used to cut away parts of a display object.
-Think of a mask as a "hole" through which you can look at the contents of another display object.
-That hole can have an arbitrary shape.
+マスクを適用すると、ディスプレイオブジェクトの一部分を消し去って表示する事ができます。
+マスクは他のディスプレイオブジェクトをのぞき見る事ができる穴だと考えましょう。
 
-If you've used the "mask" property of the classic display list, you'll feel right at home with this feature.
-Just assign a display object to the new mask property, as shown below.
-Any display object can act as a mask, and it may or may not be part of the display list.
+この穴は好きな形状にする事ができます。
+
+もし、従来の Flash のディスプレイオブジェクトでマスクを利用した事があるなら、この機能にはとても親しみがわくでしょう。
+下記のように、ディスプレイオブジェクトにマスクプロパティを適用してください。
+どんなディスプレイオブジェクトでもマスクになる事ができます。そして、それはディスプレイリスト上に存在してもしなくても良いです。
 
 [source, as3]
 ----
@@ -16,40 +17,44 @@ mask.x = mask.y = 50;
 sprite.mask = mask; // ← use the quad as a mask
 ----
 
-This will yield the following result:
+下記のような結果になります。
 
-.Using a rectangular mask.
+.矩形のマスクを適用する。
 image::mask-rectangular.png[Rectangular Mask]
 
-The logic behind masks is simple: a pixel of a masked object will only be drawn if it is within the mask's polygons.
-This is crucial: the shape of the mask is defined by its polygons -- not its texture!
-Thus, such a mask is purely binary: a pixel is either visible, or it is not.
+マスクの仕組みはシンプルです。マスクされたオブジェクトのピクセルはマスク形状の内側にある場合のみ描画されます。
+これは重要な事です。マスクの形状はそのテクスチャ情報でなく、そのポリゴン形状から決定されるのです。
+
+マスクは対象ピクセルを表示するかしないかの完全な二択で描画されます。
 
 [IMPORTANT]
-.Masks and AIR
+.マスク と AIR
 ====
-For masks to work in an AIR application, you will need to activate the stencil buffer in the application descriptor.
-Add the following setting to the `initialWindow` element:
+AIR アプリ内でマスクを動作させるためには、アプリケーションの設定でステンシルバッファーを有効にしなくてはいけません。
+`initialWindow` の要素として下記を追加してください。
 
 [source, xml]
 ----
 <depthAndStencil>true</depthAndStencil>
 ----
 
-But don't worry, Starling will print a warning to the console if you forget to do so.
+もし設定を忘れてしまっても、安心してください、はいてますよ。（Starling はコンソールログとして警告を。）
 ====
 
-=== Canvas and Polygon
+=== キャンバスとポリゴン
 
-"This mask feature looks really nice", you might say, "but how the heck am I going to create those arbitrary shapes you were talking about?!"
-Well, I'm glad you ask!
+"マスク機能は本当に良いですね。"…あなたはこう言うかもしれません。
+"と、言ってもどうやってマスク形状を好きな形にする事ができるんですか？"
+はい、いい質問です！
 
-Indeed: since masks rely purely on geometry, not on any textures, you need a way to draw your mask-shapes.
-In a funny coincidence, there are actually two classes that can help you with exactly this task: _Canvas_ and _Polygon_.
-They go hand-in-hand with stencil masks.
+マスクはテクスチャーで定義されるのでははなく、純粋な幾何学形状なので、マスク形状を作る方法を覚えなくてはいけません。
+（面白い事に偶然の一致なのですが）この目的を果たすための２つのクラスが存在します。
+_Canvas_ と _Polygon_ です。
 
-The API of the Canvas class is similar to Flash's _Graphics_ object.
-This will e.g. draw a red circle:
+それらのクラスはステンシルマスクと密接に関係しています。
+
+Canvas クラスの API は Flash のグラフィックオブジェクトと似ています。
+下記は赤い円を描画する例です。
 
 [source, as3]
 ----
@@ -59,17 +64,22 @@ canvas.drawCircle(0, 0, 120);
 canvas.endFill();
 ----
 
-There are also methods to draw an ellipse, a rectangle or an arbitrary polygon.
+他にも、楕円や矩形、任意の多角形を描く命令も存在します。
 
-NOTE: Other than those basic methods, the _Canvas_ class is rather limited; don't expect a full-blown alternative to the _Graphics_ class just yet.
-This might change in a future release, though!
+NOTE: これらの基本的なもの以外のメソッドはまだ存在しません。_Canvas_ クラスはまだ制限が大きいといえます。
+_Graphics_ クラスの代わりになるような本格的なクラスではありません。
+しかしこれは、将来のリリースで変更されるかもしれません！
 
-That brings us to the _Polygon_ class.
-A _Polygon_ (package `starling.geom`) describes a closed shape defined by a number of straight line segments.
-It's a spiritual successor of Flash's _Rectangle_ class, but supporting arbitrary shapes.footnote:[The only limitation: line segments must not intersect one another.]
+//原文：That brings us to the _Polygon_ class.
+次に、_Polygon_ クラスを見て見ましょう。
 
-Since _Canvas_ contains direct support for polygon objects, it's the ideal companion of _Polygon_.
-This pair of classes will solve all your mask-related needs.
+//原文：A _Polygon_ (package `starling.geom`) describes a closed shape defined by a number of straight line segments.
+一つの _Polygon_（`starling.geom` パッケージに存在します。）は、いくつかの直線で構成された閉じた形状を表します。
+
+Polygon は Flash の _Rectangle_ クラスの志を継承し、さらに任意の形状をサポートします。.footnote:[唯一の制限は、形状を構成する各ライン同士が交わる事ができない、という点です。]
+
+_Canvas_ は polygon オブジェクトの描画を直接サポートするため、_Polygon_ とは完全な仲間といえます。
+この２つのクラスでマスクに関する全てのニーズを満たせるでしょう。
 
 [source, as3]
 ----
@@ -81,27 +91,33 @@ canvas.beginFill(0xff0000);
 canvas.drawPolygon(polygon); // <2>
 canvas.endFill();
 ----
-<1> This polygon describes a triangle.
-<2> Draw the triangle to a canvas.
+<1> この polygon は三角の形状を表します。
+<2> canvas に三角形を描きます。
 
-There are a few more things about masks I want to note:
+さらにいくつか、マスクについてのポイントがあるので見てみましょう。
 
-Visibility::
-The mask itself is never visible.
-You always only see it indirectly via its effect on the masked display object.
+直接は見えない::
+マスクそれ自体は見える状態になることはありません。
+マスクされたオブジェクトのエフェクトの結果として間接的に形状を確認することだけができます。
 
-Positioning::
-If the mask is not part of the display list (i.e. it has no parent), it will be drawn in the local coordinate system of the masked object: if you move the object, the mask will follow.
-If the mask _is_ part of the display list, its location will be calculated just as usual.
+マスク位置の決定ロジック::
+マスクがディスプレイリストの一部でない場合（つまり親を持たない場合）
+マスクされたオブジェクトのローカル座標系に合わせてマスク処理が演算されます。
+もし、マスクがディスプレイリストの一部である場合、その位置がそのままマスク演算に使われます。
 
-Stencil Buffer::
-Behind the scenes, masks use the _stencil buffer_ of the GPU, making them very lightweight and fast.
-One mask requires two draw calls: one to draw the mask into the stencil buffer and one to remove it when all the masked content has been rendered.
+ステンシルバッファー::
+裏の仕組みとして、マスクは GPU のステンシルバッファーを利用し、軽量高速に処理を実現します。
+１つのマスクは２回のドローコールを必要とします。
+//原文：one to draw the mask into the stencil buffer
+１回目はマスク形状をステンシルバッファーに書き込むのに必要で、
+//原文： and one to remove it when all the masked content has been rendered.
+２回目は全てのマスク対象が描かれた後に、それを消去するのに使われます。
 
-Scissor Rectangle::
-If the mask is an untextured _Quad_ parallel to the stage axes, Starling can optimize its rendering.
-Instead of the _stencil buffer_, it will then use the _scissor rectangle_ -- sparing you one draw call.
+Scissor Rectangle (特殊矩形マスク)::
+もしもマスクがテクスチャを持たず、かつ、ステージ座標と平行である場合（回転していない場合）、Starling は描画処理を最適化します。
+//原文：Instead of the _stencil buffer_, it will then use the _scissor rectangle_ -- sparing you one draw call.
+_ステンシルバッファー_ の代わりに _scissor rectangle_ を用いて、ドローコールを１回節約します。
 
-Texture Masks::
-If a simple vector shape just doesn't cut it, there is an extension that allows you to use the alpha channel of a texture as a stencil mask.
-It's called _Texture Mask_ and is found in the http://wiki.starling-framework.org/extensions/texture_mask[Starling Wiki].
+テクスチャで行うマスク::
+シンプルなベクター形状のマスクで満足がいかないのならば、テクスチャのアルファ値をステンシルマスクに使う拡張機能を使ってはどうでしょう。
+それは、_Texture Mask_ と呼ばれるもので、 http://wiki.starling-framework.org/extensions/texture_mask[Starling Wiki] で見つける事ができます。
