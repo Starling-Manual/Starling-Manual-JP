@@ -1,25 +1,26 @@
-== Sprite3D
+== スプライト3D
 ifndef::imagesdir[:imagesdir: ../../img]
 
-All display objects that we looked at in the previous sections represent pure two-dimensional objects.
-That's to be expected -- Starling is a 2D engine, after all.
-However, even in a 2D game, it's sometimes nice to add a simple 3D effect, e.g. for transitioning between two screens or to show the backside of a playing card.
+前のセクションで見た全てのディスプレイオブジェクトは、純粋に 2D のオブジェクトです。
+Starling は 2D のフレームワークですので、当然です。
+しかし、2D のゲームであっても、時々簡単な 3D エフェクトがあると良いこともあります。
+例えば、２つの画面間を遷移する時であったり、カードの裏面を見せる時などです。
 
-For this reason, Starling contains a class that makes it easy to add basic 3D capabilities: _Sprite3D_.
-It allows you to move your 2D objects around in a three dimensional space.
+このような訳で、Starlin は簡単な 3D 表現を行う事ができるクラスを持っています。_Sprite3D_ です。
+このクラスは、2D オブジェクトを三次元空間へと導きます。
 
-=== Basics
+=== 基本事項
 
-Just like a conventional _Sprite_, you can add and remove children to this container, which allows you to group several display objects together.
-In addition to that, however, _Sprite3D_ offers several interesting properties:
+通常の _Sprite_ と同様に、このコンテナオブジェクトにもディスプレイオブジェクトを追加したり、削除したりする事ができます。いくつかのディスプレイオブジェクトをグループ化する事ができるわけです。
+それに加えて、_Sprite3D_はいくつか興味深いプロパティを持っています。
 
-  * *z* -- Moves the sprite along the z-axis (which points away from the camera).
-  * *rotationX* -- Rotates the sprite around the x-axis.
-  * *rotationY* -- Rotates the sprite around the y-axis.
-  * *scaleZ* -- Scales the sprite along the z-axis.
-  * *pivotZ* -- Moves the pivot point along the z-axis.
+  * *z* -- Ｚ軸に沿ってスプライトを移動します。（カメラから離れていく方向が軸の方向です。）
+  * *rotationX* -- Ｘ軸を中心にスプライトを回転します。
+  * *rotationY* -- Ｙ軸を中心にスプライトを回転します。
+  * *scaleZ* -- Ｚ軸に沿ってスプライトを拡大します。
+  * *pivotZ* -- Ｚ軸上のスプライト中心点を移動します。
 
-With the help of these properties, you can place the sprite and all its children in the 3D world.
+これらのプロパティによって、そのスプライトとその子オブジェクトを 3D の世界へと誘います。
 
 [source, as3]
 ----
@@ -35,58 +36,71 @@ sprite.rotationX = Math.PI / 4.0;
 
 addChild(sprite); // <4>
 ----
-<1> Create an instance of _Sprite3D_.
-<2> Add a few conventional 2D objects to the sprite.
-<3> Set up position and orientation of the object in 3D space.
-<4> As usual, add it to the display list.
+<1> _Sprite3D_ インスタンスを生成します。
+<2> そのスプライトに通常の 2D オブジェクトをいくつか追加します。
+<3> 位置と3D空間での回転角度を設定します。
+<4> いつもの通り、ディスプレイリストにスプライトを追加します。
 
-As you can see, it's not difficult to use a Sprite3D: you simply have a few new properties to explore.
-Hit-testing, animations, custom rendering -- everything works just like you're used to from other display objects.
+このように、 Sprite3D を扱うのは簡単です。いくつかの新しいプロパティを扱うだで良いのです。
+当たり判定、アニメーション、カスタムレンダリング、どれも他のディスプレイオブジェクトと同じように利用が可能です。
 
-=== Camera Setup
+=== カメラの設定
 
-Of course, if you're displaying 3D objects, you also want to be able to configure the perspective with which you're looking at those objects.
-That's possible by setting up the camera; and in Starling, the camera settings are found on the stage.
+もちろん、3D オブジェクトを表示しているならパースのかかり具合を調整したいと思うでしょう。
+カメラの設定を行う事で、それが可能です。Starling ではカメラの設定を stage のプロパティとして持っています。
 
-The following stage properties set up the camera:
+下記の stage プロパティが、カメラの設定を行うものです。
 
-* *fieldOfView* -- Specifies an angle (radian, between zero and PI) for the field of view (FOV).
-* *focalLength* -- The distance between the stage and the camera.
-* *projectionOffset* -- A vector that moves the camera away from its default position, which is right in front of the center of the stage.
+* *fieldOfView* -- field of view (FOV) 値として、視野の角度をラジアンの単位で設定します。値は 0 から π となります。
+* *focalLength* -- stage とカメラの距離です。
+* *projectionOffset* -- カメラのデフォルトの位置からの移動量を示すxy方向のベクトルです。
+//原文：which is right in front of the center of the stage.
+カメラのデフォルト位置は、stage の真ん中、真正面となります。
 
-.Those are the properties that set up the camera.
+.カメラを設定するそれぞれのプロパティ。
 image::camera-diagram.png[Camera Diagram, 450]
 
-Starling will always make sure that the stage will fill the entire viewport.
-If you change the field of view, the focal length will be modified to adhere to this constraint, and the other way round.
-In other words: _fieldOfView_ and _focalLength_ are just different representations of the same property.
+Starling は いつでも stage が viewport 全体を占めるように表示しようとします。
+ユーザが field of view 値を変更した際、focal length 値は、その制限を保つように自動で調整されます。逆もしかりです。
+つまり、_fieldOfView_ と  _focalLength_ は実態は同じプロパティであり、見え方が違うだけなのです。
 
-Here's an example of how different _fieldOfView_ values influence the look of the cube from the Starling demo:
+//原文：Here's an example of how different _fieldOfView_ values influence the look of the cube from the Starling demo:
+下記は、_fieldOfView_ 値によって、立方体の見た目がどのように変化するかを示した例です。
 
-.Different values for _fieldOfView_ (in degrees).
+._fieldOfView_ 値を変化させた際の見た目の変化。 (単位：degrees).
 image::fov.png[Field-of-View, 550]
 
-Per default, the camera will always be aligned so that it points towards the center of the stage. The _projectionOffset_ allows you to change the perspective away from this point; use it if you want to look at your objects from another direction, e.g. from the top or bottom.
-Here's the cube again, this time using different settings for `projectionOffset.y`:
+//原文：Per default, the camera will always be aligned so that it points towards the center of the stage.
+デフォルトでは、カメラ位置はいつでも カメラが stage の中心を向くように調整されます。
+The _projectionOffset_ allows you to change the perspective away from this point;
+_projectionOffset_ 値は、この点と関係なくパースを設定することを可能にします。
+上面や下面など、違った角度からオブジェクトを眺めたい場合にこのプロパティを変更します。
+下記は再度、立方体の例です。今度は ``projectionOffset.y` 値を変化させています。
 
-.Different values for _projectionOffset.y_.
+._projectionOffset.y_ 値を変化させた際の見た目の変化。
 image::proj-offset.png[Projection Offset, 550]
 
-=== Limitations
+=== 制限事項
 
-Starling is still a 2D engine at its heart, and this means that there are a few limitations you should be aware of:
+それでも Starling は本来 2D のライブラリです。それゆえの注意点がいくつかあります。
 
-* Starling does not make any depth tests. Visibility is determined solely by the order of children.
-* You need to be careful about the performance. Each _Sprite3D_ instance interrupts batching.
+* Starling はＺ軸の深度管理をしません。前後の重ね合わせは、単純にディスプレイリストのオーダー順に処理されます。
+* パフォーマンス低下に気をつけましょう。全ての _Sprite3D_ はバッチ処理を分断します。
 
-However, there's a trick that mitigates the latter problem in many cases: when the object is not actually 3D transformed, i.e. you're doing nothing that a 2D sprite couldn't do just as well, then Starling treats it just like a 2D object -- with the same performance and batching behavior.
+しかし、後者の問題は多くのケースで和らげる事ができます。
+オブジェクトが実際には 3D 変換されていない場合は、例えば、2D スプライトでは実現できない機能を何も使っていない場合、
+Starling は _Sprite3D_ を普通の 2D オブジェクトとして扱います。
+パフォーマンスもバッチ処理に関しても 2D と同じ状態となります。
 
-This means that you don't have to avoid having a huge number of Sprite3D instances; you just have to avoid that too many of them are 3D-transformed at the same time.
+これは、たくさんの Sprite3D インスタンスを作る事を避ける必要がない事を意味します。
+ただ、同時に 3D 効果をたくさん使わなければいいだけなのです。
 
-=== Sample Project
+=== サンプルプロジェクト
 
-I created a video tutorial that demonstrates how this feature can be used in a real-life project.
-It shows you how to move a 2D game of concentration into the third dimension.
+この機能の実際の使い方を紹介したデモ動画を作成しました。
+//原文：It shows you how to move a 2D game of concentration into the third dimension.
+どのように 2D ゲームを 3D 化するのかを解説しています。
 
-* Watch the video on https://vimeo.com/109564325[Vimeo].
-* Get the complete source code from https://github.com/PrimaryFeather/Memory3D[GitHub].
+* https://vimeo.com/109564325[Vimeo] サイト上で動画をご覧ください。
+
+* 完全なソースコードは、 https://github.com/PrimaryFeather/Memory3D[GitHub] で入手できます。
