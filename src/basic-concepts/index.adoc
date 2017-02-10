@@ -50,7 +50,7 @@ include::utilities.adoc[]
 
 == まとめ
 
-Starling フレームワークの 基本コンセプトについて、詳しくなったかと思います。
+これで、Starling フレームワークの 基本コンセプトについて、詳しくなったかと思います。
 それは、あなたが作りはじめようと思っているゲームやアプリのために必要な全ての知識です。
 
 //原文：On the other hand, there are still a few tricks up the sleeves of our little bird (birds have sleeves?).
