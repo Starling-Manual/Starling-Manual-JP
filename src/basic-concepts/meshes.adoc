@@ -1,12 +1,20 @@
-== Meshes
+== メッシュ
 
-_Mesh_ is the basic building block of all tangible display objects.
-With "tangible", I mean a "leaf" object in the display list: an object that is not a container but is rendered directly to the back buffer.
-Since it is so important, I want to look at this class in a little more detail.
+//原文：_Mesh_ is the basic building block of all tangible display objects.
+_Mesh_ は全ての実態を持つディスプレイオブジェクトの基本構成要素です。
 
-In a nutshell, a _Mesh_ represents a list of triangles to be rendered via _Stage3D_.
-It was mentioned a few times already, since it's the base class of _Quad_ and _Image_.
-As a reminder, here is the class hierarchy we are talking about:
+//原文：With "tangible", I mean a "leaf" object in the display list: an object that is not a container but is rendered directly to the back buffer.
+実態を持つ、と言うのは、ディスプレイリスト内の葉要素であるディスプレイオブジェクトであることを言っています。
+つまり、スプライトなどのコンテナではなく、実際に画面に表示される物です。
+
+このクラスはとても重要なので、詳細まで確認してみましょう。
+
+//原文：In a nutshell, a _Mesh_ represents a list of triangles to be rendered via _Stage3D_.
+つまり、_Mesh_ は _Stage3D_ を通して描画される三角形の集合を表します。
+
+//原文：It was mentioned a few times already, since it's the base class of _Quad_ and _Image_.
+すでに何回か言ったことですが、 _Mesh_ は _Quad_ や _Image_ のベースクラスです。
+再度、ここにその継承ツリーを図示します。
 
 [plantuml, mesh-classes-from-display-object]
 ....
@@ -17,8 +25,7 @@ Mesh <|-- Quad
 Quad <|-- Image
 ....
 
-_Mesh_ is not an abstract class; nothing prevents you from instantiating it directly.
-Here's how:
+_Mesh_ は抽象的なクラスではありません。実際にインスタンス化する事が可能です。このようにします。
 
 [source, as3]
 ----
@@ -34,32 +41,36 @@ var mesh:Mesh = new Mesh(vertexData, indexData);
 addChild(mesh);
 ----
 
-As you can see, we first needed to instantiate two more classes: _VertexData_ and _IndexData_.
-They represent collections of vertices and indices, respectively.
+このように、まず最初にさらに２つのクラスをインスタンス化する必要があります。
+_VertexData_ と _IndexData_ です。
+//原文：They represent collections of vertices and indices, respectively.
+それぞれ、頂点情報とindex情報の集合です。
 
-* _VertexData_ efficiently stores the attributes of each vertex, e.g. its position and color.
-* _IndexData_ stores indices to those vertices. Every three indices will make up a triangle.
+* _VertexData_ は効率的に頂点それぞれの位置や色などの属性情報を保持します。
+* _IndexData_ はその頂点のndex番号を保持します。３つのindex情報で三角形が作られます。
 
-That way, the code above created the most basic drawing primitive: a triangle.
-We did this by defining three vertices and referencing them clockwise.
-After all, that's what a GPU can do best: drawing triangles -- lots of them.
+このようにして、上記のコードは最も基本的な描画オブジェクトである三角形を作りあげます。
+３つに頂点情報を時計回りで参照しながらそれを行います。
+//原文：After all, that's what a GPU can do best: drawing triangles -- lots of them.
+最終的には、GPUができる最善はたくさんの三角形を描画する事なのです。
 
-.The triangle we just created.
+.上記で作成された三角形。
 image::triangle.png[Triangle, 180]
 
-=== Extending Mesh
+=== メッシュの継承
 
-Working directly with _VertexData_ and _IndexData_ would be quite bothersome over time.
-It makes sense to encapsulate the code in a class that takes care of setting everything up.
+直接 _VertexData_ と _IndexData_ を扱い続けるのは、かなりの面倒となるでしょう。
+//原文：It makes sense to encapsulate the code in a class that takes care of setting everything up.
+これらの設定処理を何かクラスに隠蔽してしまうのが良い策です。
 
-To illustrate how to create custom meshes, we will now write a simple class called _NGon_.
-Its task: to render a regular n-sided polygon with a custom color.
+ここで、どのようにカスタムメッシュを作ればいいのかを説明するため、_NGon_ という簡単なクラスを作ることにします。
+N角形のポリゴンを好きな色で描画する事がこのクラスの仕事です。
 
-.These are the kinds of regular polygons we want to draw.
+.下記がそのクラスに描画させたい形状の例です。
 image::polygons.png[Polygons]
 
-We want the class to act just like a built-in display object.
-You instantiate it, move it to a certain position and then add it to the display list.
+そのクラスには通常のディスプレイオブジェクトと同じように動いて欲しく思います。
+インスタンス化し、好きな位置に移動し、ディスプレイリストに追加するのです。
 
 [source, as3]
 ----
@@ -68,9 +79,9 @@ ngon.x = 60;
 ngon.y = 60;
 addChild(ngon);
 ----
-<1> The constructor arguments define radius, number of edges, and color.
+<1> コンストラクタ引数は、半径、エッジの数、色、をそれぞれ示します。
 
-Let's look at how we can achieve this feat.
+この機能をどのように実現すればいいか見てみましょう。
 
 === Vertex Setup
 
