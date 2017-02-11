@@ -285,7 +285,6 @@ Stage3D の領域はいつでも最背面に存在します。それ以外の状
 //原文：In the meantime, I hope that I can solve the mentioned problems in a future Starling version.
 そのうち、上記の問題を自動で回避できる実装を将来の Starling のバージョンで実現したいと思っています、
 
-//IMPORTANTを翻訳すると表示フォーマットが変わってしまうので、回避方法がわかるまでこのままにする
 IMPORTANT: モバイル端末では、知っておくべき制限事項があります。`nativeOverlay` を使った場合など、Flash側 の stage に描画オブジェクトが存在する場合、Starling は 描画処理をスキップできません。これは Stage3D の仕組み上の制限によるものです。
 
 //原文：=== The Statistics Display
