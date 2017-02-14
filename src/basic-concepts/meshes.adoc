@@ -83,29 +83,31 @@ addChild(ngon);
 
 この機能をどのように実現すればいいか見てみましょう。
 
-=== Vertex Setup
+=== 頂点の設定
 
 Like all other shapes, our regular polygon can be built from just a few triangles.
+他の全てのシェイプと同じように、ポリゴン形状もいくつかの三角形から構成する事ができます。
 Here's how we could set up the triangles of a pentagon (an n-gon with `n=5`).
+下記は五角形をどのように三角形で構成するかの例です。（N が 5 である NGon が五角形です。）
 
-.A pentagon and its vertices.
+.五角形と頂点。
 image::pentagon.png[Pentagon, 200]
 
-The pentagon is made up of six vertices spanning up five triangles.
-We give each vertex a number between 0 and 5, with 5 being in the center.
+この五角形は６つの頂点から作られた５つの三角形で構成されています。
+それぞれの頂点には 0~5 の番号を与え、真ん中のものを 5 とします。
 
-As mentioned, the vertices are stored in a _VertexData_ instance.
-_VertexData_ defines a set of named attributes for each vertex.
-In this sample, we need two standard attributes:
+先に述べたように、頂点情報は _VertexData_ インスタンスに保持されます。
+_VertexData_ は各頂点ごとに、いくつかの属性値を持ちます。
+この例では、２つの標準的な属性値が必要です。
 
-* `position` stores a two-dimensional point (x, y).
-* `color` stores an RGBA color value.
+* `position` 属性が２次元座標の点、x, y を保持します。
+* `color` 属性が RGBA 形式の色情報を保持します。
 
-The _VertexData_ class defines a couple of methods referencing those attributes.
-That allows us to set up the vertices of our polygon.
+_VertexData_ クラスはそれらの属性値にアクセスするいくつかのメソッドを持っています。
+そのメソッド経由でポリゴン形状の頂点を設定する事ができます。
 
-Create a new class called _NGon_ that extends _Mesh_.
-Then add the following instance method:
+_Mesh_ クラスを継承して、新たに _NGon_ クラスを作ります。
+そして下記のようなメソッドを定義します。
 
 [source, as3]
 ----
@@ -127,25 +129,29 @@ private function createVertexData(
     return vertexData;
 }
 ----
-<1> Set up center vertex (last index).
-<2> Set up edge vertices.
+<1> 真ん中の頂点を設定します。(最後の index 番号。)
+<2> エッジ部分の頂点を設定します。
 
-Since our mesh has a uniform color, we assign the the same color to each vertex.
-The positions of the edge vertices (the corners) are distributed along a circle with the given radius.
+ここでのメッシュは単色で構成させるため、全ての頂点に同じ色を設定しています。
+各エッジ（コーナー）の頂点座標はある半径の演習に沿って設定されます。
 
-=== Index Setup
+=== Index の設定
 
-So much for the vertices.
-Now we need to define the triangles that make up the polygon.
+頂点についてはここまでです。
+//原文：Now we need to define the triangles that make up the polygon.
+次は、ポリゴン形状を構成する三角形を設定します。
 
-_Stage3D_ wants a simple list if indices, with each three successive indices referencing one triangle.
-It's a good practice to reference the indices clockwise; that convention indicates that we are looking at the front side of the triangle.
-Our pentagon's list would look like this:
+//原文：_Stage3D_ wants a simple list if indices, with each three successive indices referencing one triangle.
+３つの連続した頂点 index 番号で１つの三角形を表す事ができますが、_Stage3D_ は、その頂点セットが羅列して並んたデータを必要とします。
+頂点は時計回りで順番に参照するのが良いでしょう。
+//原文：that convention indicates that we are looking at the front side of the triangle.
+その流儀で並んだ頂点で作られる三角形はこちら側におもて面を向けます。
+よって、五角形の indices データは下記のような内容となります。
 
     5, 0, 1,   5, 1, 2,   5, 2, 3,   5, 3, 4,   5, 4, 0
 
-In Starling, the _IndexData_ class is used to set up such a list.
-The following method will fill an _IndexData_ instance with the appropriate indices.
+Starling では、そのリストを設定するために _IndexData_ クラスを使います。
+下記のメソッドで、適切な index 番号を用いて _IndexData_ インスタンスを設定します。
 
 [source, as3]
 ----
