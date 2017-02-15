@@ -166,11 +166,12 @@ private function createIndexData(numEdges:int):IndexData
 }
 ----
 
-=== NGon constructor
+=== NGon コンストラクタ
 
-This is actually all we need for our _NGon_ class!
-Now we just need to make use of the above methods in the constructor.
-All the other responsibilities of a display object (hit testing, rendering, bounds calculations, etc.) are handled by the superclass.
+これで実際に _NGon_ クラスに必要な全ては完了です！
+あとは上記メソッドをコンストラクタ内で使用してやります。
+
+その他、ディスプレイオブジェクトとして必要な処理（あたり判定、描画処理、バウンズの計算、など）は親クラスが処理してくれます。
 
 [source, as3]
 ----
@@ -189,14 +190,16 @@ public class NGon extends Mesh
 }
 ----
 
-That's rather straight-forward, isn't it?
-This approach works for any shape you can think of.
+簡単ですよね？
+//原文：This approach works for any shape you can think of.
+この手法は他のどんな形状のシェイプにも適用できます。
 
 [TIP]
 ====
-When working with custom meshes, also look at the _Polygon_ class (in the `starling.geom` package).
-It helps with converting an arbitrary, closed shape (defined by a number of vertices) into triangles.
-We look at it in more detail in the <<Masks>> section.
+カスタムメッシュを扱う際は、`starling.geom` パッケージに存在する _Polygon_ クラスも参考にしてみてください。
+
+このクラスは、いくつもの頂点で定義される任意の閉じた形状のシェイプを三角形に分割する際に役立ちます。
+詳細は <<Masks>> セクションでさらに確認します。
 ====
 
 === Adding a Texture
