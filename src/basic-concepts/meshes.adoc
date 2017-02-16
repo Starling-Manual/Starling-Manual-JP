@@ -262,28 +262,33 @@ addChild(ngon);
 .テクスチャが設定された五角形です。
 image::pentagon-textured.png[Textured Pentagon, 230]
 
-=== Anti-Aliasing
+=== アンチエイリアス処理
 
-If you look closely at the edges of our n-gon, you will see that the edges are quite jagged.
-That's because the GPU treats a pixel either within the n-gon, or outside -- there are no in-betweens.
-To fix that, you can enabled anti-aliasing: there's a property with that name on the _Starling_ class.
+NGonのエッジをとく観察してみると、ジャギーが発生している事に気づくかもしれません。
+これは、GPU がピクセルを n-gon の内側か外側かでしか判定せず、中間の状態がないからです。
+これを修正するために、アンチエイリアス処理を有効にする事ができます。_Starling_ クラスのプロパティにそれがそのままの名前で存在します。
 
 [source, as3]
 ----
 starling.antiAliasing = 4;
 ----
 
-The value correlates to the number of subsamples _Stage3D_ uses on rendering.
-Using more subsamples requires more calculations to be performed, making anti-aliasing a potentially very expensive option.
-Furthermore, _Stage3D_ doesn't support anti-aliasing on all platforms.
+//原文：The value correlates to the number of subsamples _Stage3D_ uses on rendering.
+この値は _Stage3D_ がレンダリングする際使うサブサンプリング数に関係します。
+//原文：Using more subsamples requires more calculations to be performed, making anti-aliasing a potentially very expensive option.
+たくさんのサブサンプリングを行うためには、たくさんの計算が発生します。アンチエイリアス処理は高コストな処理なのです。
+さらに言えば、_Stage3D_ は全てのプラットフォームでアンチエイリアス処理をサポートしていません。
 
-NOTE: On mobile, anti-aliasing currently only works within _RenderTextures_.
+NOTE: モバイル環境では、アンチエイリアス処理は _RenderTextures_ 内だけで利用が可能です。
 
-Thus, it's not an ideal solution.
-The only consolation I can offer: the typical pixel-density of screens is constantly on the rise.
-On modern, high end mobile phones, the pixels are now so small that aliasing is rarely an issue any longer.
+よって、これは理想的な解決方法ではありません。
+//原文：The only consolation I can offer:
+唯一の救いとなる情報としては、
+一般的に画面のピクセル密度はどんどんと上昇しているという事です。
 
-.Anti-Aliasing can smooth pixelated edges.
+近年のハイエンドなモバイルフォンではピクセルの大きさがとても小さいため、もはやジャギーはあまり問題とはならないのです。
+
+.アンチエイリアス処理はピクセルのジャギーをスムースにする事ができます。
 image::anti-aliasing.png[Anti-Aliasing, 380]
 
 // TODO: describe RenderTexture-workaround in "Pro-Tips" chapter and link to it here.
