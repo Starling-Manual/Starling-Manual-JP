@@ -1,20 +1,20 @@
 == メッシュ
 
 //原文：_Mesh_ is the basic building block of all tangible display objects.
-_Mesh_ は全ての実態を持つディスプレイオブジェクトの基本構成要素です。
+_Mesh_ は全てのディスプレイオブジェクトの基本構成要素です。
 
 //原文：With "tangible", I mean a "leaf" object in the display list: an object that is not a container but is rendered directly to the back buffer.
-実態を持つ、と言うのは、ディスプレイリスト内の葉要素であるディスプレイオブジェクトであることを言っています。
-つまり、スプライトなどのコンテナではなく、実際に画面に表示される物です。
+ここで言うディスプレイオブジェクトは、ディスプレイリスト内の葉要素であるオブジェクトの事を指しています。
+つまり、スプライトなどのコンテナではなく、実際に画面に表示される部分となるオブジェクトです。
 
-このクラスはとても重要なので、詳細まで確認してみましょう。
+このメッシュクラスはとても重要です。詳細を確認してみましょう。
 
 //原文：In a nutshell, a _Mesh_ represents a list of triangles to be rendered via _Stage3D_.
-つまり、_Mesh_ は _Stage3D_ を通して描画される三角形の集合を表します。
+_Mesh_ とは _Stage3D_ 上で描画される三角形の集合の事です。
 
 //原文：It was mentioned a few times already, since it's the base class of _Quad_ and _Image_.
-すでに何回か言ったことですが、 _Mesh_ は _Quad_ や _Image_ のベースクラスです。
-再度、ここにその継承ツリーを図示します。
+すでに何度か述べましたように、 _Mesh_ は _Quad_ や _Image_ のベースクラスです。
+継承ツリーを再度下記に図示します。
 
 [plantuml, mesh-classes-from-display-object]
 ....
@@ -25,7 +25,7 @@ Mesh <|-- Quad
 Quad <|-- Image
 ....
 
-_Mesh_ は抽象的なクラスではありません。実際にインスタンス化する事が可能です。このようにします。
+_Mesh_ は抽象クラスではありません。実際にインスタンス化する事が可能です。
 
 [source, as3]
 ----
@@ -41,36 +41,37 @@ var mesh:Mesh = new Mesh(vertexData, indexData);
 addChild(mesh);
 ----
 
-このように、まず最初にさらに２つのクラスをインスタンス化する必要があります。
+このように、まずメッシュより先に別の２つのクラスをインスタンス化する必要があります。
 _VertexData_ と _IndexData_ です。
 //原文：They represent collections of vertices and indices, respectively.
-それぞれ、頂点情報とindex情報の集合です。
+それぞれ、頂点情報とindex情報を保持します。
 
-* _VertexData_ は効率的に頂点それぞれの位置や色などの属性情報を保持します。
-* _IndexData_ はその頂点のndex番号を保持します。３つのindex情報で三角形が作られます。
+* _VertexData_ は頂点のそれぞれの位置や色など、属性情報を効率的に保持します。
+* _IndexData_ はその頂点のindex番号を保持します。３つのindex情報で三角形が作られます。
 
-このようにして、上記のコードは最も基本的な描画オブジェクトである三角形を作りあげます。
-３つに頂点情報を時計回りで参照しながらそれを行います。
+そのようにして、このコードでは最も基本的な描画オブジェクトである三角形を作りあげます。
+３つの頂点情報を時計回りで参照しながら描画を行います。
 //原文：After all, that's what a GPU can do best: drawing triangles -- lots of them.
-最終的には、GPUができる最善はたくさんの三角形を描画する事なのです。
+結局、GPUがうまくできる事はたくさんの三角形を描画する事なのです。
 
 .上記で作成された三角形。
 image::triangle.png[Triangle, 180]
 
 === メッシュの継承
 
-直接 _VertexData_ と _IndexData_ を扱い続けるのは、かなりの面倒となるでしょう。
+_VertexData_ と _IndexData_ を直接扱っていくのは、かなり面倒です。
 //原文：It makes sense to encapsulate the code in a class that takes care of setting everything up.
-これらの設定処理を何かクラスに隠蔽してしまうのが良い策です。
+これらの扱いは何かのクラスに処理を隠蔽してしまうのが良いやり方でしょう。
 
-ここで、どのようにカスタムメッシュを作ればいいのかを説明するため、_NGon_ という簡単なクラスを作ることにします。
+ここで、どのようにカスタムメッシュを作るのかを説明するために、
+_NGon_ という簡単なクラスを作ることにします。
 N角形のポリゴンを好きな色で描画する事がこのクラスの仕事です。
 
-.下記がそのクラスに描画させたい形状の例です。
+.下記は描画させたい形状の例です。
 image::polygons.png[Polygons]
 
-そのクラスには通常のディスプレイオブジェクトと同じように動いて欲しく思います。
-インスタンス化し、好きな位置に移動し、ディスプレイリストに追加するのです。
+そのクラスには通常のディスプレイオブジェクトと同じように動作しいと思います。
+インスタンス化でき、好きな位置に移動でき、ディスプレイリストに追加できるのです。
 
 [source, as3]
 ----
@@ -79,26 +80,25 @@ ngon.x = 60;
 ngon.y = 60;
 addChild(ngon);
 ----
-<1> コンストラクタ引数は、半径、エッジの数、色、をそれぞれ示します。
+<1> コンストラクタの引数はそれぞれ、半径、エッジの数、色、を示します。
 
-この機能をどのように実現すればいいか見てみましょう。
+この機能をどのように実現すればいいでしょうか。
 
 === 頂点の設定
 
-Like all other shapes, our regular polygon can be built from just a few triangles.
-他の全てのシェイプと同じように、ポリゴン形状もいくつかの三角形から構成する事ができます。
-Here's how we could set up the triangles of a pentagon (an n-gon with `n=5`).
-下記は五角形をどのように三角形で構成するかの例です。（N が 5 である NGon が五角形です。）
+//原文：Like all other shapes, our regular polygon can be built from just a few triangles.
+他の全てのシェイプと同じように、このポリゴン形状もいくつかの三角形から構成されています。
+下記は五角形をどのように三角形で構成させるかの図です。（N が 5 である NGon が五角形です。）
 
 .五角形と頂点。
 image::pentagon.png[Pentagon, 200]
 
-この五角形は６つの頂点から作られた５つの三角形で構成されています。
-それぞれの頂点には 0~5 の番号を与え、真ん中のものを 5 とします。
+この五角形は６つの頂点から作られた、５つの三角形で構成されています。
+それぞれの頂点には 0 ~ 5 の番号を与え、真ん中のものを 5 とします。
 
-先に述べたように、頂点情報は _VertexData_ インスタンスに保持されます。
+先ほどに説明したように、頂点情報は _VertexData_ インスタンスに保持されます。
 _VertexData_ は各頂点ごとに、いくつかの属性値を持ちます。
-この例では、２つの標準的な属性値が必要です。
+ここでは、２つの標準的な属性値を必要とします。
 
 * `position` 属性が２次元座標の点、x, y を保持します。
 * `color` 属性が RGBA 形式の色情報を保持します。
@@ -133,24 +133,23 @@ private function createVertexData(
 <2> エッジ部分の頂点を設定します。
 
 ここでのメッシュは単色で構成させるため、全ての頂点に同じ色を設定しています。
-各エッジ（コーナー）の頂点座標はある半径の演習に沿って設定されます。
+各エッジ（コーナー）の頂点座標はある半径の円周に沿って設定されます。
 
 === Index の設定
 
-頂点についてはここまでです。
 //原文：Now we need to define the triangles that make up the polygon.
-次は、ポリゴン形状を構成する三角形を設定します。
+頂点についてはここまでとし、次は、ポリゴン形状を構成する三角形を設定します。
 
 //原文：_Stage3D_ wants a simple list if indices, with each three successive indices referencing one triangle.
-３つの連続した頂点 index 番号で１つの三角形を表す事ができますが、_Stage3D_ は、その頂点セットが羅列して並んたデータを必要とします。
+３つの連続した頂点の index 番号で１つの三角形を表す事ができますが、_Stage3D_ は、その頂点の組が羅列して並んたデータを必要とします。
 頂点は時計回りで順番に参照するのが良いでしょう。
 //原文：that convention indicates that we are looking at the front side of the triangle.
-その流儀で並んだ頂点で作られる三角形はこちら側におもて面を向けます。
+そのルールで並んだ頂点で作られる三角形は、こちら側におもて面を向けます。
 よって、五角形の indices データは下記のような内容となります。
 
     5, 0, 1,   5, 1, 2,   5, 2, 3,   5, 3, 4,   5, 4, 0
 
-Starling では、そのリストを設定するために _IndexData_ クラスを使います。
+Starling では、このような頂点番号のリストを設定するために _IndexData_ クラスを使います。
 下記のメソッドで、適切な index 番号を用いて _IndexData_ インスタンスを設定します。
 
 [source, as3]
@@ -168,10 +167,12 @@ private function createIndexData(numEdges:int):IndexData
 
 === NGon コンストラクタ
 
-これで実際に _NGon_ クラスに必要な全ては完了です！
-あとは上記メソッドをコンストラクタ内で使用してやります。
+以上が、実際に _NGon_ クラスに必要な処理の全てです。
+上記メソッドをコンストラクタ内で使用してやります。
 
-その他、ディスプレイオブジェクトとして必要な処理（あたり判定、描画処理、バウンズの計算、など）は親クラスが処理してくれます。
+ディスプレイオブジェクトとして必要なその他の基本処理
+（あたり判定、描画処理、バウンズの計算、など）
+は親クラスが処理してくれます。
 
 [source, as3]
 ----
@@ -192,32 +193,33 @@ public class NGon extends Mesh
 
 簡単ですよね？
 //原文：This approach works for any shape you can think of.
-この手法は他のどんな形状のシェイプにも適用できます。
+このやり方は他のどんな形状のシェイプにも用いる事ができます。
 
 [TIP]
 ====
-カスタムメッシュを扱う際は、`starling.geom` パッケージに存在する _Polygon_ クラスも参考にしてみてください。
+カスタムメッシュを扱う際は、`starling.geom` パッケージに存在する _Polygon_ クラスもチェックしてみてください。
 
-このクラスは、いくつもの頂点で定義される任意の閉じた形状のシェイプを三角形に分割する際に役立ちます。
-詳細は <<Masks>> セクションでさらに確認します。
+このクラスは、いくつかの頂点で定義される任意の閉じた形状のシェイプを三角形で分割する際に参考になります。
+詳細は <<Masks>> セクションでさらに解説します。
 ====
 
 === テクスチャの追加
 
-このポリゴンにテクスチャを適用できたら良いと思いませんか？
-ベースクラスの _Mesh_ は、すでに `texture` プロパティを持っています。 _テクスチャの座標設定_ をまだ行なっていないだけです。
+このポリゴンにテクスチャを適用できたら良いですね。
+実は、ベースクラスの _Mesh_ は、すでに `texture` プロパティを持っています。
+まだ _テクスチャの座標設定_ を行なっていないだけです。
 
-テクスチャの座標設定を行うことによって、テクスチャのどの部分を頂点に適用するか決定する事になります。
+テクスチャの座標設定を行うことによって、テクスチャのどの部分を頂点に適用するかが決定されます。
 //原文：which is a reference to the names that are typically used for their coordinate axes (_u_ and _v_).
 //うまく訳せない。。
-一般的に、_u値、v値_ で表される座標軸で場所を示すので、しばしば _UV座標_ と呼ばれます。
+一般的に、_u値、v値_ で表される座標軸でテクスチャの場所を示すので、しばしば _UV座標_ と呼ばれます。
 
 UVの値の範囲は、テクスチャの実際の大きさに関わらず、_0 から 1_ の間に限定される事に注意してください。
 
 .ポリゴンのテクスチャの座標は 0~1 の範囲で表されます。
 image::pentagon-texcoords.png[Pentagon Texture Coordinates, 250]
 
-この情報を元に、`createVertexData` メソッドを適切に調整する事ができます。
+これに従い、`createVertexData` メソッドを適切に調整します。
 
 [source, as3]
 ----
@@ -247,10 +249,10 @@ function createVertexData(
 <1> 真ん中の頂点のテクスチャ座標を `0.5, 0.5` といします。
 //原文：<2> The origin of the n-gon is in the center, but the texture coordinates must be all positive.
 <2>元々 n-gon は真ん中 (0,0) に位置しているのですが、テクスチャ座標系ではそれぞれの値が必ず正の値とならなくてはいけません。
-/原文：So we move the vertex coordinates to the right (by `radius`) and divide them by `2 * radius` to end up in the range `0-1`.
-そのため、頂点座標を半径の分だけ右に移動し、その値を `2 * radius` で除算します。値を 0~1 の範囲に納めるためです。
-/原文：When a texture is assigned, the rendering code will automatically pick up those values.
-テクスチャが割り当てられると、レンダリングを担当する処理が自動的にそれらの設定を取得します。
+//原文：So we move the vertex coordinates to the right (by `radius`) and divide them by `2 * radius` to end up in the range `0-1`.
+そのため、頂点座標を半径の分だけ右に移動し、その値を `2 * radius` で除算します。値を 0 ~ 1 の範囲に納めるためです。
+//原文：When a texture is assigned, the rendering code will automatically pick up those values.
+テクスチャがこのように割り当てられると、レンダリング処理に際に自動的にそれらの設定が参照されます。
 
 [source, as3]
 ----
@@ -264,9 +266,9 @@ image::pentagon-textured.png[Textured Pentagon, 230]
 
 === アンチエイリアス処理
 
-NGonのエッジをとく観察してみると、ジャギーが発生している事に気づくかもしれません。
-これは、GPU がピクセルを n-gon の内側か外側かでしか判定せず、中間の状態がないからです。
-これを修正するために、アンチエイリアス処理を有効にする事ができます。_Starling_ クラスのプロパティにそれがそのままの名前で存在します。
+NGonのエッジをよく観察してみると、ジャギーが発生している事に気づくかもしれません。
+これは、GPU がピクセルを n-gon の描画領域の内側か外側かどうかしか判定せず、その中間の状態が存在しないからです。
+これを改善するために、アンチエイリアス処理を有効にする事ができます。_Starling_ クラスのプロパティにそのままの名前でプロパティが存在します。
 
 [source, as3]
 ----
@@ -274,19 +276,17 @@ starling.antiAliasing = 4;
 ----
 
 //原文：The value correlates to the number of subsamples _Stage3D_ uses on rendering.
-この値は _Stage3D_ がレンダリングする際使うサブサンプリング数に関係します。
+この値は _Stage3D_ がレンダリングをする際に利用するサブサンプリングの回数に関連します。
 //原文：Using more subsamples requires more calculations to be performed, making anti-aliasing a potentially very expensive option.
-たくさんのサブサンプリングを行うためには、たくさんの計算が発生します。アンチエイリアス処理は高コストな処理なのです。
+たくさんのサブサンプリングを行うために、たくさんの計算が発生します。アンチエイリアス処理は高コストな処理なのです。
 さらに言えば、_Stage3D_ は全てのプラットフォームでアンチエイリアス処理をサポートしていません。
 
 NOTE: モバイル環境では、アンチエイリアス処理は _RenderTextures_ 内だけで利用が可能です。
 
-よって、これは理想的な解決方法ではありません。
+よって、上記のアンチエイリアス処理は現実的なジャギーの解決方法ではありません。
 //原文：The only consolation I can offer:
-唯一の救いとなる情報としては、
-一般的に画面のピクセル密度はどんどんと上昇しているという事です。
-
-近年のハイエンドなモバイルフォンではピクセルの大きさがとても小さいため、もはやジャギーはあまり問題とはならないのです。
+幸いなことに、スクリーンのピクセル密度は一般的にどんどんと上昇しています。
+近年のハイエンドなモバイル端末では１ピクセルの大きさがとても小さいため、もはやジャギーが目立たず、あまり問題とはならないのです。
 
 .アンチエイリアス処理はピクセルのジャギーをスムースにする事ができます。
 image::anti-aliasing.png[Anti-Aliasing, 380]
@@ -296,38 +296,38 @@ image::anti-aliasing.png[Anti-Aliasing, 380]
 === メッシュスタイル
 
 ここまでで、任意の形状のシェイプにテクスチャを適用する方法はわかりました。
-そこでは Starling に搭載されたスタンダードなレンダリングの方法を用いています。
+その方法では、Starling に搭載されたスタンダードなレンダリング方法を用いています。
 
-さて、では、レンダリングの方法をのものをカスタマイズしたい場合はどうしたら良いでしょう？
+さてでは、レンダリングのやり方そのものをカスタマイズしたい場合はどうしたら良いでしょう？
 //原文：The properties and methods of the _Mesh_ class provide a solid foundation -- but sooner or later, you will want more than that.
-_Mesh_ クラスのメソッドとプロパティは手堅い基礎機能を提供してくれますが、遅かれ早かれ、その機能だけでは物足りなくなってくる事でしょう。
+_Mesh_ クラスのメソッドとプロパティは手堅い基本的な機能を提供してくれますが、遅かれ早かれその機能だけでは物足りなくなってくる事でしょう。
 //原文：Coming to the rescue: Starling's _mesh styles_.
-Starling の _メッシュスタイル_ がこれを手助けします。
+Starling の _メッシュスタイル_ がこの要望の解決を手助けします。
 
 //原文：Styles are a brand new addition to Starling (introduced in version 2.0)
 //and are the recommended way to create custom, high performance rendering code.
-`スタイル` は Starling2.0 で導入された新機能で、高速に描画が可能なカスタムレンダリングコードを作成するための推奨される方法です。
+`スタイル` は Starling2.0 で導入された新機能で、カスタムレンダリング処理を作成するための推奨される方法です。スタイルの処理は高速な描画が可能です。
 //原文：In fact, all rendering in Starling is now done via mesh styles.
 実際、Starling 内の全ての描画処理は、メッシュスタイルを通して実行されています。
 
-* どのメッシュにもスタイルを１つ設定する事ができます。 (_Mesh_ のインスタンスもしくは、_Mesh_のサブクラスのインスタンスに対して。).
-* デフォルトでは、それぞれのメッシュに紐づいているのは、基底 _MeshStyle_ クラスのインスタンスです。
-* 後者は Starling の標準的な描画能力を提供します。色味がついてテクスチャが設定された三角形の描画です。
+* どの _Mesh_ (及び _Mesh_のサブクラスのインスタンス)にもスタイルを１つ設定する事ができます。
+* デフォルトでは、それぞれのメッシュに紐づいているのは、 _MeshStyle_ 基底クラスのインスタンスです。
+* このスタイルは Starling の標準的な描画能力を提供します。三角ポリゴンに色味とテクスチャを加えて描画します。
 
 //原文：To teach your meshes new tricks, you can extend _MeshStyle_.
-メッシュに新しい見た目を加えるには、_MeshStyle_ を継承すると良いです。
+メッシュに新しい見たの効果を加えるには、_MeshStyle_ を継承する方法が良いです。
 //原文：This allows you to create custom shader programs for all kinds of interesting effects.
-カスタムのシェーダープログラムを作って、様々な種類のエフェクトを実現することができます。
-例えば、複数のテクスチャの割り当てや、カラーの高速トランジション効果などが実装可能です。
+カスタムのシェーダープログラムを作れば、様々なエフェクトを実現することができます。
+例えば、複数のテクスチャの同時割り当てや、カラーの高速トランジションなどが実装可能です。
 
 [TIP]
 ====
-最も印象的なスタイルのサンプルとては、 http://wiki.starling-framework.org/extensions/dynamic_lighting[Dynamic Lighting extension] があります。
-ノーマルマップ（ポリゴン面の法線方向をエンコードしたテクスチャ）を用いることで、リアルな照明効果を動的に適用することができます。
-the Starling Wiki を確認して、実際にこの拡張機能が動いている例を見て見てください。
+スタイルの印象的な例として、 http://wiki.starling-framework.org/extensions/dynamic_lighting[Dynamic Lighting extension] をあげておきます。
+ノーマルマップ（ポリゴン面の法線方向をエンコードしたテクスチャ）を用いて、リアルな照明効果をダイナミック(動的)に適用することができます。
+Starling Wiki で 実際にこの拡張機能が動いている様子を確認してみてください。
 ====
 
-スタイルを使うには、まずインスタンス化をし、メッシュの `style` プロパティとして設定します。
+スタイルを実際に使うには、まずそのインスタンスを生成し、メッシュの `style` プロパティとして設定します。
 
 [source, as3]
 ----
@@ -336,32 +336,32 @@ var lightStyle:LightStyle = new LightStyle(normalTexture);
 image.style = lightStyle;
 ----
 
-.動的な照明処理の拡張機能が動いている様子。
+.照明処理のスタイルが動的に動いている様子。
 image::dynamic-lighting.png[Dynamic Lighting]
 
-スタイルでできることは本当にたくさんあり、適用範囲にはほとんど限界がありません。
+スタイルで実現できることは本当にたくさんあり、適用範囲にほとんど限界がありません。
 
 //原文：And since meshes with the same style can be batched together, you do not sacrifice performance in any way.
-そして同じスタイル設定のメッシュはバッチ処理で同時に扱われるので、パドーマンスを気にする必要もありません。
-この点に関して、スタイルは同じような目的も用いられるフラグメントフィルターよりもずっと効果的です。
+さらに、同じスタイルが設定されているメッシュは、バッチ処理で同時に処理されるので、パフォーマンスを気にする必要もあまりありません。
+この点に関して、同じような目的で用いられるフラグメントフィルターよりもずっと効果的にスタイルを利用する事ができます。
 
-スタイルの主な短所はそれがメッシュだけに適用でき、スプライトには適用できないという点です。
-そして、スタイルはメッシュの描画領域の範囲内のみでしか有効となりません。ぼかし効果のような事はできないのです。
-さらに、一つのメッシュに対して複数のスタイルを組み合わせて使う事はできません。
+スタイル短所には、それがメッシュだけに適用でき、スプライトには適用できないという点があります。
+また、スタイルはメッシュの描画領域内のみで有効となります。描画領域をはみ出して効果を与える'ぼかし'効果のような事はできないのです。
+一つのメッシュに対して複数のスタイルを組み合わせて使う事もできません。
 
-それでも：スタイルは どんな Starling 開発者でも身につけて使うべきパワフルなツールです。
+それでも、スタイルは Starling 開発者全員が身につけて使うべきパワフルなツールです。
 //原文：Stay tuned: in a <<Custom Styles, later section>>, I'll show you how to create your own mesh style from scratch, shaders and all!
-続く <<Custom Styles>> のセクションも続いて確認してください。
-スクラッチでカスタムスタイルを作成する方法やその他シェーダーなどについて解説します。
+この後に続く <<Custom Styles>> のセクションも確認してください。
+スクラッチでカスタムスタイルを作成する方法や、その他シェーダーなどについて解説します。
 
 [NOTE]
 ====
-もしまだ、 _メッシュ_ と _メッシュスタイル_ の違いについてよく理解できていないのであれば、このように考えてみてください。
-_メッシュ_ は頂点の集合でしかなく、どのように頂点で三角形を描くかを示しているだけであると。
+もしまだ、 _メッシュ_ と _メッシュスタイル_ の違いについてよく理解できないのであれば、このように考えてみてください。
+_メッシュ_ は頂点の集合でしかなく、頂点でどのように三角形を描くかを示しているだけ、であると。
 
-スタイルは頂点に追加の情報を設定し、レンダリング時に使用します。
-標準の _MeshStyle_ はカラーとテクスチャの割り当てを提供します。
-_MultiTextureStyle_ は追加のテクスチャの割り当て情報などを設定するのかもしれません。
-しかし、スタイルは決して元々のオブジェクトの形状を変更しません。
+スタイルは各頂点に追加で情報を設定し、それをレンダリング時に使用します。
+標準の _MeshStyle_ はカラーとテクスチャの割り当てを行います。
+_MultiTextureStyle_ は追加のテクスチャ割り当て情報などを制御するかもしれません。
+しかし、スタイルは決して元々のオブジェクト形状を変更しません。
 スタイルは、頂点を足しも減らしもせず、位置の移動も行わないのです。
 ====
