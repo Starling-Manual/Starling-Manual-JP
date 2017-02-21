@@ -293,35 +293,41 @@ image::anti-aliasing.png[Anti-Aliasing, 380]
 
 // TODO: describe RenderTexture-workaround in "Pro-Tips" chapter and link to it here.
 
-=== Mesh Styles
+=== メッシュスタイル
 
-You now know how to create textured meshes with arbitrary shapes.
-For this, you are using the standard rendering mechanics built into Starling.
+ここまでで、任意の形状のシェイプにテクスチャを適用する方法はわかりました。
+そこでは Starling に搭載されたスタンダードなレンダリングの方法を用いています。
 
-However, what if you want to customize the rendering process itself?
-The properties and methods of the _Mesh_ class provide a solid foundation -- but sooner or later, you will want more than that.
+さて、では、レンダリングの方法をのものをカスタマイズしたい場合はどうしたら良いでしょう？
+//原文：The properties and methods of the _Mesh_ class provide a solid foundation -- but sooner or later, you will want more than that.
+_Mesh_ クラスのメソッドとプロパティは手堅い基礎機能を提供してくれますが、遅かれ早かれ、その機能だけでは物足りなくなってくる事でしょう。
+//原文：Coming to the rescue: Starling's _mesh styles_.
+Starling の _メッシュスタイル_ がこれを手助けします。
 
-Coming to the rescue: Starling's _mesh styles_.
+//原文：Styles are a brand new addition to Starling (introduced in version 2.0)
+//and are the recommended way to create custom, high performance rendering code.
+`スタイル` は Starling2.0 で導入された新機能で、高速に描画が可能なカスタムレンダリングコードを作成するための推奨される方法です。
+//原文：In fact, all rendering in Starling is now done via mesh styles.
+実際、Starling 内の全ての描画処理は、メッシュスタイルを通して実行されています。
 
-Styles are a brand new addition to Starling (introduced in version 2.0) and are the recommended way to create custom, high performance rendering code.
-In fact, all rendering in Starling is now done via mesh styles.
+* どのメッシュにもスタイルを１つ設定する事ができます。 (_Mesh_ のインスタンスもしくは、_Mesh_のサブクラスのインスタンスに対して。).
+* デフォルトでは、それぞれのメッシュに紐づいているのは、基底 _MeshStyle_ クラスのインスタンスです。
+* 後者は Starling の標準的な描画能力を提供します。色味がついてテクスチャが設定された三角形の描画です。
 
-* A style can be assigned to any mesh (instances of the _Mesh_ class or its subclasses).
-* Per default, the style of each mesh is an instance of the base _MeshStyle_ class.
-* The latter provides the standard rendering capabilities of Starling: drawing colored and textured triangles.
-
-To teach your meshes new tricks, you can extend _MeshStyle_.
-This allows you to create custom shader programs for all kinds of interesting effects.
-For example, you could implement fast color transformations or multi-texturing.
+//原文：To teach your meshes new tricks, you can extend _MeshStyle_.
+メッシュに新しい見た目を加えるには、_MeshStyle_ を継承すると良いです。
+//原文：This allows you to create custom shader programs for all kinds of interesting effects.
+カスタムのシェーダープログラムを作って、様々な種類のエフェクトを実現することができます。
+例えば、複数のテクスチャの割り当てや、カラーの高速トランジション効果などが実装可能です。
 
 [TIP]
 ====
-One of the most impressive samples of a style is the http://wiki.starling-framework.org/extensions/dynamic_lighting[Dynamic Lighting extension].
-With the help of a normal map (a texture encoding surface normals), it can provide realistic real-time lighting effects.
-Be sure to check out this extension in the Starling Wiki to see it in action!
+最も印象的なスタイルのサンプルとては、 http://wiki.starling-framework.org/extensions/dynamic_lighting[Dynamic Lighting extension] があります。
+ノーマルマップ（ポリゴン面の法線方向をエンコードしたテクスチャ）を用いることで、リアルな照明効果を動的に適用することができます。
+the Starling Wiki を確認して、実際にこの拡張機能が動いている例を見て見てください。
 ====
 
-To use a style, instantiate it and assign it to the `style` property of the mesh:
+スタイルを使うには、まずインスタンス化をし、メッシュの `style` プロパティとして設定します。
 
 [source, as3]
 ----
@@ -330,25 +336,32 @@ var lightStyle:LightStyle = new LightStyle(normalTexture);
 image.style = lightStyle;
 ----
 
-.The Dynamic Lighting extension in action.
+.動的な照明処理の拡張機能が動いている様子。
 image::dynamic-lighting.png[Dynamic Lighting]
 
-Styles are extremely versatile; their possible applications are almost without limit.
-And since meshes with the same style can be batched together, you do not sacrifice performance in any way.
-In this respect, they are much more efficient than _fragment filters_ (which serve a similar purpose).
+スタイルでできることは本当にたくさんあり、適用範囲にはほとんど限界がありません。
 
-The main downsides of styles are simply that they can only be assigned to a mesh (not, say, a sprite), and that they can only act within the actual mesh area (making things like a blur impossible).
-Furthermore, it's not possible to combine several styles on one mesh.
+//原文：And since meshes with the same style can be batched together, you do not sacrifice performance in any way.
+そして同じスタイル設定のメッシュはバッチ処理で同時に扱われるので、パドーマンスを気にする必要もありません。
+この点に関して、スタイルは同じような目的も用いられるフラグメントフィルターよりもずっと効果的です。
 
-Still: styles are a powerful tool that any Starling developer should be familiar with.
-Stay tuned: in a <<Custom Styles, later section>>, I'll show you how to create your own mesh style from scratch, shaders and all!
+スタイルの主な短所はそれがメッシュだけに適用でき、スプライトには適用できないという点です。
+そして、スタイルはメッシュの描画領域の範囲内のみでしか有効となりません。ぼかし効果のような事はできないのです。
+さらに、一つのメッシュに対して複数のスタイルを組み合わせて使う事はできません。
+
+それでも：スタイルは どんな Starling 開発者でも身につけて使うべきパワフルなツールです。
+//原文：Stay tuned: in a <<Custom Styles, later section>>, I'll show you how to create your own mesh style from scratch, shaders and all!
+続く <<Custom Styles>> のセクションも続いて確認してください。
+スクラッチでカスタムスタイルを作成する方法やその他シェーダーなどについて解説します。
 
 [NOTE]
 ====
-If you're still a little confused about the differences between a _Mesh_ and a _MeshStyle_, think of it like this:
-the _Mesh_ is nothing more than a list of vertices, and how those vertices spawn up triangles.
+もしまだ、 _メッシュ_ と _メッシュスタイル_ の違いについてよく理解できていないのであれば、このように考えてみてください。
+_メッシュ_ は頂点の集合でしかなく、どのように頂点で三角形を描くかを示しているだけであると。
 
-A style may add additional data to each vertex and use it on rendering.
-The standard _MeshStyle_ provides color and texture coordinates; a _MultiTextureStyle_ might add an additional set of texture coordinates, etc.
-But a style should never modify the original shape of the object; it won't add or remove vertices or change their positions.
+スタイルは頂点に追加の情報を設定し、レンダリング時に使用します。
+標準の _MeshStyle_ はカラーとテクスチャの割り当てを提供します。
+_MultiTextureStyle_ は追加のテクスチャの割り当て情報などを設定するのかもしれません。
+しかし、スタイルは決して元々のオブジェクトの形状を変更しません。
+スタイルは、頂点を足しも減らしもせず、位置の移動も行わないのです。
 ====
