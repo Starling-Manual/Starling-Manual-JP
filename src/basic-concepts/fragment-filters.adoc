@@ -1,45 +1,62 @@
-== Fragment Filters
+== フラグメントフィルター
 
-Up until now, everything we rendered were meshes with (or without) textures mapped onto them.
-You can move meshes around, scale them, rotate them, and maybe tint them in a different color.
-All in all, however, the possibilities are rather limited -- the look of the game is solely defined by its textures.
+//原文：Up until now, everything we rendered were meshes with (or without) textures mapped onto them.
+これまでのところ、描画してきたものは全てがメッシュであり、テクスチャが設定されているものといないものがありました。
 
-At some point, you will run into the limits of this approach; perhaps you need a variant of an image in multiple colors, blurred, or with a drop shadow.
-If you add all of those variants into your texture atlas, you will soon run out of memory.
+このメッシュは位置を変更したり、回転拡大したり、着色することもできます。
+//原文：All in all, however, the possibilities are rather limited --
+しかし、大雑把にはできることはむしろ少なく、
+//原文：the look of the game is solely defined by its textures.
+ゲームの見た目はほとんどテクスチャによって決まってしまうのです。
 
-_Fragment filters_ can help with that.
-A filter can be attached to any display object (including containers) and can completely change its appearance.
+そしてそのうちに、下記のような問題にぶつかるのではないでしょうか。
+一つの画像の色々なパターン、ブラー、色違い、影をつける、などが必要となることがあるでしょう。
+もし全てのエフェクトがついた全てのパターンをテクスチャアトラスに用意した場合は、
+すぐにメモリ不足になってしまいます。
 
-For example, let's say you want to add a Gaussian blur to an object:
+_フラグメント フィルター_ がこれを解決します。
+フィルターはどんな種類のディスプレイリストにも設定できます。スプライトなどのコンテナでも問題ありません。
+そして劇的に見た目を変えることができます。
+
+例えば、ガウスぼかしをディスプレイオブジェクトに適用したいものとしましょう。
 
 [source, as3]
 ----
 var filter:BlurFilter = new BlurFilter(); // <1>
 object.filter = filter; // <2>
 ----
-<1> Create and configure an instance of the desired filter class.
-<2> Assign the filter to the `filter` property of a display object.
+<1> 適切なフィルターのクラスを作成して必要であれば設定もします。
+<2> ディスプレイオブジェクトの `filter` プロパティにそのフィルターを設定します。
 
-With a filter assigned, rendering of a display object is modified like this:
+フィルタが設定されたディスプレイオブジェクトの描画は下記のように調整されます。
 
-* Each frame, the target object is rendered into a texture.
-* That texture is processed by a fragment shader (directly on the GPU).
-* Some filters use multiple passes, i.e. the output of one shader is fed into the next.
-* Finally, the output of the last shader is drawn to the back buffer.
+* 全てのフレームで、対象ディスプレイオブジェクトは一度内部処理でテクスチャーに描画されます。
+* そのテクスチャは直接 GPU で、フラグメントシェーダーによって処理されます。
+* 複数のフィルター設定は複数回の処理を必要とします。つまり１つのシェーダーの結果が次のシェーダーの入力として渡されます。
+* 最終的に、最後のシェーダーの出力がバックバッファーに書き込まれます.
 
-.The render pipeline of fragment filters.
+.フラグメントフィルターのレンダリングパイプライン。
 image::filter-pipeline.png[Filter Pipeline, 700]
 
-This approach is extremely flexible, allowing to produce all kinds of different effects (as we will see shortly).
-Furthermore, it makes great use of the GPU's parallel processing abilities; all the expensive per-pixel logic is executed right on the graphics chip.
+この方法はとても順庵で、
+//原文：allowing to produce all kinds of different effects (as we will see shortly).
+上で簡単に説明した通り、全ての異なる種類のエフェクトを同時に適用することができます。
 
-That said: filters break batching, and each filter step requires a separate draw call.
-They are not exactly cheap, both regarding memory usage and performance.
-So be careful and use them wisely.
+//原文：Furthermore, it makes great use of the GPU's parallel processing abilities;
+さらに、フィルターは、GPU の並列演算処理能力を積極的に利用します。
+//原文：all the expensive per-pixel logic is executed right on the graphics chip.
+ピクセル単位の演算処理は高くつきますが、その全てがグラフィックチップ上で行われます。
 
-=== Showcase
+とは言っても、フィルターはバッチ処理を分割しますし、１つのフィルター処理が１ドローコールを必要とします。
+//原文：They are not exactly cheap, both regarding memory usage and performance.
+メモリ面でもパフォーマンス面でも厳密には低コストではないのです。
 
-Out of the box, Starling comes with a few very useful filters.
+なので、うまく注意して使うようにしてください。
+
+=== ショーケース
+
+//原文：Out of the box, ：訳してない
+Starling はいくつかのとても便利なフィルターを提供します。
 
 ==== BlurFilter
 
