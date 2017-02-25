@@ -56,32 +56,33 @@ image::filter-pipeline.png[Filter Pipeline, 700]
 === ショーケース
 
 //原文：Out of the box, ：訳してない
-Starling はいくつかのとても便利なフィルターを提供します。
+Starling はとても便利なフィルターをいくつか提供します。
 
-==== BlurFilter
+==== ブラーフィルタ
 
-Applies a Gaussian blur to an object. The strength of the blur can be set for x- and y-axis separately.
+ガウスぼかしをオブジェクトに適用します。ぼかし強度はＸ軸Ｙ軸別々に設定できます。
 
-* Per blur direction, the filter requires at least one render pass (draw call).
-* Per strength unit, the filter requires one render pass (a strength of `1` requires one pass, a strength of `2` two passes, etc).
-* Instead of raising the blur strength, it's often better to lower the filter resolution. That has a similar effect, but is much cheaper.
+* ブラーごとに少なくとも１ドローコールを必要とします。
+* 強度が１つ増えるごとに１ドローコールが必要となります。強度１は１パス、強度２は２パス、が必要です。
+* 強度を増加させるのではなくり、フィルター解像度を低くするのが良い方法でしょう。効果的には似た感じになりますが、ずっと低コストです。
 
-.The _BlurFilter_ in action.
+.実際に _ブラーフィルター_ を動作させた例。
 image::filter-blur.png[BlurFilter, 600]
 
-==== ColorMatrixFilter
+==== カラーマトリックスフィルター
 
-Dynamically alters the color of an object. Change an object's brightness, saturation, hue, or invert it altogether.
+オブジェクトのカラーを動的に置き換えます。明度、彩度、色相を置き換えたり、完全に色味を反転したりします。
 
-This filter multiplies the color and alpha values of each pixel with a 4 × 5 matrix.
-That's a very flexible concept, but it's also quite cumbersome to get to the right matrix setup.
-For this reason, the class contains several helper methods that will set up the matrix for the effects you want to achieve (e.g. changing hue or saturation).
+このフィルターは各ピクセルごとに、カラー値とアルファ値を 4x5 マトリックスで行列演算します。
+これはとても柔軟なコンセプトですが、演算のための正しい行列値を得るのはとても複雑で難しい作業です。
+この理由で、このフィルターのクラスにはいくつかの便利なメソッドが用意されました。
+色相や彩度を変えたいなど、適用したいエフェクトを適用するための行列を計算して設定してくれます。
 
-* You can combine multiple color transformations in just one filter instance.
-  For example, to change both brightness and saturation, call both of the corresponding methods on the filter.
-* This filter always requires exactly one pass.
+* いくつかのカラー変更効果を１つのフィルターにまとめて設定することができます。
+例えば、フィルターのそれぞれに対応するメソッドを使う事で、明度と彩度を同時に変更する事ができます。
+* このフィルター処理に必要なドローコール数は１パスです。
 
-.The _ColorMatrixFilter_ in action.
+.実施に _カラーマトリックスフィルター_ を動作させた例。
 image::filter-colormatrix.png[ColorMatrixFilter, 600]
 
 ==== DropShadow- and GlowFilter
