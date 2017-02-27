@@ -85,55 +85,59 @@ image::filter-blur.png[BlurFilter, 600]
 .実施に _カラーマトリックスフィルター_ を動作させた例。
 image::filter-colormatrix.png[ColorMatrixFilter, 600]
 
-==== DropShadow- and GlowFilter
+==== ドロップシャドーフィルターとグローフィルター
 
-These two filters draw the original object in the front and add a blurred and tinted variant behind it.
+これら２つのフィルターは元々のオブジェクトを全面に配置し、そのオブジェクトをぼかして色味が加えられたものを背面に配置します。
 
-* That also makes them rather expensive, because they add an additional render pass to what's required by a pure _BlurFilter_.
+* よってこれらのフィルターは高コストです。ブラーフィルターに追加の描画処理を加えた状態なわけですから。
 
-._DropShadow-_ and _GlowFilter_ in action.
+._実際に _ドロップシャドーフィルター_ と _グローフィルター_ を動作させた例。
 image::filter-dropshadow+glow.png[DropShadow and Glow filter, 300]
 
-==== DisplacementMapFilter
+==== ディスプレースメントマップフィルター
 
-Displaces the pixels of the target object depending on the colors in a _map texture_.
+テクスチャーの色味に基づき、ターゲットのオブジェクトの形状を変化させます。
 
-* Not exactly easy to use, but very powerful!
-* Reflection on water, a magnifying glass, the shock wave of an explosion -- this filter can do it.
+* 使うのは難しいですが、とても強力な機能です！
+* 水面への写り込み、レンズの歪み、爆発の衝撃波、などをこのフィルターを使って実現可能です。
 ifdef::target-handbook[]
-* We will look at the details of this filter in a later chapter.
+* このフィルターについては後続の章で詳しく扱います。
 endif::[]
 
-.The _DisplacementMapFilter_ using a few different maps.
+.いくつかのテクスチャを適用したディスプレースメントマップフィルターの様子。
 image::filter-displacementmap.png[Other filters, 450]
 
-==== FilterChain
+==== フィルターチェイン
 
-To combine several filters on one display object, you can chain them together via the _FilterChain_ class.
-The filters will be processed in the given order; the number of draw calls per filter are simply adding up.
+_FilterChain_ クラスを用いると、いくつかのフィルターを組み合わせて１つのディスプレイオブジェクトに適用する事ができます。
+フィルターは設定された順序でそのまま処理されます。ドローコール数はフィルターが増えるごとに増加します。
 
-._ColorMatrix-_ and _DropShadowFilter_ chained together.
+._カラーマトリックスフィルター-_ と _ドロップシャドウフィルター_ を組み合わせた様子。
 image::filter-chain.png[FilterChain, 150]
 
 === Performance Tips
 
-I mentioned it above: while the GPU processing part is very efficient, the additional draw calls make fragment filters rather expensive.
-However, Starling does its best to optimize filters.
+すでに上で述べましたが、
+//原文：while the GPU processing part is very efficient, 
+GPU 処理部分はとても効率的であるものの、
+//原文：the additional draw calls make fragment filters rather expensive.
+追加のドローコールはむしろフィルターを高コストにします。
+//原文：However, Starling does its best to optimize filters.
+しかし Starling はフィルターを最適化して、できる限り効率的に動作しようとします。
 
-* When an object does not change its position relative to the stage (or other properties like scale and color) for two successive frames, Starling recognizes this and will automatically cache the filter output.
-  This means that the filter won't need to be processed any more; instead, it behaves just like a single image.
-* On the other hand, when the object is constantly moving, the last filter pass is always rendered directly to the back buffer instead of a texture.
-  That spares one draw call.
-* If you want to keep using the filter output even though the object is moving, call `filter.cache()`.
-  Again, this will make the object act just like a static image.
-  However, for any changes of the target object to show up, you must call `cache` again (or `uncache`).
-* To save memory, experiment with the `resolution` and `textureFormat` properties.
-  This will reduce image quality, though.
+* オブジェクトの位置がステージ座標で見て２つのフレーム間で変化しない場合、もしくはスケールや色味などが変化しない場合、Starling はそれを認識し、フィルター出力をキャッシュします。これは、フィルターが再度処理されなくて良い場合です。ただの１枚の画像であるかのように振舞います。
+* 一方で、オブジェクトが絶えず動いている場合、最後のフィルター処理はテクスチャではなく、絶えずバックバッファーに直接描画されます。
+これによりドローコールが１回節約されます。
+* もしもオベジェクトが動いていたとしても、フィルター出力をキャッシュさせたい場合、`filter.cache()` 命令を呼び出してください。
+再度言いますが、これによりオブジェクトは多大の１枚の画像のように振舞います。しかし、対象オブジェクトの変化を描画させるためには、
+`cache` または `uncache` 命令を再度呼び出す必要があります。
+* メモリー使用料を抑えるために、`resolution` 及び `textureFormat` プロパティを色々と変更してみてください。
+しかし、それにはイメージ品質の低下も伴います。
 
-=== More Filters
+=== フィルターについてもっと詳しく
 
-Would you like to know how to create your own filters?
-Don't worry, we will investigate that topic a <<Custom Filters, little later>>.
+ここまでで、フィルターを自分で作って見たいと思ったでしょうか？
+その話題についてはもう少し後に <<Custom Filters>> の項で扱います。
 
-In the meantime, you can try out filters created by other Starling developers.
-An excellent example is the https://github.com/devon-o/Starling-Filters[filter collection] by devon-o.
+それまでの間は、他の Starling デベロッパーが作成したフィルターを試す事ができます。
+この https://github.com/devon-o/Starling-Filters[フィルターコレクション] は devon-o 氏による素晴らしいフィルターの例です。
