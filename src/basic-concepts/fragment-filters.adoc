@@ -1,121 +1,144 @@
-== Fragment Filters
+== フラグメントフィルター
 
-Up until now, everything we rendered were meshes with (or without) textures mapped onto them.
-You can move meshes around, scale them, rotate them, and maybe tint them in a different color.
-All in all, however, the possibilities are rather limited -- the look of the game is solely defined by its textures.
+//原文：Up until now, everything we rendered were meshes with (or without) textures mapped onto them.
+ここまでは、描画してきたものは全てがメッシュであり、そこにテクスチャが設定されているものといないものがありました。
 
-At some point, you will run into the limits of this approach; perhaps you need a variant of an image in multiple colors, blurred, or with a drop shadow.
-If you add all of those variants into your texture atlas, you will soon run out of memory.
+メッシュは位置を変更したり、拡大・縮小・回転を施したり、着色することもできます。
+//原文：All in all, however, the possibilities are rather limited --
+しかし、概してできることはむしろ少なく、
+//原文：the look of the game is solely defined by its textures.
+ゲームの見た目はほとんどテクスチャによって決まってしまうのです。
 
-_Fragment filters_ can help with that.
-A filter can be attached to any display object (including containers) and can completely change its appearance.
+そしてそのうち、次のような問題にぶつかるのではないでしょうか。
+一つの画像に色々なパターン、例えば、ブラーがついたもの、色違い、影がついたもの、などが必要となることがあるでしょう。
+もし全てのエフェクトがついたたくさんの画像パターンをテクスチャアトラスに用意した場合、
+すぐにメモリ不足になってしまうでしょう。
 
-For example, let's say you want to add a Gaussian blur to an object:
+_フラグメント フィルター_ がこれを解決します。
+フィルターはどんな種類のディスプレイリストにも設定できます。スプライトなどのコンテナでも問題ありません。
+そして劇的に見た目を変えることができます。
+
+例えば、ガウスぼかしをディスプレイオブジェクトに適用したいとしましょう。
 
 [source, as3]
 ----
 var filter:BlurFilter = new BlurFilter(); // <1>
 object.filter = filter; // <2>
 ----
-<1> Create and configure an instance of the desired filter class.
-<2> Assign the filter to the `filter` property of a display object.
+<1> 適切なフィルターのクラスを作成して、必要であればその設定もします。
+<2> ディスプレイオブジェクトの `filter` プロパティにそのフィルターを設定します。
 
-With a filter assigned, rendering of a display object is modified like this:
+フィルタが設定されたディスプレイオブジェクトの描画は下記のように処理されます。
 
-* Each frame, the target object is rendered into a texture.
-* That texture is processed by a fragment shader (directly on the GPU).
-* Some filters use multiple passes, i.e. the output of one shader is fed into the next.
-* Finally, the output of the last shader is drawn to the back buffer.
+* 全てのフレームで、対象ディスプレイオブジェクトは一度テクスチャーに描画されます。
+* そのテクスチャは、直接 GPU のフラグメントシェーダーによって処理されます。
+* 複数のフィルター設定がある場合、複数回の処理を必要とします。１つのシェーダーの出力が次のシェーダーの入力として渡されます。
+* 最終的に、最後のシェーダー出力がバックバッファーに書き込まれます.
 
-.The render pipeline of fragment filters.
+.フラグメントフィルターのレンダリングパイプライン。
 image::filter-pipeline.png[Filter Pipeline, 700]
 
-This approach is extremely flexible, allowing to produce all kinds of different effects (as we will see shortly).
-Furthermore, it makes great use of the GPU's parallel processing abilities; all the expensive per-pixel logic is executed right on the graphics chip.
+この方法はとても柔軟で、
+//原文：allowing to produce all kinds of different effects (as we will see shortly).
+異なる種類のエフェクトを同時に複数適用することができます。
+//翻訳削除：（この後すぐサンプルを見せます。）
 
-That said: filters break batching, and each filter step requires a separate draw call.
-They are not exactly cheap, both regarding memory usage and performance.
-So be careful and use them wisely.
+//原文：Furthermore, it makes great use of the GPU's parallel processing abilities;
+さらに、フィルターは、GPU の並列演算処理能力をうまく利用します。
+//原文：all the expensive per-pixel logic is executed right on the graphics chip.
+高コストなピクセル単位の演算処理は、全てがグラフィックチップ上で行われます。
 
-=== Showcase
+と言っても、フィルターはバッチ処理を分割します。１つのフィルター処理が１ドローコールを必要とします。
+//原文：They are not exactly cheap, both regarding memory usage and performance.
+メモリ面でもパフォーマンス面でも厳密には低コストではないのです。
 
-Out of the box, Starling comes with a few very useful filters.
+よって、注意してうまく扱うようにしてください。
 
-==== BlurFilter
+=== ショーケース
 
-Applies a Gaussian blur to an object. The strength of the blur can be set for x- and y-axis separately.
+//原文：Out of the box, ＝ 使うのが簡単な？
+Starling には、とても便利なフィルターがいくつか搭載され、すぐに使う事ができます。
 
-* Per blur direction, the filter requires at least one render pass (draw call).
-* Per strength unit, the filter requires one render pass (a strength of `1` requires one pass, a strength of `2` two passes, etc).
-* Instead of raising the blur strength, it's often better to lower the filter resolution. That has a similar effect, but is much cheaper.
+==== ブラーフィルタ
 
-.The _BlurFilter_ in action.
+ガウスぼかしをオブジェクトに適用します。ぼかし強度はＸ軸Ｙ軸それぞれで個別に設定できます。
+
+* ブラーごとに少なくとも１ドローコールを必要とします。
+* 強度が１つ増えるごとに１ドローコールが必要となります。強度１は１パス、強度２は２パス、必要です。
+* 強度は増加させずに、フィルター解像度を低くするのが良い選択でしょう。効果的としては似た結果となりますが、ずっと低コストです。
+
+.実際に _ブラーフィルター_ を動作させた例。
 image::filter-blur.png[BlurFilter, 600]
 
-==== ColorMatrixFilter
+==== カラーマトリックスフィルター
 
-Dynamically alters the color of an object. Change an object's brightness, saturation, hue, or invert it altogether.
+オブジェクトのカラーを動的に置き換えます。明度、彩度、色相を置き換えたり、完全に色味を反転したりします。
 
-This filter multiplies the color and alpha values of each pixel with a 4 × 5 matrix.
-That's a very flexible concept, but it's also quite cumbersome to get to the right matrix setup.
-For this reason, the class contains several helper methods that will set up the matrix for the effects you want to achieve (e.g. changing hue or saturation).
+このフィルターは各ピクセルごとに、カラー値とアルファ値を 4x5 マトリックスで行列演算します。
+とても柔軟なコンセプトですが、その演算のための適切な行列値を手計算で得るのは難しい作業です。
+この理由で、このクラスにはいくつかの便利なメソッドが用意されました。
+色相や彩度を変えたいなど、適用したいエフェクトをのために必要な行列を用意してくれます。
 
-* You can combine multiple color transformations in just one filter instance.
-  For example, to change both brightness and saturation, call both of the corresponding methods on the filter.
-* This filter always requires exactly one pass.
+* 複数のカラー変更効果を１つのフィルターとしてまとめて設定することができます。
+それぞれのメソッドを使えば、明度と彩度を同時に変更する事ができます。
+* このフィルター処理に必要なドローコール数は１パスです。
 
-.The _ColorMatrixFilter_ in action.
+.実施に _カラーマトリックスフィルター_ を動作させた例。
 image::filter-colormatrix.png[ColorMatrixFilter, 600]
 
-==== DropShadow- and GlowFilter
+==== ドロップシャドーフィルターとグローフィルター
 
-These two filters draw the original object in the front and add a blurred and tinted variant behind it.
+これら２つのフィルターは元々のオブジェクトを全面に配置し、そのオブジェクトをぼかして色味が加えられたものを背面に配置します。
 
-* That also makes them rather expensive, because they add an additional render pass to what's required by a pure _BlurFilter_.
+* そのような手順のため、これらのフィルターは高コストです。ブラーフィルター効果に追加で処理を加えた状態なわけですので。
 
-._DropShadow-_ and _GlowFilter_ in action.
+._実際に _ドロップシャドーフィルター_ と _グローフィルター_ を動作させた例。
 image::filter-dropshadow+glow.png[DropShadow and Glow filter, 300]
 
-==== DisplacementMapFilter
+==== ディスプレースメントマップフィルター
 
-Displaces the pixels of the target object depending on the colors in a _map texture_.
+テクスチャーの色味に基づき、ターゲットのオブジェクトの形状を変化させます。
 
-* Not exactly easy to use, but very powerful!
-* Reflection on water, a magnifying glass, the shock wave of an explosion -- this filter can do it.
+* 扱いが難しいですが、とても強力な機能です！
+* 水面への写り込み、レンズの歪み、爆発の衝撃波、などをこのフィルターを使って実現可能です。
 ifdef::target-handbook[]
-* We will look at the details of this filter in a later chapter.
+* このフィルターについては後続の章で詳しく扱います。
 endif::[]
 
-.The _DisplacementMapFilter_ using a few different maps.
+.いくつかのテクスチャを適用したディスプレースメントマップフィルターの様子。
 image::filter-displacementmap.png[Other filters, 450]
 
-==== FilterChain
+==== フィルターチェイン
 
-To combine several filters on one display object, you can chain them together via the _FilterChain_ class.
-The filters will be processed in the given order; the number of draw calls per filter are simply adding up.
+_FilterChain_ クラスを用いると、いくつかのフィルターを組み合わせて１つのディスプレイオブジェクトに適用する事ができます。
+フィルターは設定された順序そのままで処理されます。ドローコール数はフィルターが増えるごとに増加します。
 
-._ColorMatrix-_ and _DropShadowFilter_ chained together.
+._カラーマトリックスフィルター-_ と _ドロップシャドウフィルター_ を組み合わせた様子。
 image::filter-chain.png[FilterChain, 150]
 
-=== Performance Tips
+=== パフォーマンス調整
 
-I mentioned it above: while the GPU processing part is very efficient, the additional draw calls make fragment filters rather expensive.
-However, Starling does its best to optimize filters.
+すでに上で述べましたが、
+//原文：while the GPU processing part is very efficient, 
+GPU での処理部分はとても効率的であるものの、
+//原文：the additional draw calls make fragment filters rather expensive.
+追加のドローコールがフィルターをむしろ高コストにします。
+//原文：However, Starling does its best to optimize filters.
+しかし Starling はフィルターを最適化して、できる限り効率的に動作しようとします。
 
-* When an object does not change its position relative to the stage (or other properties like scale and color) for two successive frames, Starling recognizes this and will automatically cache the filter output.
-  This means that the filter won't need to be processed any more; instead, it behaves just like a single image.
-* On the other hand, when the object is constantly moving, the last filter pass is always rendered directly to the back buffer instead of a texture.
-  That spares one draw call.
-* If you want to keep using the filter output even though the object is moving, call `filter.cache()`.
-  Again, this will make the object act just like a static image.
-  However, for any changes of the target object to show up, you must call `cache` again (or `uncache`).
-* To save memory, experiment with the `resolution` and `textureFormat` properties.
-  This will reduce image quality, though.
+* オブジェクトの位置がステージ座標で見て２つのフレーム間で変化しない場合、もしくはスケールや色味などが変化しない場合、Starling はそれを認識し、フィルター出力をキャッシュします。
+フィルターが再度処理されなくて良い場合に行われる事で、オブジェクトは、ただの１枚の画像であるかのように振舞います。
+* 一方で、オブジェクトが絶えず移動している場合、最後のフィルター処理はテクスチャではなく、絶えずバックバッファーに直接描画されます。
+これによりドローコールが１回節約されます。
+* オブジェクトが動いていた場合にもフィルター出力をキャッシュさせたい場合、`filter.cache()` 命令を呼び出してください。
+(再度言いますが）これによりオブジェクトはただの１枚の画像のように振舞います。
+しかし、対象オブジェクトの変化を描画に反映させるためには、`cache` または `uncache` 命令を明示的に呼び出しなおす必要があります。
+* `resolution` 及び `textureFormat` プロパティを調整する事でメモリー使用量を抑える事ができるでしょう。ただしこの方法の場合、イメージ品質の低下も伴います。
 
-=== More Filters
+=== フィルターについてさらに
 
-Would you like to know how to create your own filters?
-Don't worry, we will investigate that topic a <<Custom Filters, little later>>.
+ここまでで、フィルターを自分で作ってみたいと思いましたか？
+その話題については、もう少し後の <<Custom Filters>> の項で扱います。
 
-In the meantime, you can try out filters created by other Starling developers.
-An excellent example is the https://github.com/devon-o/Starling-Filters[filter collection] by devon-o.
+それまでは、他の Starling デベロッパーが作成したフィルターを試してみてはどうでしょう。
+この https://github.com/devon-o/Starling-Filters[フィルターコレクション] は devon-o 氏による素晴らしいフィルターの例です。
