@@ -1,42 +1,46 @@
-== ATF Textures
+== ATF テクスチャ
 
-In conventional Flash, most developers use the _PNG_ format for their images, or _JPG_ if they don't need transparency.
-Those are very popular in Starling, too.
-However, _Stage3D_ offers an alternative that has several unique advantages: the _Adobe Texture Format_, which can store _compressed_ textures.
+従来の Flash 開発では、ほとんどの開発者が画像として _PNG_ フォーマットを用いるか、透明度が必要ない場合は _JPG_ フォーマットを用います。
+それらは Starling でも同様にとても一般的なやり方です。
+しかし、_Stage3D_ はまた別の、いくつかの優れた特徴を持つ画像フォーマットに対応しています。_Adobe Texture Format_ という圧縮したテクスチャ情報を保持できるフォーマットです。
 
-* Compressed textures require just a fraction of their conventional counterparts.
-* Decompression is done directly on the GPU.
-* Uploading to graphics memory is faster.
-* Uploading can be done asynchronously: you can load new textures without interrupting gameplay.footnote:[Beginning with AIR 24 and Starling 2.2, this is possible with conventional textures, as well.]
+//原文：* Compressed textures require just a fraction of their conventional counterparts.
+* 圧縮されたテクスチャは従来のテクスチャと比べてわずかなサイズとなります。
+* 解凍作業は GPU によって直接行われます。
+* グラフィックメモリーへのアップロードがより高速です。
+* アップロードは非同期に行うことができます。ゲーム体験を損なわずにテクスチャをロードすることができます。.footnote:[AIR 24 と Starling 2.2 より、同じことを通常のテクスチャでも行う事ができます。]
 
-=== Graphics Memory
+=== グラフィックメモリー
 
-Before we go on, it might be interesting to know how much memory is required by a texture, anyway.
+ATF テクスチャの話を続ける前に、どのくらいのメモリーがテクスチャによって必要となるか知っておくのも良いでしょう。
 
-A _PNG_ image stores 4 channels for every pixel: _red_, _green_, _blue_, and _alpha_, each with 8 bit (that makes 256 values per channel).
-It's easy to calculate how much space a 512 × 512 pixel texture takes up:
-
-====
-Memory footprint of a 512 × 512 RGBA texture: +
-512 × 512 pixels × 4 bytes = 1,048,576 bytes ≈ 1 MB
-====
-
-When you've got a _JPG_ image, it's similar; you just spare the alpha channel.
+１枚の PNG 画像は、１ドットごとに4つのチャンネル情報を保持します。_赤_、_緑_、_青_、_透明度_ で、それぞれが８ビットの（つまり256段階の）情報を持ちます。
+512 x 512 ピクセルのテクスチャーがどれだけの領域を必要とするのか計算するのは難しくありません。
 
 ====
-Memory footprint of a 512 × 512 RGB texture: +
-512 × 512 pixels × 3 bytes = 786,432 bytes ≈ 768 kB
+512 × 512 サイズの RGBA テクスチャのメモリ容量: +
+512 × 512 ピクセル × 4 bytes = 1,048,576 bytes ≈ 1 MB
 ====
 
-Quite a lot for such a small texture, right?
-Beware that the built-in file compression of _PNG_ and _JPG_ does not help: the image has to be decompressed before _Stage3D_ can handle it.
-In other words: the file size does not matter; the memory consumption is always calculated with the above formula.
+_JPG_ イメージを使っている場合はもっと小さくなります。アルファチャンネルが必要なくなるためです。
 
-Nevertheless: if your textures easily fit into graphics memory that way -- go ahead and use them!
-Those formats are very easy to work with and will be fine in many situations, especially if your application is targeting desktop hardware.
+====
+512 × 512 サイズの RGB テクスチャのメモリ容量: +
+512 × 512 ピクセル × 3 bytes = 786,432 bytes ≈ 768 kB
+====
 
-However, there might come a moment in the development phase where your memory consumption is higher than what is available on the device.
-This is the right time to look at the ATF format.
+こんなに小さなテクスチャのためにとても大きな容量を必要としていますね？
+//原文：Beware that the built-in file compression of _PNG_ and _JPG_ does not help: the image has to be decompressed before _Stage3D_ can handle it.
+_PNG_ や _JPG_ フォーマットで圧縮された画像は _Stage3D_ が扱うために一度解凍されざるを得ないわけです。
+
+言い換えれば、ファイルサイズは問題ではないのです。メモリ使用量は上記の計算式によっていつでも決定されます。
+//原文：Nevertheless: if your textures easily fit into graphics memory that way -- go ahead and use them!
+とはいえ、それでもうまくメモリに収まるのであれば、そのまま使って良いでしょう。
+//原文：Those formats are very easy to work with and will be fine in many situations, especially if your application is targeting desktop hardware.
+特にデスクトップPCをターゲットとしたアプリケーションを作成しているのなら、それでたいていの場合とてもうまくワークします。
+
+しかし、開発が進むとデバイスで利用可能な容量以上にメモリ消費がなされてしまう瞬間もやってくる事でしょう。
+その時が、ATF フォーマットを試してみるべき時です。
 
 === Compressed Textures
 
