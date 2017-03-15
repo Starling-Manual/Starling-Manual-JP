@@ -42,47 +42,54 @@ _PNG_ や _JPG_ フォーマットで圧縮された画像は _Stage3D_ が扱�
 しかし、開発が進むとデバイスで利用可能な容量以上にメモリ消費がなされてしまう瞬間もやってくる事でしょう。
 その時が、ATF フォーマットを試してみるべき時です。
 
-=== Compressed Textures
+=== 圧縮テクスチャ
 
-Above, we learned that the file size of a conventional texture has nothing to do with how much graphics memory it uses; a massively compressed _JPG_ will take up just as much space as the same image in pure _BMP_ format.
+上記で、通常のテクスチャのファイルサイズがグラフィックメモリーが使われる量になんら影響しないことを知りました。
+強く圧縮された _JPG_ ファイルは、メモリ上に _BMP_ フォーマットと全く同じだけのスペースを使ってしまうのです。
 
-This is not true for compressed textures: they can be processed directly on the GPU.
-This means that, depending on the compression settings, you can load up to ten times as many textures.
-Quite impressive, right?
+これは本当の意味での圧縮テクスチャとは言えません。本当の圧縮テクスチャは GPU で直接処理されるのです。
+圧縮の設定によって10倍の数ものテクスチャーをアップロードする事もできてしまいます。とても感動的てはないですか。
 
-Unfortunately, each GPU vendor thought he could do better than the others, and so there are several different formats for compressed textures.
-In other words: depending on where your game is running, it will need a different kind of texture.
-How should you know beforehand which file to include?
+残念ながら、どの GPU ベンダーも他社よりも自分たちの方がうまくできると考えていたのか、圧縮テクスチャにはいくつか異なった種類が存在します。
+つまり、どこでゲームが動いているかによって、要求されるテクスチャの種類も変わって来るのです。
+どのように前もってゲームに含めるファイルを知ることができるのでしょう？
 
-This where ATF comes to the rescue.
-It is a format that Adobe created especially for _Stage3D_; actually, it is a container file that can include up to four different versions of a texture.
+ここが ATF テクスチャの出番です。
+ATF は _Stage3D_ のために Adobe が作成したフォーマットです。実際には、１つのテクスチャを4つの異なったフォーマットで同梱できるコンテナファイルです。
 
-* *PVRTC* (PowerVR Texture Compression) is used in PowerVR GPUs. It is supported by all generations of the iPhone, iPod Touch, and iPad.
-* *DXT1/5* (S3 Texture Compression) was originally developed by S3 Graphics. It is now supported by both Nvidia and AMD GPUs, and is thus available on most desktop computers, as well as some Android phones.
-* *ETC* (Ericsson Texture Compression) is used on many mobile phones, most notably on Android.
-* *ETC2* provides higher quality RGB and RGBA compression. It is supported by all Android and iOS devices that also support OpenGL ES 3.
+* *PVRTC* (PowerVR Texture Compression) フォーマットは、PowerVR GPU 向けに使われます。
+どの世代の iPhone、iPod Touch、iPadもこのフォーマットをサポートします。
+* *DXT1/5* (S3 Texture Compression) フォーマットは、S3 Graphics によって開発されたものです。
+現在では Nvidia と AMD の両方の GPU でサポートされているため、大抵のデスクトップと一部の Android で利用が可能です。
+* *ETC* (Ericsson Texture Compression) フォーマットは、たいていのモバイルフォン（特に Android）で利用されています。
+* *ETC2* フォーマットは、RGB 及び RGBA フォーマットの画像を高品質に圧縮します。
+OpenGL ES 3 をサポートしている Android や iOS 端末であればどの端末でも扱う事ができます。
 
-I wrote before that ATF is a _container_ format. That means that it can include any combination of the the above formats.
+ATF は コンテナーのフォーマットだと先に言いました。
+それは、上記のフォーマットをどんな組み合わせても含める事ができるという事です。
 
-.An ATF file is actually a container for other formats.
+.ATF ファイルは、実際には他のフォーマットのコンテナファイルです。
 image::atf-container.png[ATF container]
 
-When you include all formats (which is the default), the texture can be loaded on any Stage3D-supporting device, no matter if your application is running on iOS, Android, or on the Desktop.
-You don't have to care about the internals!
+もしも全てのフォーマットを含めるのなら（それがデフォルトの設定です。）、
+そのテクスチャは Stage3D をサポートするどのデバイスでも読み込む事ができます。
+デスクトップで動いていようが、iOSで動いていようが、Android で動いていようが、です。内部の挙動を気にする必要はありません。
 
-However, if you know that your game will only be deployed to, say, iOS devices, you can omit all formats except PVRTC.
-Or if you're only targeting high end mobile devices (with at least _OpenGL ES 3_), include only ETC2; that works on both Android and iOS.
-That way, you can optimize the download size of your game.
+しかし、もしもゲームが、例えば、iOS上だけでしか動かさないと言う場合、PVRTC 形式以外のフォーマッットはは省く事ができます。
+もしくは、ハイエンドなモバイルデバイスしかターゲットとしていないのであれば（少なくとも _OpenGL ES 3_ 以上の）
+ETC2 形式だけを含めてば良いのです。これは iOS でも Android でもうまく動作します。
+このようにして、ゲームのダウンロードサイズを最適化する事もできます。
 
 [NOTE]
 ====
-The difference between DXT1 and DXT5 is just that the latter supports an alpha channel.
-Don't worry about this, though: the ATF tools will choose the right format automatically.
+DXT1 と DXT5 の違いは、ただアルファチャンネルを後者のみがサポートすると言う点だけです。
+この点について心配する必要はありません。後述の ATF ツールは自動的に適切なフォーマットを選択してくれます。
 
-ETC1 actually does not support an alpha channel, but Stage3D works around this by using two textures internally. Again, this happens completely behind the scenes.
+ETC1は実際アルファチャンネルをサポートしませんが、Stage3Dは内部的に２枚のテクスチャを使うことにとってこの点をうまくカバーします。
+再度言いますが、この処理は内部的に自動で行われます。
 ====
 
-=== Creating an ATF texture
+=== ATF テクスチャの作成
 
 Adobe provides a set of command line tools to convert to and from ATF and to preview the generated files.
 They are part of the AIR SDK (look for the `atftools` folder).
@@ -150,7 +157,7 @@ AS3 Texture Class  : Texture (flash.display3D.Texture)
 AS3 Texture Format : Context3DTextureFormat.COMPRESSED_ALPHA
 ----
 
-=== Using ATF Textures
+=== ATF テクスチャを使う
 
 Using a compressed texture in Starling is just as simple as any other texture.
 Pass the byte array with the file contents to the factory method `Texture.fromAtfData()`.
@@ -196,9 +203,9 @@ var texture:Texture = Texture.fromEmbeddedAsset(CompressedData);
 
 Note, however, that asynchronous upload is not available in this case.
 
-=== Other Resources
+=== その他の情報
 
-You can find out more about this topic in the following sources:
+この話題について、さらなる情報は下記で得る事ができます。
 
 * http://www.adobe.com/devnet/flashruntimes/articles/introducing-compressed-textures.html[Introducing Compressed Textures]
 * http://www.adobe.com/devnet/flashruntimes/articles/atf-users-guide.html[ATF Tools User's Guide]
