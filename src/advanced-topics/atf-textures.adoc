@@ -122,8 +122,7 @@ image::atf-viewer.png[ATFViewer]
 
 NOTE: ミップマップ画像については、<<Memory Management>> チャプターにて取り上げます。
 
-そして、おそらく画像のクオリティが
-You will probably also notice that the image quality has suffered a bit from the compression.
+そして、おそらく圧縮後の画像クオリティが多少低下しているのに気がつくかと思います。
 これら全ての圧縮フォーマットは非可逆だからです。小さなメモリ容量との引き換えに品質が低下します。
 どのくらい品質が問題になるかは、イメージのタイプによります。
 自然を写した写真などは品質の低下があまり問題になりませんが、コミックイラストのような画像はエッジの品質低下が問題になります。
@@ -162,8 +161,8 @@ AS3 Texture Format : Context3DTextureFormat.COMPRESSED_ALPHA
 
 === ATF テクスチャを使う
 
-Using a compressed texture in Starling is just as simple as any other texture.
-Pass the byte array with the file contents to the factory method `Texture.fromAtfData()`.
+圧縮されたテクスチャを Starling で扱うのは、他のテクスチャと同じようにシンプルです。
+ATF ファイルのバイトアレイを `Texture.fromAtfData()` ファクトリーメソッドへ渡します。
 
 [source, as3]
 ----
@@ -171,15 +170,15 @@ var atfData:ByteArray = getATFBytes(); // <1>
 var texture:Texture = Texture.fromATFData(atfData); // <2>
 var image:Image = new Image(texture); // <3>
 ----
-<1> Get the raw data e.g. from a file.
-<2> Create the ATF texture.
-<3> Use it like any other texture.
+<1> 生のデータをファイルなどから得ます。
+<2> ATF テクスチャを作成します。
+<3> 他のテクスチャと同様に利用します。
 
-That's it! This texture can be used like any other texture in Starling.
-It's also a perfectly suitable candidate for your atlas texture.
+これだけです。Starling では他のテクスチャと全く同じように使う事ができます。
+アトラステクスチャの完全に適切な代替候補だとも言えます。
 
-However, the code above will upload the texture synchronously, i.e. AS3 execution will pause until that's done.
-To load the texture asynchronously instead, pass a callback to the method:
+しかし、上記のコードでは同期的に処理されてしまうため、終了まで AS3 コードの実行が止まってしまいます。
+非同期処理でテクスチャをロードするには、このメソッドにコールバックを指定します。
 
 [source, as3]
 ----
@@ -190,11 +189,14 @@ Texture.fromATFData(atfData, 1, true,
     });
 ----
 
-Parameters two and three control the scale factor and if mipmaps should be used, respectively.
-The fourth one, if passed a callback, will trigger asynchronous loading: Starling will be able to continue rendering undisturbed while that happens.
-As soon as the callback has been executed (but not any sooner!), the texture will be usable.
+２番目と３番目の引数は、それぞれスケールファクターをコントロールするものとミップマップを利用する指定するものです。
+４番目の引数としてコールバックが渡されると、非同期処理でのロードの指定となります。
+Starling はロード処理の間も描画処理を邪魔されずに続けてる事ができます。
 
-Of course, you can also embed the ATF file directly in the AS3 source.
+//原文：As soon as the callback has been executed (but not any sooner!), the texture will be usable.
+//かっこの中が訳せていない 、すぐにではない？？
+コールバックが実行されるとすぐに、テクスチャは利用可能になります。
+もちろん、ATF は AS3 ソースコードに直接埋め込む事も可能です。
 
 [source, as3]
 ----
@@ -204,7 +206,7 @@ public static const CompressedData:Class;
 var texture:Texture = Texture.fromEmbeddedAsset(CompressedData);
 ----
 
-Note, however, that asynchronous upload is not available in this case.
+しかしソース埋め込みの場合、非同期アップロードは出来ない仕様であるので注意してください。
 
 === その他の情報
 
