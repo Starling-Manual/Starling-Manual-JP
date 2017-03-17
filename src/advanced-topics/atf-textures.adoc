@@ -91,56 +91,59 @@ ETC1は実際アルファチャンネルをサポートしませんが、Stage3D
 
 === ATF テクスチャの作成
 
-Adobe provides a set of command line tools to convert to and from ATF and to preview the generated files.
-They are part of the AIR SDK (look for the `atftools` folder).
+Adobe から ATF ファイルを画像からコンバートするツールと、ATF をプレビューするツールが提供されています。
+AIR SDK の一部として配布されており、`atftools` フォルダ以下に存在します。
 
-Probably the most important tool is `png2atf`.
-Here is a basic usage example; it will compress the texture with the standard settings in all available formats.
+おそらく最も重要なツールは `png2atf` です。
+//原文：Here is a basic usage example; it will compress the texture with the standard settings in all available formats.
+下記は、基本的な使い方の例です。標準的な設定で全てのタイプのフォーマットを内包したテクスチャを生成します。
 
 ----
 png2atf -c -i texture.png -o texture.atf
 ----
 
-If you tried that out right away, you probably received the following error message, though:
+上記コマンドを実行すると、もしかすると下記のようなエラーメッセージが表示されるかもしれません。
 
 ----
 Dimensions not a power of 2!
 ----
 
-That's a limitation I have not mentioned yet: ATF textures are required to always have side-lengths that are powers of two.
-While this is a little annoying, it's actually rarely a problem, since you will almost always use them for atlas textures.
+まだ説明していませんでしたが、これは制限事項の一つです。 ATF テクスチャは、縦横の幅が2の階乗のドット数である必要があります。
+多少めんどくさいですが、ほとんど問題にはなりません。大抵はテクスチャアトラスを変換するだろうからです。
 
-TIP: Most atlas generators can be configured so that they create power-of-two textures.
+TIP: 大抵のアトラス作成ソフトは、大きさが2の階乗のドット数であるテクスチャを書き出せるようになっています。
+コマンドの実行が成功した後は、出力を _ATFViewer_ で確認する事ができます。
 
-When the call succeeds, you can review the output in the _ATFViewer_.
-
-.The _ATFViewer_ tool.
+._ATFViewer_ ツール。
 image::atf-viewer.png[ATFViewer]
 
-In the list on the left, you can choose which internal format you want to view.
-Furthermore, you see that, per default, all mipmap variants have been created.
+左のリストには ATF テクスチャが内部で保持しているうちのどのフォーマットをプレビューするか選択する事ができます。
+デフォルトでは、ミップマップ画像も作成されているのがわかります。
 
-NOTE: We will discuss mipmaps in the <<Memory Management>> chapter.
+NOTE: ミップマップ画像については、<<Memory Management>> チャプターにて取り上げます。
 
+そして、おそらく画像のクオリティが
 You will probably also notice that the image quality has suffered a bit from the compression.
-This is because all those compression formats are _lossy_: the smaller memory footprint comes at the prize of a reduced quality.
-How much the quality suffers is depending on the type of image: while organic, photo-like textures work well, comic-like images with hard edges can suffer quite heavily.
+これら全ての圧縮フォーマットは非可逆だからです。小さなメモリ容量との引き換えに品質が低下します。
+どのくらい品質が問題になるかは、イメージのタイプによります。
+自然を写した写真などは品質の低下があまり問題になりませんが、コミックイラストのような画像はエッジの品質低下が問題になります。
 
-The tool provides a lot of different options, of course.
-E.g. you can let it package only the PVRTC format, perfect for iOS:
+もちろん、このツールでは様々なオプション設定が可能です。
+例えば、iOS デバイスにぴったりの PVRTC フォーマットだけを含ませるなどです。
 
 ----
 png2atf -c p -i texture.png -o texture.atf
 ----
 
-Or you can tell it to omit mipmaps in order to save memory:
+ミップマップ画像を省いて、メモリを節約することもできます。
 
 ----
 png2atf -c -n 0,0 -i texture.png -o texture.atf
 ----
 
-Another useful utility is called `atfinfo`.
-It displays details about the data that's stored in a specific ATF file, like the included texture formats, the number of mipmaps, etc.
+もう一つの便利なユーティリティは、`atfinfo` です。
+このツールは、ATF ファイルが保持している詳細情報を表示します。
+例えば、含まれるフォーマットの一覧、ミップマップの数、などです。
 
 ----
 > atfinfo -i texture.atf
