@@ -1,22 +1,23 @@
-== Custom Filters
+== カスタムフィルター
 
-Are you ready to get your hands dirty?
-We are now entering the realm of custom rendering code, starting with a simple fragment filter.
+手を汚す準備はできていますか？
+ついにカスタムレンダリングのコードの分野に取り掛かろうとしています。先ずは簡単なフラグメントフィルターからです。
 
-Yes, this will involve some low level code; heck, you'll even write a few lines of assembler!
-But fear not, it's not rocket science.
-As my old math teacher used to say: a drilled monkey could do that!
+この作業には低レイヤーのコードを取り扱う必要があります。何行かのアセンブラコードを書くことにもなるでしょう。
+しかし恐れることはありません。ロケット工学を扱うわけではないのですから。
+昔の数学の先生は言ったものです。訓練を積んだ猿はそんな問題は解いてしまうぞ！と。
+//原文：As my old math teacher used to say: a drilled monkey could do that!
 
-NOTE: Remember: filters work on the pixel level of display objects.
-The filtered object is rendered into a texture, which is then processed by a custom fragment shader (hence the name _fragment filter_).
+NOTE: 覚えておいて欲しいのですが、フィルターはディスプレイオブジェクトのピクセル単位で動きます。
+フィルターが適用されたオブジェクトは、一度内部的にテクスチャーに変換され、その後フラグメントシェダーで処理されます。（よってこれをフラグメントフィルターを呼びます。）
 
-=== The Goal
+=== ゴール
 
-Even though we're picking a simple goal, it should be a useful one, right?
-So let's create a _ColorOffsetFilter_.
+簡単な作成をゴールとしますが、役に立つものであるべきです。
+ここでは _ColorOffsetFilter_ を作ることにしましょう。
 
-You probably know that you can tint any vertex of a mesh by assigning it a color.
-On rendering, the color will be multiplied with the texture color, which provides a very simple (and fast) way to modify the color of a texture.
+おそらく、メッシュのどの頂点にもカラーが設定でき、色付けを施すことができる事は知っているかと思います。
+レンダリング時にそのカラー設定はテクスチャーのカラーと乗算されます。テクスチャーの色味を調整するシンプルで高速なやり方です。
 
 [source, as3]
 ----
@@ -24,42 +25,43 @@ var image:Image = new Image(texture);
 image.color = 0x808080; // R = G = B = 0.5
 ----
 
-The math behind that is extremely simple: on the GPU, each color channel (red, green, blue) is represented by a value between zero and one.
-Pure red, for example, would be:
+背景にある数学的な演算はとてもシンプルです。GPU では赤・緑・青のどのチャンネルも 0 から 1 の間の数値で表されます。
+例えば、純粋な赤は下記のような値になります。
 
   R = 1, G = 0, B = 0
 
-On rendering, this color is then multiplied with the color of each pixel of the texture (also called "texel").
-The default value for an image color is pure white, which is a `1` on all channels.
-Thus, the texel color appears unchanged (a multiplication with `1` is a no-op).
-When you assign a different color instead, the multiplication will yield a new color, e.g.
+レンダリング時に、このカラー値は各ピクセルのテクスチャー色(テクセルとも呼ばれます。）と乗算されます。
+デフォルトのイメージのカラーは純白です。全てのチャンネル値が１となります。
+したがって、テクセルのカラーは変化しません。（１をかける事は何もしない事と同じです。）
+
+異なったカラー値を設定すると乗算結果は新しい色を生み出します。下記はその例です。
 
   R = 1,   G = 0.8, B = 0.6  ×
   B = 0.5, G = 0.5, B = 0.5
   -------------------------
   R = 0.5, G = 0.4, B = 0.3
 
-And here's there problem: this will only ever make an object darker, never brighter.
-That's because we can only multiply with values between 0 and 1; zero meaning the result will be black, and one meaning it remains unchanged.
+そしてここで問題が起きます。この処理はオブジェクトの色味を暗くはしますが、絶対に明るくはしないのです。
+何故ならば掛け合わせている値が 0 と 1 の間だけだからです。0 をかける事は黒を作り出します。そして 1 をかけると無変化となります。
 
-.Tinting an image with a gray color.
+.グレーのカラー設定で色味が変化した画像。
 image::customfilter-tinting.png[Tinting]
 
-That's what we want to fix with this filter!
-We're going to include an _offset_ to the formula.
-(In classic Flash, you would do that with a http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/geom/ColorTransform.html[ColorTransform].)
+この問題をこれから作るフィルターで解決してみましょう。
+カラーの計算にオフセット値を含むようにします。
+（Flashでは http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/geom/ColorTransform.html[ColorTransform] の設定として行なっていた事と同じです。)
 
-* New red value = (old red value × redMultiplier) + redOffset
-* New green value = (old green value × greenMultiplier) + greenOffset
-* New blue value = (old blue value × blueMultiplier) + blueOffset
-* New alpha value = (old alpha value × alphaMultiplier) + alphaOffset
+* 変化後の red 値 = (元の red 値 × red 乗算値) + red オフセット値
+* 変化後の green 値 = (元の green 値 × green 乗算値) + green オフセット値
+* 変化後の blue 値 = (元の blue 値 × blue 乗算値) + blue オフセット値
+* 変化後の alpha 値 = (元の alpha 値 × alpha 乗算値) + alpha オフセット値
 
-We already have the multiplier, since that's handled in the base _Mesh_ class; our filter just needs to add the offset.
+乗算する機構はメッシュ基底クラスがすでに持っているので、オフセット値のみがこれから作るフィルターに必要なプロパティとなります。
 
-.Adding an offset to all channels.
+.全てのチャンネルにオフセット値を与える。
 image::customfilter-offset.png[Offset]
 
-So let's finally start, shall we?!
+では、そろそろ始めますよ？
 
 === Extending FragmentFilter
 
