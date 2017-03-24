@@ -150,13 +150,14 @@ NOTE: `colorOffsetEffect` プロパティが何をしているのか気になる
 呼び出す事で、設定が変化した場合に必ずエフェクトの再描画がかかるようにしています。
 この呼び出しがないと、Starling はオブジェクトを再描画するべきタイミングを知ることができないのです。
 
-=== Extending FilterEffect
+=== FilterEffect を継承する
 
-Time to do some actual work, right?
-Well, our _FilterEffect_ subclass is the actual workhorse of this filter.
-Which doesn't mean that it's very complicated, so just bear with me.
+実際の仕事を行う時間となりました。
+この _FilterEffect_ のサブクラスは、サンプルフィルターの働き者と言えます。
+これは、複雑だ、という意味ではありません。ちょっと我慢して付いてきてください。
+//原文：Which doesn't mean that it's very complicated, so just bear with me.
 
-Let's start with a stub:
+先ずは仮のスタブコードから始めましょう。
 
 [source, as3]
 ----
@@ -193,11 +194,10 @@ public class ColorOffsetEffect extends FilterEffect
 }
 ----
 
-Note that we're storing the offsets in a _Vector_, because that will make it easy to upload them to the GPU.
-The `offset` properties read from and write to that vector.
-Simple enough.
+ここでは、offsets プロパティを _Vector_ 型の中に格納しています。その方が GPU へのアップロード時に都合がいいからです。
+`offset` プロパティを、ベクターの中に読み書きする。シンプルです。
 
-It gets more interesting when we look at the two overridden methods.
+２つの継承メソッドについて見ていくと、さらに面白くなってきます。
 
 ==== createProgram
 
