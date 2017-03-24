@@ -63,11 +63,12 @@ image::customfilter-offset.png[Offset]
 
 では、そろそろ始めますよ？
 
-=== Extending FragmentFilter
+=== FragmentFilter を継承する
 
-All filters extend the class `starling.filters.FragmentFilter`, and this one is no exception.
-Now hold tight: I'm going to give you the complete _ColorOffsetFilter_ class now; this is not a stub, but the final code.
-We won't modify it any more.
+全てのフィルターは例外なく、`starling.filters.FragmentFilter` クラスを継承して作ります。
+
+さてここで、 _ColorOffsetFilter_ クラスの完全なコードを紹介します。仮コードではなく最終のコードです。
+この後のコード修正はありません。
 
 [source, as3]
 ----
@@ -104,7 +105,7 @@ public class ColorOffsetFilter extends FragmentFilter
         setRequiresRedraw();
     }
 
-    // the other offset properties need to be implemented accordingly.
+    // その他の オフセット プロパティも同じようにそれぞれ実装します。
 
     public function get/set greenOffset():Number;
     public function get/set blueOffset():Number;
@@ -112,33 +113,42 @@ public class ColorOffsetFilter extends FragmentFilter
 }
 ----
 
-That's surprisingly compact, right?
-Well, I have to admit it: this is just half of the story, because we're going to have to write another class, too, which does the actual color processing.
-Still, it's worthwhile to analyze what we see above.
+驚くほどコンパクトですね。
+実はこれはまだ話の半分ほどです。別にもうひとつのクラスを記述する必要があります。そこで、実際の色味を扱う処理が入ります。
+しかし、上記のコードも詳細を追う価値があります。
 
-The class extends _FragmentFilter_, of course, and it overrides one method: `createEffect`.
-You probably haven't run into the `starling.rendering.Effect` class before, because it's really only needed for low-level rendering.
-From the API documentation:
+このクラスは _FragmentFilter_ クラスを継承しており、'createEffect' メソッドをオーバーライドしています。
+おそらく `starling.rendering.Effect` クラスを扱ったこと人がほとんどだと思いますが、それはローレベルのレンダリング用途でしか必要とならないからです。
+API ドキュメントから引用すると、
 
 ====
-An effect encapsulates all steps of a Stage3D draw operation.
-It configures the render context and sets up shader programs as well as index- and vertex-buffers, thus providing the basic mechanisms of all low-level rendering.
+Effect は Stage3D の描画工程の全てをカプセル化します。
+レンダーコンテキストを設定し、インデックスバッファ、バーテックスバッファ、シェーダプログラムをセットアップします。
+よって、基本的でローレベルな全てのレンダリングメカニズムを提供してくれます。
+//原文：It configures the render context and sets up shader programs as well as index- and vertex-buffers, thus providing the basic mechanisms of all low-level rendering.
 ====
 
-The _FragmentFilter_ class makes use of this class, or actually its subclass called _FilterEffect_.
-For this simple filter, we just have to provide a custom effect, which we're doing by overriding `createEffect()`.
-The properties do nothing else than configuring our effect.
-On rendering, the base class will automatically use the effect to render the filter.
-That's it!
+と、あります。
 
-NOTE: If you're wondering what the `colorOffsetEffect` property does: that's just a shortcut to be able to access the effect without constantly casting it to _ColorOffsetEffect_.
-The base class provides an `effect` property, too, but that will return an object of type `FilterEffect` -- and we need the full type, _ColorOffsetEffect_, to access our `offset` properties.
+_FragmentFilter_ クラスは、このクラスもしくはこのクラスを継承した _FilterEffect_ というサブクラスを利用します。
+今回のシンプルなフィルターのために、`createEffect()` をオーバライドし、カスタムエフェクトを提供します。
+//原文：For this simple filter, we just have to provide a custom effect, which we're doing by overriding `createEffect()`.
+その他プロパティはエフェクトを調整するだけのためのものです。
+レンダリング時には、ベースクラスが、その effect を自動系に扱い、フィルターの描画をしてくれます。
+以上となります！
 
-More complicated filters might need to override the `process` method as well; that's e.g. necessary to create multi-pass filters.
-For our sample filter, though, that's not necessary.
+NOTE: `colorOffsetEffect` プロパティが何をしているのか気になるでしょうか。
+//原文：If you're wondering what the `colorOffsetEffect` property does:
+これは、 _ColorOffsetEffect_ へのキャストを行わずに effect へのアクセスを行うためのただのショートカットです。
+ベースクラスは `effect` プロパティを提供します。しかし、それは FilterEffect` 型でのオブジェクトであり、
+`offset` プロパティにアクセスするためには、完全な _ColorOffsetEffect_ 型が必要であるわけです。
 
-Finally, note the calls to `setRequiresRedraw`: they make sure the effect is re-rendered whenever the settings change.
-Otherwise, Starling wouldn't know that it has to redraw the object.
+もっと複雑なフィルターでは `process` メソッドの継承も必要になるかもしれません。例えばマルチパスのフィルターを作る場合などです。
+しかし、今回のサンプルフィルターでは必要ありません。
+
+最後に、`setRequiresRedraw` メソッドの呼び出しについて記します。
+呼び出す事で、設定が変化した場合に必ずエフェクトの再描画がかかるようにしています。
+この呼び出しがないと、Starling はオブジェクトを再描画するべきタイミングを知ることができないのです。
 
 === Extending FilterEffect
 
