@@ -201,34 +201,38 @@ public class ColorOffsetEffect extends FilterEffect
 
 ==== createProgram
 
-This method is supposed to create the actual Stage3D shader code.
+このメソッドは実際の Stage3D シェーダーコードを作成します。
 
 [NOTE]
 ====
-I'll show you the basics, but explaining _Stage3D_ thoroughly is beyond the scope of this manual.
-To get deeper into the topic, you can always have a look at one of the following tutorials:
+基本的な事柄は解説しますが、_Stage3D_ の全てについてそれを行うのはこのマニュアルの範疇を超えます。
+さらに詳細な情報が必要であれば、下記リンクのチュートリアルを参照することができます。
 
   * http://www.adobe.com/devnet/flashplayer/articles/how-stage3d-works.html[How Stage3D works]
   * http://jacksondunstan.com/articles/1661[Introduction to AGAL]
   * http://help.adobe.com/en_US/as3/dev/WSd6a006f2eb1dc31e-310b95831324724ec56-8000.html[List of AGAL operations]
 ====
 
-All Stage3D rendering is done through vertex- and fragment-shaders.
-Those are little programs that are executed directly by the GPU, and they come in two flavors:
+Stage3D の全てのレンダリングは、バーテックス()シェーダーとフラグメント(断片)シェーダーを通して行われます。
+これらは GPU によって直接実行される小さなプログラムで、２つの役割を持ちます。
 
-* *Vertex Shaders* are executed _once for each vertex_.
-  Their input is made up from the vertex attributes we typically set up via the `VertexData` class; their output is the position of the vertex in screen coordinates.
-* *Fragment Shaders* are executed _once for each pixel_ (fragment).
-  Their input is made up of the _interpolated_ attributes of the three vertices of their triangle; the output is simply the color of the pixel.
-* Together, a fragment and a vertex shader make up a *Program*.
+* *バーテックスシェーダー* はそれぞれの頂点に対して１度だけ実行されます。
+入力情報は、頂点の属性値から作成され、通常 `VertexData` クラスを通して設定します。
+出力情報は、スクリーン座標系での位置情報です。
+* *フラグメントシェーダー* は１ピクセル(=断片=フラグメント)ごとに１回実行されます。
+入力情報は関連する三角ポリゴンの３つの頂点の情報がピクセルの位置によって補完されたものです。
+出力情報は、シンプルにそのピクセルのカラー情報です。
+* ２つのシェーダが合わさって１つの *Program* を作成します。
 
-The language filters are written in is called AGAL, an assembly language.
-(Yes, you read right! This is as low-level as it gets.)
-Thankfully, however, typical AGAL programs are very short, so it's not as bad as it sounds.
+フィルターが記述されている言語は AGAL と呼ばれます。アセンブラ言語です。
+（読んだ通り、この言語はローベル中のローベルです。）
+//原文：(Yes, you read right! This is as low-level as it gets.)
+しかしながら、ありがたいことに大抵の AGAL プログラムはとても短く、そこまでひど事にはなりません。
+//原文：Thankfully, however, typical AGAL programs are very short, so it's not as bad as it sounds.
 
-Good news: we only need to write a fragment shader.
-The vertex shader is the same for most fragment filters, so Starling provides a standard implementation for that.
-Let's look at the code:
+良いニュースとして、今回はフラグメントシェーダーを書くだけですみます。
+バーテックスシェーダーは大抵のフィルターで同じになるので、Starling は標準的なバーテックスシェーダーの実装を提供します。
+では、そのコードを見てみましょう。
 
 [source, as3]
 ----
@@ -243,30 +247,35 @@ override protected function createProgram():Program
 }
 ----
 
-As promised, the vertex shader is taken from a constant; the fragment shader is just two lines of code.
-Both are combined into one _Program_ instance, which is the return value of the method.
+説明したように、バーテックスシェーダーは定数から取得されます。
+フラグメントシェーダーはたったの２行です。
+２つのシェーダーは合わせて１つの _Program_ インスタンスとなり、メソッドの戻り値となります。
 
-The fragment shader requires some further elaboration, of course.
+フラグメントシェーダーにはもう少しの労力が必要です。
+//原文：The fragment shader requires some further elaboration, of course.
 
-===== AGAL in a Nutshell
+===== AGAL コード概要
 
-In AGAL, each line contains a simple method call.
+AGAL は、各行にシンプルな命令が記述されます。
 
-  [opcode] [destination], [argument 1], ([argument 2])
+  [命令] [出力場所], [引数１], ([引数２])
 
-* The first three letters are the name of the operation (`tex`, `add`).
-* The next argument defines where the result of the operation is saved.
-* The other arguments are the actual arguments of the method.
-* All data is stored in predefined _registers_; think of them as _Vector3D_ instances (with properties for x, y, z and w).
+* 最初の３文字はオペーレーション名です。 (`tex`, `add`).
+* 次の引数はオペレーション結果をどこに保存するかを指定します。
+* 他の引数はオペレーションの実際の引数となるものです。
+* 全てのデータはあらかじめ定義済みのレジスタに保持されます。
+それらレジスタは _Vector3D_ インスタンスだと考えましょう。x、y、zのプロパティを持ちます。
 
-There are several types of registers, e.g. for constants, temporary data or for the output of a shader.
-In our shader, some of them already contain data; they were set up by other methods of the filter (we'll come to that later).
+レジスタにはいくつかの種類があります。例えば、定数、一時データ、シェーダーの出力用などです。
+今回のシェーダーでは、そのうちいくつかはあらかじめ値を持っています。フィルターの他のメソッドによって設定されています。
+（後ほど解説します。）
 
-* `v0` contains the current texture coordinates (_varying register 0_)
-* `fs0` points to the input texture (_fragment sampler 0_)
-* `fc0` contains the color offset this is all about (_fragment constant 0_)
+* `v0` (_varying レジスタ 0_)は、現在のテクスチャ座標を保持しています。
+* `fs0` (_fragment サンプラ 0_)は、入力テクスチャを示します。
+* `fc0` (_fragment 定数 0_)は、カラーオフセット値を保持しています。今回のキモです。
+//原文：contains the color offset this is all about
 
-The result of a fragment shader must always be a color; that color is to be stored in the `oc` register.
+フラグメントシェーダの結果はいつもカラー値となります。 出力カラー値は `oc` レジスタに格納します。
 
 ===== Code Review
 
