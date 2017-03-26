@@ -323,7 +323,7 @@ AGAL コードはとりあえずこのような感じです。
 
 ==== beforeDraw
 
-The `beforeDraw` method is executed directly before the shaders are executed. We can use them to set up all the data required by our shader.
+`beforeDraw` メソッドはシェーダーが実行される前に直接実行されます。シェーダーに必要なデータを前もって設定しておくことができます。
 
 [source, as3]
 ----
@@ -334,19 +334,19 @@ override protected function beforeDraw(context:Context3D):void
 }
 ----
 
-This is where we pass the offset values to the fragment shader.
-The second parameter, `0`, defines the register that data is going to end up in.
-If you look back at the actual shader code, you'll see that we read the offset from `fc0`, and that's exactly what we're filling up here: `fragment constant 0`.
+ここで、フラグメントシェーダーにオフセット値を渡しています。
+２番目のパラメータの `0` は、データが格納されるレジスタを意味しています。
+シェーダーのコードを見返すと、オフセット値を `fc0` から読み取っています。そここそがデータを格納した  `fragment constant 0` です。
 
-The super call sets up all the rest, e.g. it assigns the texture (`fs0`) and the texture coordinates.
+super の呼び出しの箇所では残りのセットアップを行います。テクスチャを `fs0` に設定したり、テクスチャ座標を設定したりします。
 
-NOTE: Before you ask: yes, there is also an `afterDraw()` method, usually used to clean up one's resources.
-But for constants, this is not necessary, so we can ignore it in this filter.
+NOTE: 尋ねられる前に。`afterDraw()` メソッドも同様に存在します。このメソッドは通常利用したリソースを開放するのに使われます。
+しかし、定数に対しては必要ありません。よって今回のフィルターではそこの実装は行いません。
 
-=== Trying it out
+=== 動作確認
 
-Our filter is ready, actually (download the complete code https://gist.github.com/PrimaryFeather/ba1e26d568320cd31086[here])!
-Time to give it a test ride.
+さあ、フィルターの実装ができました！（完全なコードは https://gist.github.com/PrimaryFeather/ba1e26d568320cd31086[ここ] から手に入ります。）
+早速テストしてみましょう。
 
 [source, as3]
 ----
@@ -357,55 +357,54 @@ image.filter = filter;
 addChild(image);
 ----
 
-.Our filter seems to have an ugly side effect.
+.フィルターの見た目はちょっとがおかしな状態のようです。
 image::customfilter-pma.png[Custom Filter PMA Issue]
 
-Blimey!
-Yes, the red value is definitely higher, but why is it now extending beyond the area of the bird!?
-We didn't change the alpha value, after all!
+なんてことでしょう！
+たしかに設定どおり赤味は強まっています。しかし、鳥の外側までそれが広がってしまっているのでしょう？
+アルファ値は全くいじっていないというのに！
 
-Don't panic.
-You just created your first filter, and it didn't blow up on you, right?
-That must be worth something.
-It's to be expected that there's some fine-tuning to do.
+慌てないでください。
+まだ最初のフィルターを作ったばかりですし、そんなに大げさな事ではありませんね。
+これは意味のある事なのです。
+予想された事で、微調整する部分です。
 
-It turns out that we forgot to consider "premultiplied alpha" (PMA).
-All conventional textures are stored with their RGB channels premultiplied with the alpha value.
-So, a red with 50% alpha, like this:
+"premultiplied alpha" (PMA) という仕組みについて考慮するのを忘れていた事がわかりました。
+通常の全てのテクスチャは RGB値がアルファ値であらかじめ乗算された状態で保持されているのです。
+５０％のアルファ値の赤は下記のようになりますが、
 
   R = 1, G = 0, B = 0, A = 0.5
 
-would actually be stored like this:
+実際は下記のように保存されています。
 
   R = 0.5, G = 0, B = 0, A = 0.5
 
-And we didn't take that into account.
-What he have to do is multiply the offset values with the alpha value of the current pixel before adding it to the output.
-Here's one way to do that:
+これを考慮に入れていませんでした。
+するべき事は、オフセットRGB値を足す前に現在の対象ピクセルのアルファ値を乗算してやることです。
+下記のようにして実現することができます。
 
 [source, as3]
 ----
-tex("ft0", "v0", 0, texture)   // get color from texture
-mov ft1, fc0                   // copy complete offset to ft1
-mul ft1.xyz, fc0.xyz, ft0.www  // multiply offset.rgb with alpha (pma!)
-add  oc, ft0, ft1              // add offset, copy to output
+tex("ft0", "v0", 0, texture)   // カラー値をテクスチャから読み取る
+mov ft1, fc0                   // ft1 にカラーオフセット値をコピーする
+mul ft1.xyz, fc0.xyz, ft0.www  // オフセット値のRGB要素にテクスチャのアルファ値を乗算する (pma!)
+add  oc, ft0, ft1              // オフセット値をテクスチャに加えてアウトプットとする
 ----
 
-As you can see, we can access the `xyzw` properties of the registers to access individual color channels (they correspond with our `rgba` channels).
+上のコードにあるように、レジスタの `xyzw` プロパティに個別アクセスすることが可能です。それぞれ `rgba` チャンネルの内容を表します。
 
-NOTE: What if the texture is not stored with PMA?
-The `tex` method makes sure that we always receive the value with PMA, so no need to worry about that.
+NOTE: もしもテクスチャが PMA 形式で保持されていなかったらどうすればいいでしょう？
+`tex` メソッドは 必ず PMA 形式のテクスチャを返すので、心配することはありません。
 
-==== Second Try
+==== 改めて動作確認
 
-When you give the filter another try now (complete code: https://gist.github.com/PrimaryFeather/31f1dd7f04cd6ce886f1[ColorOffsetFilter.as]), you'll see correct alpha values:
+この調整でただしいアルファの見た目を得ることができました。（完全なコードはここにあります： https://gist.github.com/PrimaryFeather/31f1dd7f04cd6ce886f1[ColorOffsetFilter.as] ）
 
-.That's more like it!
+.良い感じなりました！
 image::customfilter-pma-solved.png[Custom Filter with solved PMA issue]
 
-Congratulations!
-You just created your first filter, and it works flawlessly.
-(Yes, you could have just used Starling's `ColorMatrixFilter` instead — but hey, this one is a tiny little bit faster, so it was well worth the effort.)
+おめでとうございます。正しく動くフィルターを作り終えることができました。
+（実は代わりに Starling の `ColorMatrixFilter` を使うことでも同じことはできるのですが、今回作ったフィルターのほうが若干高速に動作します。よって努力の甲斐はあるのです。）
 
-If you're feeling brave, you could now try to achieve the same with a mesh style instead.
-It's not _that_ different, promised!
+フィルターが作れたことに満足したでしょうか？では、次はメッシュスタイルを作る事に挑戦してはどうでしょう。
+そんなに変わりはありませんよ、約束します！
