@@ -377,8 +377,7 @@ image::customfilter-pma.png[Custom Filter PMA Issue]
 
 これを考慮に入れていませんでした。
 するべき事は、オフセットRGB値を足す前に現在の対象ピクセルのアルファ値を乗算してやることです。
-What he have to do is multiply the offset values with the alpha value of the current pixel before adding it to the output.
-Here's one way to do that:
+下記のようにして実現することができます。
 
 [source, as3]
 ----
@@ -395,14 +394,13 @@ NOTE: もしもテクスチャが PMA 形式で保持されていなかったら
 
 ==== 改めて動作確認
 
-When you give the filter another try now (complete code: https://gist.github.com/PrimaryFeather/31f1dd7f04cd6ce886f1[ColorOffsetFilter.as]), you'll see correct alpha values:
+この調整でただしいアルファの見た目を得ることができました。（完全なコードはここにあります： https://gist.github.com/PrimaryFeather/31f1dd7f04cd6ce886f1[ColorOffsetFilter.as] ）
 
-.That's more like it!
+.良い感じなりました！
 image::customfilter-pma-solved.png[Custom Filter with solved PMA issue]
 
-Congratulations!
-You just created your first filter, and it works flawlessly.
-(Yes, you could have just used Starling's `ColorMatrixFilter` instead — but hey, this one is a tiny little bit faster, so it was well worth the effort.)
+おめでとうございます。正しく動くフィルターを作り終えることができました。
+（実は代わりに Starling の `ColorMatrixFilter` を使うことでも同じことはできるのですが、今回作ったフィルターのほうが若干高速に動作します。よって努力の甲斐はあるのです。）
 
-If you're feeling brave, you could now try to achieve the same with a mesh style instead.
-It's not _that_ different, promised!
+フィルターが作れたことに満足したでしょうか？では、次はメッシュスタイルを作る事に挑戦してはどうでしょう。
+そんなに変わりはありませんよ、約束します！
