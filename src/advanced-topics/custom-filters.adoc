@@ -277,45 +277,49 @@ AGAL は、各行にシンプルな命令が記述されます。
 
 フラグメントシェーダの結果はいつもカラー値となります。 出力カラー値は `oc` レジスタに格納します。
 
-===== Code Review
+===== AGAL コード詳細
 
-Let's get back to the actual code of our fragment shader.
-The *first line* reads the color from the texture:
+今回のフラグメントシェーダーの実際のコードを見てみましょう。
+*最初の行* はカラー値をテクスチャから読み取っています。
 
     tex ft0, v0, fs0 <2d, linear>
 
-We're reading the texture `fs0` with the texture coordinates read from register `v0`, and some options (`2d, linear`).
-The reason that the texture coordinates are in `v0` is just because the standard vertex shader (`STD_VERTEX_SHADER`) stores them there; just trust me on this one.
-The result is stored in the temporary register `ft0` (remember: in AGAL, the result is always stored in the first argument of an operation).
+`fs0` が表すテクスチャーから、`v0` が表すテクスチャ座標でカラー値を読み取ります。その際 `2d, linear` という言うオプション情報が付与されています。
+`v0` にテクスチャ座標が保持されている理由は、標準バーテックスシェーダー (`STD_VERTEX_SHADER`) で設定しているからです。ここに関してはそうなのだ、と思ってください。
+結果は一時レジスタの `ft0`に保持されます。（ AGAL では、演算結果がいつでも命令の第一引数に格納されることを思い出してください。）
 
 [NOTE]
 ====
-Now wait a minute. We never created any texture, right? What is this?
+ちょっとここで考えて見ましょう。まだテクスチャの設定を行なっていませんよね？これはどういうことでしょう？
 
-As I wrote above, a fragment filter works at the pixel level; its input is the original object, rendered into a texture.
-Our base class (_FilterEffect_) sets that up for us; when the program runs, you can be sure that the texture sampler `fs0` will point to the pixels of the object being filtered.
+上で述べたように、フラグメントフィルターはピクセル毎に実行されます。フィルターへの入力は、元々のディスプレイオブジェクトが一度内部的なテクスチャとして描画されたものです。
+//原文：As I wrote above, a fragment filter works at the pixel level; its input is the original object, rendered into a texture.
+ベースクラスの _FilterEffect_ がそれを行なってくれます。プログラムが実行される時、テクスチャーサンプラー `fs0` はフィルターをかけようとしているテクスチャを指しています。
+//原文：Our base class (_FilterEffect_) sets that up for us; when the program runs, you can be sure that the texture sampler `fs0` will point to the pixels of the object being filtered.
 ====
 
-You know what, actually I'd like to change this line a little.
-You probably noticed the options at the end, indicating how the texture data should be interpreted.
-Well, it turns out that these options depend on the texture type we're accessing.
-To be sure the code works for every texture, let's use a helper method to write that AGAL operation.
+さて、ここでこの行についてちょっとだけ変更したい点があります。
+//原文：You know what, actually I'd like to change this line a little.
+行の最後にオプション指定があるのに気づいているかと思います。これはどのようにテクスチャデータを解釈するか指定しているものです。
+しかし、アクセスしようとしてるテクスチャのタイプによって、このオプションは変化する事が判明しました。
+どのテクスチャでもこのコードが動くようにするため、AGAL コードを記述してくれるヘルパーメソッドを用意したので、これを使いましょう。
+//原文：To be sure the code works for every texture, let's use a helper method to write that AGAL operation.
 
 [source, as3]
 ----
 tex("ft0", "v0", 0, this.texture)
 ----
 
-That does just the same (the method returns an AGAL string), but we don't need to care about the options any longer.
-Always use this method when accessing a texture; it will let you sleep much better at night.
+このメソッドは AGAL 文字列を返します。そして先のコードと同じ振る舞いをします。そしてオプションの内容についてはもうケアする必要がありません。
+テクスチャにアクセスする際はいつもこのメソッドを利用してください。夜にぐっすり眠れるようになりますよ。
 
-The *second line* is doing what we actually came here for: it adds the color offsets to the texel color.
-The offset is stored in `fc0`, which we'll look at shortly; that's added to the `ft0` register (the texel color we just read) and stored in the output register (`oc`).
+そして２行目は、今回のフィルターのキモの部分です。カラーオフセット値をテクセルカラーに加算します。
+オフセット値は `fc0` に保持されています。ざっと見てみましょう。 テクセルカラー値が格納された `ft0` レジスタとkさんされた、出力レジスタの `oc` に代入されています。
 
     add oc, ft0, fc0
 
-That's it with AGAL for now.
-Let's have a look at the other overridden method.
+AGAL コードはとりあえずこのような感じです。
+その他のオーバーライドされたメソッドを見てみましょう。
 
 ==== beforeDraw
 
