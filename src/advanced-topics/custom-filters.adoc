@@ -1,22 +1,23 @@
-== Custom Filters
+== カスタムフィルター
 
-Are you ready to get your hands dirty?
-We are now entering the realm of custom rendering code, starting with a simple fragment filter.
+手を動かす準備はできていますか？
+ついにカスタムレンダリングのコードに取り掛かろうとしています。まずは簡単なフラグメントフィルターからです。
 
-Yes, this will involve some low level code; heck, you'll even write a few lines of assembler!
-But fear not, it's not rocket science.
-As my old math teacher used to say: a drilled monkey could do that!
+フィルターの作成には低レイヤーのコードを扱う必要があります。何行かのアセンブラコードを書く事にもなるでしょう。
+しかし恐れる事はありません。ロケット工学を扱うわけではないのですから。
+昔の数学の先生は言ったものです。訓練を積んだ猿でもそんな問題は解けてしまうぞ！と。
+//原文：As my old math teacher used to say: a drilled monkey could do that!
 
-NOTE: Remember: filters work on the pixel level of display objects.
-The filtered object is rendered into a texture, which is then processed by a custom fragment shader (hence the name _fragment filter_).
+NOTE: 覚えておいて欲しいのですが、フィルターはディスプレイオブジェクトのピクセル単位で動きます。
+フィルターが適用されたディスプレイオブジェクトは、テクスチャーに変換され、その後フラグメントシェダーで処理されます。（よってこれをフラグメントフィルターを呼びます。）
 
-=== The Goal
+=== ゴール
 
-Even though we're picking a simple goal, it should be a useful one, right?
-So let's create a _ColorOffsetFilter_.
+簡単なフィルターを作ってみる事をこのチャプターのゴールとしますが、実際に役に立つものを作りたいですね。
+ここでは _ColorOffsetFilter_ を作る事にしましょう。
 
-You probably know that you can tint any vertex of a mesh by assigning it a color.
-On rendering, the color will be multiplied with the texture color, which provides a very simple (and fast) way to modify the color of a texture.
+メッシュ各頂点にはカラー値が設定でき、メッシュに色付けをする事ができる事はおそらく知っているかと思います。
+そのカラー値は、レンダリング時にテクスチャーのカラー値と乗算されます。テクスチャーの色味を調整するシンプルで高速なやり方です。
 
 [source, as3]
 ----
@@ -24,48 +25,50 @@ var image:Image = new Image(texture);
 image.color = 0x808080; // R = G = B = 0.5
 ----
 
-The math behind that is extremely simple: on the GPU, each color channel (red, green, blue) is represented by a value between zero and one.
-Pure red, for example, would be:
+背景の数学的な演算はとてもシンプルです。GPU では赤・緑・青のどのチャンネルも 0 から 1 の間の数値で表されます。
+例えば、純粋な赤は下記のような値になります。
 
   R = 1, G = 0, B = 0
 
-On rendering, this color is then multiplied with the color of each pixel of the texture (also called "texel").
-The default value for an image color is pure white, which is a `1` on all channels.
-Thus, the texel color appears unchanged (a multiplication with `1` is a no-op).
-When you assign a different color instead, the multiplication will yield a new color, e.g.
+レンダリング時に、このカラー値は各ピクセルのテクスチャー色（テクセルとも呼ばれます）と乗算されます。
+デフォルトのイメージのカラーは純粋な白です。全てのチャンネル値が１となります。
+したがって、テクセルのカラーは変化しません。（１を掛ける事は何もしない事と同じです。）
+
+異なったカラー値を設定すると乗算結果は新しい色となります。下記はその例です。
 
   R = 1,   G = 0.8, B = 0.6  ×
-  B = 0.5, G = 0.5, B = 0.5
+  R = 0.5, G = 0.5, B = 0.5
   -------------------------
   R = 0.5, G = 0.4, B = 0.3
 
-And here's there problem: this will only ever make an object darker, never brighter.
-That's because we can only multiply with values between 0 and 1; zero meaning the result will be black, and one meaning it remains unchanged.
+さて、ここで問題が起きます。この処理ではオブジェクトの色を暗くはできますが、絶対に明るくはできないのです。
+何故ならば掛け合わせている値が 0 と 1 の間だけだからです。0 をかける事は黒を作り出します。そして 1 をかける変化がありません。
 
-.Tinting an image with a gray color.
+.グレーのカラー設定で色味が変化した画像。
 image::customfilter-tinting.png[Tinting]
 
-That's what we want to fix with this filter!
-We're going to include an _offset_ to the formula.
-(In classic Flash, you would do that with a http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/geom/ColorTransform.html[ColorTransform].)
+この問題をこれから作るフィルターで解決してみましょう。
+カラーの計算にオフセット値を含むようにしてみます。
+（Flashでは http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/geom/ColorTransform.html[ColorTransform] の設定として行なっていた事と同じです。)
 
-* New red value = (old red value × redMultiplier) + redOffset
-* New green value = (old green value × greenMultiplier) + greenOffset
-* New blue value = (old blue value × blueMultiplier) + blueOffset
-* New alpha value = (old alpha value × alphaMultiplier) + alphaOffset
+* 変化後の red 値 = (元の red 値 × red 乗算値) + red オフセット値
+* 変化後の green 値 = (元の green 値 × green 乗算値) + green オフセット値
+* 変化後の blue 値 = (元の blue 値 × blue 乗算値) + blue オフセット値
+* 変化後の alpha 値 = (元の alpha 値 × alpha 乗算値) + alpha オフセット値
 
-We already have the multiplier, since that's handled in the base _Mesh_ class; our filter just needs to add the offset.
+乗算する部分の機能はメッシュの基底クラスがすでに持っているので、オフセット値のみがこれから作るフィルターに必要なプロパティとなります。
 
-.Adding an offset to all channels.
+.全てのチャンネルにオフセット値を与える。
 image::customfilter-offset.png[Offset]
 
-So let's finally start, shall we?!
+では、そろそろ始めますよ？
 
-=== Extending FragmentFilter
+=== FragmentFilter を継承する
 
-All filters extend the class `starling.filters.FragmentFilter`, and this one is no exception.
-Now hold tight: I'm going to give you the complete _ColorOffsetFilter_ class now; this is not a stub, but the final code.
-We won't modify it any more.
+あらゆるフィルターは例外なく、`starling.filters.FragmentFilter` クラスを継承して作ります。
+
+ここで、 _ColorOffsetFilter_ クラスの完全なコードを紹介します。仮コードではなく最終のコードです。
+この後のコード修正はありません。
 
 [source, as3]
 ----
@@ -102,7 +105,7 @@ public class ColorOffsetFilter extends FragmentFilter
         setRequiresRedraw();
     }
 
-    // the other offset properties need to be implemented accordingly.
+    // その他の オフセット プロパティも同じようにそれぞれ実装します。
 
     public function get/set greenOffset():Number;
     public function get/set blueOffset():Number;
@@ -110,41 +113,49 @@ public class ColorOffsetFilter extends FragmentFilter
 }
 ----
 
-That's surprisingly compact, right?
-Well, I have to admit it: this is just half of the story, because we're going to have to write another class, too, which does the actual color processing.
-Still, it's worthwhile to analyze what we see above.
+驚くほどコンパクトですね。
+実は、これはまだこのチャプターの話題の半分ほどです。もうひとつ別のクラスを記述する必要があります。そちらで、実際の色味を演算する処理が入ります。
+しかし、上記のコードも実装の詳細を確認する価値があります。
 
-The class extends _FragmentFilter_, of course, and it overrides one method: `createEffect`.
-You probably haven't run into the `starling.rendering.Effect` class before, because it's really only needed for low-level rendering.
-From the API documentation:
+このクラスは _FragmentFilter_ クラスを継承しており、'createEffect' メソッドをオーバーライドしています。
+おそらく `starling.rendering.Effect` クラスを扱った事はない人がほとんどだと思いますが、それはローレベルのレンダリング用途でしか必要とならないからです。
+API ドキュメントからの引用ですが、下記のような説明がされます。
 
 ====
-An effect encapsulates all steps of a Stage3D draw operation.
-It configures the render context and sets up shader programs as well as index- and vertex-buffers, thus providing the basic mechanisms of all low-level rendering.
+Effect クラスは Stage3D の描画工程の全てをカプセル化します。
+レンダーコンテキストを設定し、インデックスバッファ、バーテックスバッファ、シェーダプログラムをセットアップします。
+全ての基本的でローレベルなレンダリングメカニズムを提供してくれます。
+//原文：It configures the render context and sets up shader programs as well as index- and vertex-buffers, thus providing the basic mechanisms of all low-level rendering.
 ====
 
-The _FragmentFilter_ class makes use of this class, or actually its subclass called _FilterEffect_.
-For this simple filter, we just have to provide a custom effect, which we're doing by overriding `createEffect()`.
-The properties do nothing else than configuring our effect.
-On rendering, the base class will automatically use the effect to render the filter.
-That's it!
+_FragmentFilter_ クラスは、このクラスもしくはこのクラスを継承した _FilterEffect_ というサブクラスを利用します。
+今回のシンプルなフィルターの制作のためには、`createEffect()` をオーバライドし、カスタムエフェクトが戻り値となるように実装してやらなくてはいけません。
+//原文：For this simple filter, we just have to provide a custom effect, which we're doing by overriding `createEffect()`.
+ソース中のその他のプロパティは、エフェクトを調整するためだけのものです。
+実際のレンダリング時には、ベースクラスが、effect インスタンスを扱い、フィルターの描画処理を行なってくれます。
+取り急ぎ、以上となります。
 
-NOTE: If you're wondering what the `colorOffsetEffect` property does: that's just a shortcut to be able to access the effect without constantly casting it to _ColorOffsetEffect_.
-The base class provides an `effect` property, too, but that will return an object of type `FilterEffect` -- and we need the full type, _ColorOffsetEffect_, to access our `offset` properties.
+NOTE: `colorOffsetEffect` プロパティが何をしているのか気になるでしょうか。
+//原文：If you're wondering what the `colorOffsetEffect` property does:
+これは、 _ColorOffsetEffect_ へのキャストを行わずに effect へのアクセスを行うためのただのショートカットです。
+ベースクラスは `effect` プロパティを提供します。しかし、それは FilterEffect` 型でのオブジェクトであり、
+`offset` プロパティにアクセスするためには、完全な _ColorOffsetEffect_ 型が必要であるわけです。
 
-More complicated filters might need to override the `process` method as well; that's e.g. necessary to create multi-pass filters.
-For our sample filter, though, that's not necessary.
+もっと複雑なフィルターでは `process` メソッドの継承も必要になるかもしれません。例えばマルチパスのフィルターを作る場合などです。
+しかし、今回のサンプルフィルターでは必要ありません。
 
-Finally, note the calls to `setRequiresRedraw`: they make sure the effect is re-rendered whenever the settings change.
-Otherwise, Starling wouldn't know that it has to redraw the object.
+最後に、`setRequiresRedraw` メソッドの呼び出しについて記します。
+このメソッドを呼び出す事で、フィルターの設定値が変化した際に必ずエフェクトの再描画がかかるようにしています。
+この呼び出しがないと、Starling はオブジェクトを再描画するべきタイミングを知る事ができないのです。
 
-=== Extending FilterEffect
+=== FilterEffect を継承する
 
-Time to do some actual work, right?
-Well, our _FilterEffect_ subclass is the actual workhorse of this filter.
-Which doesn't mean that it's very complicated, so just bear with me.
+実作業を行う時がやってきました。
+この _FilterEffect_ のサブクラスは、やる事が多く、サンプルフィルター内の働き者クラスと言えます。
+それは、複雑である、という意味ではありません。しばらく我慢しておつきあいください。
+//原文：Which doesn't mean that it's very complicated, so just bear with me.
 
-Let's start with a stub:
+先ずは仮のスタブコードから始めましょう。
 
 [source, as3]
 ----
@@ -181,42 +192,45 @@ public class ColorOffsetEffect extends FilterEffect
 }
 ----
 
-Note that we're storing the offsets in a _Vector_, because that will make it easy to upload them to the GPU.
-The `offset` properties read from and write to that vector.
-Simple enough.
+ここでは、offsets プロパティを _Vector_ 型の中に格納しています。その方が GPU へのアップロード時に都合がいいからです。
+`offset` プロパティを、ベクターの中に読み書きする。シンプルです。
 
-It gets more interesting when we look at the two overridden methods.
+２つの継承メソッドについて見ていくと、さらに面白くなってきます。
 
 ==== createProgram
 
-This method is supposed to create the actual Stage3D shader code.
+createProgram メソッドは、実際の Stage3D シェーダーコードを作成します。
 
 [NOTE]
 ====
-I'll show you the basics, but explaining _Stage3D_ thoroughly is beyond the scope of this manual.
-To get deeper into the topic, you can always have a look at one of the following tutorials:
+基本的な部分は解説しますが、_Stage3D_ の全てについて対象とするのはこのマニュアルの範疇を超えます。
+詳細な情報が必要であれば、下記リンクのチュートリアルを参照してください。
 
   * http://www.adobe.com/devnet/flashplayer/articles/how-stage3d-works.html[How Stage3D works]
   * http://jacksondunstan.com/articles/1661[Introduction to AGAL]
   * http://help.adobe.com/en_US/as3/dev/WSd6a006f2eb1dc31e-310b95831324724ec56-8000.html[List of AGAL operations]
 ====
 
-All Stage3D rendering is done through vertex- and fragment-shaders.
-Those are little programs that are executed directly by the GPU, and they come in two flavors:
+Stage3D のレンダリングは、全てバーテックス()シェーダーとフラグメント(断片)シェーダーを通して行われます。
+それらは GPU によって直接実行される小さなプログラムで、２つの役割を持ちます。
 
-* *Vertex Shaders* are executed _once for each vertex_.
-  Their input is made up from the vertex attributes we typically set up via the `VertexData` class; their output is the position of the vertex in screen coordinates.
-* *Fragment Shaders* are executed _once for each pixel_ (fragment).
-  Their input is made up of the _interpolated_ attributes of the three vertices of their triangle; the output is simply the color of the pixel.
-* Together, a fragment and a vertex shader make up a *Program*.
+* *バーテックスシェーダー* は各頂点に対してそれぞれ１度だけ実行されます。
+入力情報は、頂点の属性値から作成され、通常 `VertexData` クラスを通して設定されます。
+出力情報は、スクリーン座標系での位置情報です。
+* *フラグメントシェーダー* は１ピクセル（=断片=フラグメント）ごとに１回実行されます。
+入力情報は関連する３つの頂点の情報がピクセルの位置によって補完されたものです。
+出力情報は、シンプルにそのピクセルのカラー情報です。
+* ２つのシェーダが合わさって１つの *Program* を構成します。
 
-The language filters are written in is called AGAL, an assembly language.
-(Yes, you read right! This is as low-level as it gets.)
-Thankfully, however, typical AGAL programs are very short, so it's not as bad as it sounds.
+フィルターを記述する言語は AGAL と呼ばれます。アセンブリ言語です。
+（最初に述べた通り、この言語はローレベル中のローレベルです。）
+//原文：(Yes, you read right! This is as low-level as it gets.)
+幸いな事に、大抵の AGAL プログラムはとても短く、そこまで大変ではありません。
+//原文：Thankfully, however, typical AGAL programs are very short, so it's not as bad as it sounds.
 
-Good news: we only need to write a fragment shader.
-The vertex shader is the same for most fragment filters, so Starling provides a standard implementation for that.
-Let's look at the code:
+そして、良いニュースとして、今回はフラグメントシェーダーを書くだけですみます。
+バーテックスシェーダーは大抵のフラグメントフィルターで同じになるので、Starling は標準的なバーテックスシェーダーの実装をあらかじめ用意しています。
+では、そのコードを見てみましょう。
 
 [source, as3]
 ----
@@ -231,74 +245,83 @@ override protected function createProgram():Program
 }
 ----
 
-As promised, the vertex shader is taken from a constant; the fragment shader is just two lines of code.
-Both are combined into one _Program_ instance, which is the return value of the method.
+バーテックスシェーダーは定数（ STD_VERTEX_SHADER ）から取得されています。
+フラグメントシェーダーはたったの２行です。
+２つのシェーダーは合わせて１つの _Program_ インスタンスとなり、createProgram メソッドの戻り値となっています。
 
-The fragment shader requires some further elaboration, of course.
+フラグメントシェーダー部分は引き続き詳細を追ってみましょう。
+//原文：The fragment shader requires some further elaboration, of course.
 
-===== AGAL in a Nutshell
+===== AGAL コード概要
 
-In AGAL, each line contains a simple method call.
+AGAL コードは、各行にシンプルな命令が記述されています。
 
-  [opcode] [destination], [argument 1], ([argument 2])
+  [オペコード] [出力場所], [引数１], ([引数２])
 
-* The first three letters are the name of the operation (`tex`, `add`).
-* The next argument defines where the result of the operation is saved.
-* The other arguments are the actual arguments of the method.
-* All data is stored in predefined _registers_; think of them as _Vector3D_ instances (with properties for x, y, z and w).
+* 最初の３文字はオペーレーション名＝命令の名前です。 (`tex`, `add`).
+* 次の引数はオペレーション結果をどこに保存するかを指定します。
+* 他の引数はオペレーションへの実際の引数となるものです。
+* 全てのデータは "レジスタ" に保持されます。
+レジスタは _Vector3D_ インスタンスだと考えてみましょう。x、y、zのプロパティを持っています。
 
-There are several types of registers, e.g. for constants, temporary data or for the output of a shader.
-In our shader, some of them already contain data; they were set up by other methods of the filter (we'll come to that later).
+レジスタにはいくつかの種類があります。定数、一時データ、シェーダーの出力用などです。
+今回のシェーダーでは、そのうちのいくつかはあらかじめ値を持っています。フラグメントフィルターの as コードによって設定されています。
+（後ほど解説します。）
 
-* `v0` contains the current texture coordinates (_varying register 0_)
-* `fs0` points to the input texture (_fragment sampler 0_)
-* `fc0` contains the color offset this is all about (_fragment constant 0_)
+* `v0` (_varying レジスタ 0_)は、現在のテクスチャ座標を保持しています。
+* `fs0` (_fragment サンプラ 0_)は、入力テクスチャを示します。
+* `fc0` (_fragment 定数 0_)は、カラーオフセット値を保持しています。今回のフィルターのメインとなる部分です。
+//原文：contains the color offset this is all about
 
-The result of a fragment shader must always be a color; that color is to be stored in the `oc` register.
+フラグメントシェーダの出力は、いつでもカラー値です。 出力カラー値は `oc` レジスタに格納します。
 
-===== Code Review
+===== AGAL コード詳細
 
-Let's get back to the actual code of our fragment shader.
-The *first line* reads the color from the texture:
+フラグメントシェーダーの実際のコードを見てみましょう。
+*最初の行* はカラー値をテクスチャから読み取っています。
 
     tex ft0, v0, fs0 <2d, linear>
 
-We're reading the texture `fs0` with the texture coordinates read from register `v0`, and some options (`2d, linear`).
-The reason that the texture coordinates are in `v0` is just because the standard vertex shader (`STD_VERTEX_SHADER`) stores them there; just trust me on this one.
-The result is stored in the temporary register `ft0` (remember: in AGAL, the result is always stored in the first argument of an operation).
+`fs0` が表すテクスチャーから、`v0` が表すテクスチャ座標でカラー値を読み取ります。その際 `2d, linear` という言うオプション情報が付与されています。
+`v0` にテクスチャ座標が保持されている理由は、標準バーテックスシェーダー (`STD_VERTEX_SHADER`) 側でそのように設定しているからです。ここに関しては、まあそう言うものだ、と思ってください。
+結果は一時レジスタの `ft0`に保持されます。（ AGAL では、演算結果がいつでも命令の第一引数に格納される事を思い出してください。）
 
 [NOTE]
 ====
-Now wait a minute. We never created any texture, right? What is this?
+ここでちょっと考えて見ましょう。テクスチャの用意は事前に行なっていません。これはどういう事でしょう？
 
-As I wrote above, a fragment filter works at the pixel level; its input is the original object, rendered into a texture.
-Our base class (_FilterEffect_) sets that up for us; when the program runs, you can be sure that the texture sampler `fs0` will point to the pixels of the object being filtered.
+先に説明した通り、フラグメントフィルターはピクセル毎に実行されますが、フィルターへの入力はオブジェクトが一度内部的にテクスチャとして描画されたものなのです。
+//原文：As I wrote above, a fragment filter works at the pixel level; its input is the original object, rendered into a texture.
+ベースクラスの _FilterEffect_ がその工程を行なっています。プログラムが実行される時、テクスチャーサンプラー `fs0` はフィルター処理の対象となるテクスチャを差し指しています。
+//原文：Our base class (_FilterEffect_) sets that up for us; when the program runs, you can be sure that the texture sampler `fs0` will point to the pixels of the object being filtered.
 ====
 
-You know what, actually I'd like to change this line a little.
-You probably noticed the options at the end, indicating how the texture data should be interpreted.
-Well, it turns out that these options depend on the texture type we're accessing.
-To be sure the code works for every texture, let's use a helper method to write that AGAL operation.
+さて、この行については多少変更したい点があります。
+//原文：You know what, actually I'd like to change this line a little.
+行の最後にオプション指定があるのは気づいているかと思います。これはどのようにテクスチャデータを解釈するか指定しているものです。
+しかし、対象となるテクスチャのタイプによって、このオプション内容は変更しなくてはいけない事が判明しました。
+どんなテクスチャを扱っていても同じコードで動くようにするため、ヘルパーメソッドを用意しましたので、これを使いましょう。
+//原文：To be sure the code works for every texture, let's use a helper method to write that AGAL operation.
 
 [source, as3]
 ----
 tex("ft0", "v0", 0, this.texture)
 ----
 
-That does just the same (the method returns an AGAL string), but we don't need to care about the options any longer.
-Always use this method when accessing a texture; it will let you sleep much better at night.
+この 'tex' メソッドは、先のコードと同じ振る舞いをする AGAL 文字列を返します。これでオプションの内容についてはもうケアする必要がなくなりました。
+今後テクスチャにアクセスする際はいつでもこのメソッドを利用してください。（夜にぐっすり眠れるようになりますよ。）
 
-The *second line* is doing what we actually came here for: it adds the color offsets to the texel color.
-The offset is stored in `fc0`, which we'll look at shortly; that's added to the `ft0` register (the texel color we just read) and stored in the output register (`oc`).
+そして２行目は、今回のフィルターのキモの部分です。カラーオフセット値をテクセルカラーに加算します。
+オフセット値は `fc0` に保持されています。テクセルカラー値を保持する `ft0` レジスタの値と加算されて、出力レジスタの `oc` に代入されています。
 
     add oc, ft0, fc0
 
-That's it with AGAL for now.
-Let's have a look at the other overridden method.
+AGAL コードはまずはこのような感じとなりました。
+今度は as コードの、オーバーライドされたメソッドを見てみましょう。
 
 ==== beforeDraw
 
-The `beforeDraw` method is executed directly before the shaders are executed. We can use them to set up all the data required by our shader.
+`beforeDraw` メソッドはシェーダーが実行される前に呼び出されます。シェーダーに必要なデータを前もって設定しておく事ができます。
 
 [source, as3]
 ----
@@ -309,19 +332,19 @@ override protected function beforeDraw(context:Context3D):void
 }
 ----
 
-This is where we pass the offset values to the fragment shader.
-The second parameter, `0`, defines the register that data is going to end up in.
-If you look back at the actual shader code, you'll see that we read the offset from `fc0`, and that's exactly what we're filling up here: `fragment constant 0`.
+この部分では、フラグメントシェーダーにカラーオフセット値を定数として渡しています。
+２番目のパラメータの `0` は、データが格納されるレジスタを意味しています。
+シェーダーのコードを見返すと、オフセット値を `fc0` から読み取っています。それがデータを格納した `fragment constant 0` です。
 
-The super call sets up all the rest, e.g. it assigns the texture (`fs0`) and the texture coordinates.
+super クラスの beforeDraw 呼び出しでは残りのセットアップを行います。テクスチャを `fs0` に設定したり、テクスチャ座標を設定したりします。
 
-NOTE: Before you ask: yes, there is also an `afterDraw()` method, usually used to clean up one's resources.
-But for constants, this is not necessary, so we can ignore it in this filter.
+NOTE: 尋ねられる前に、、`afterDraw()` メソッドも同様に存在します。通常このメソッドは利用したリソースを開放するのに使われます。
+しかし、定数に対して解放処理は必要ありません。よって今回はこの部分の実装を省きます。
 
-=== Trying it out
+=== 動作確認
 
-Our filter is ready, actually (download the complete code https://gist.github.com/PrimaryFeather/ba1e26d568320cd31086[here])!
-Time to give it a test ride.
+さあ、フィルターの実装ができました！（完全なコードは https://gist.github.com/PrimaryFeather/ba1e26d568320cd31086[ここ] から手に入ります。）
+早速テストしてみましょう。
 
 [source, as3]
 ----
@@ -332,55 +355,53 @@ image.filter = filter;
 addChild(image);
 ----
 
-.Our filter seems to have an ugly side effect.
+.フィルターの見た目はちょっとがおかしな状態のようです。
 image::customfilter-pma.png[Custom Filter PMA Issue]
 
-Blimey!
-Yes, the red value is definitely higher, but why is it now extending beyond the area of the bird!?
-We didn't change the alpha value, after all!
+なんて事でしょう！
+たしかに設定どおり赤味は強まっています。しかしなぜ、鳥の外側のエリアまでそれが広がってしまっているのでしょう？
+アルファ値は全くいじっていないというのに。
 
-Don't panic.
-You just created your first filter, and it didn't blow up on you, right?
-That must be worth something.
-It's to be expected that there's some fine-tuning to do.
+…慌てないでください。
+まだ最初のフィルターを作ったばかりです。それにそんなに大げさな事ではありませんよ。
+これは意味のある事なのです。予想されていた事で、これから微調整して修正する部分です。
 
-It turns out that we forgot to consider "premultiplied alpha" (PMA).
-All conventional textures are stored with their RGB channels premultiplied with the alpha value.
-So, a red with 50% alpha, like this:
+描画がおかしくなった理由ですが、"premultiplied alpha" (PMA) という仕組みについて考慮するのを忘れていました。
+全てのテクスチャは通常、RGB値がアルファ値であらかじめ乗算された状態で保持されているのです。
+50％アルファ値の赤は下記のようになりますが、
 
   R = 1, G = 0, B = 0, A = 0.5
 
-would actually be stored like this:
+実際は下記のように保存されています。
 
   R = 0.5, G = 0, B = 0, A = 0.5
 
-And we didn't take that into account.
-What he have to do is multiply the offset values with the alpha value of the current pixel before adding it to the output.
-Here's one way to do that:
+この状態を考慮に入れていませんでした。
+対応すべき事は、オフセットRGB値を足す前に現在の対象ピクセルのアルファ値を乗算してやる事です。
+下記のように実装する事ができます。
 
 [source, as3]
 ----
-tex("ft0", "v0", 0, texture)   // get color from texture
-mov ft1, fc0                   // copy complete offset to ft1
-mul ft1.xyz, fc0.xyz, ft0.www  // multiply offset.rgb with alpha (pma!)
-add  oc, ft0, ft1              // add offset, copy to output
+tex("ft0", "v0", 0, texture)   // カラー値をテクスチャから読み取る
+mov ft1, fc0                   // ft1 にカラーオフセット値をコピーする
+mul ft1.xyz, fc0.xyz, ft0.www  // オフセット値のRGB要素にテクスチャのアルファ値を乗算する (pma!)
+add  oc, ft0, ft1              // オフセット値をテクスチャに加えてアウトプットとする
 ----
 
-As you can see, we can access the `xyzw` properties of the registers to access individual color channels (they correspond with our `rgba` channels).
+このように、レジスタの `xyzw` プロパティに個別アクセスする事が可能です。それぞれ `rgba` チャンネルの内容を表します。
 
-NOTE: What if the texture is not stored with PMA?
-The `tex` method makes sure that we always receive the value with PMA, so no need to worry about that.
+NOTE: もしもテクスチャが PMA 形式で保持されていなかったらどうすればいいでしょう？
+`tex` メソッドは 必ず PMA 形式のテクスチャを返すので、その事を心配する事はありません。
 
-==== Second Try
+==== 改めて動作確認
 
-When you give the filter another try now (complete code: https://gist.github.com/PrimaryFeather/31f1dd7f04cd6ce886f1[ColorOffsetFilter.as]), you'll see correct alpha values:
+今度はアルファが正しく描画される結果を得る事ができました。（フィルターの完全なコードはここにあります： https://gist.github.com/PrimaryFeather/31f1dd7f04cd6ce886f1[ColorOffsetFilter.as] ）
 
-.That's more like it!
+.良い感じなりました！
 image::customfilter-pma-solved.png[Custom Filter with solved PMA issue]
 
-Congratulations!
-You just created your first filter, and it works flawlessly.
-(Yes, you could have just used Starling's `ColorMatrixFilter` instead — but hey, this one is a tiny little bit faster, so it was well worth the effort.)
+おめでとうございます。完璧に動くフィルターを作り終える事ができましたね。
+（実は Starling の `ColorMatrixFilter` を使う事でも同じ結果を得る事はできるのですが、今回作ったフィルターのほうが若干高速に動作します。よって努力の甲斐はあるのです。）
 
-If you're feeling brave, you could now try to achieve the same with a mesh style instead.
-It's not _that_ different, promised!
+さて、フィルターが作れた事に満足しましたか？次はメッシュスタイルを作る事に挑戦してはどうでしょう。
+大きく変わる点はありません。約束します！
