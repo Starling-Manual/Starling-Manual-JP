@@ -1,22 +1,24 @@
-== Custom Styles
+== カスタムスタイル
 
-Now that we have tapped the raw power of _Stage3D_, let's continue on this road!
-In this section, we will write a simple mesh style.
-In Starling 2, all rendering is done through styles; by creating your own style, you can create special effects without sacrificing performance in any way.
+さあ、_Stage3D_ の生のパワーの領域へと足を踏み入れました。このまま突き進んでいきましょう。
+このセクションでは、シンプルなメッシュスタイルのコードを記述します。
+Starling 2 では、全てのレンダリングはスタイルを通じて行われます。
+スタイルを自分自身で作る事で、パフォーマンスを犠牲にせずに特別な描画エフェクトを作ることができるのです。
 
-NOTE: Before you continue, please make sure you have read through the section <<Custom Filters>>, as well.
-Filters and styles share many concepts, so it makes sense to start with the simpler of the two.
-Below, I'll assume that you are familiar with everything that's shown in that other section.
+NOTE: この先に進む前に、必ず <<カスタムフィルター>> のセクションも目を通しておいてください。
+フィルターとスタイルでは多くのコンセプトが共通しています。ですのでより単純なフィルターから始めた方が理にかなっています。
+ここから先は、そのセクションの内容は理解していると過程して話を進めます。
 
-=== The Goal
+=== ゴール
 
-The goal is just the same as the one we were shooting for with the _ColorOffsetFilter_; we want to allow adding an offset to the color value of every rendered pixel.
-Only this time, we're doing it with style! We'll call it ... _ColorOffsetStyle_.
+今回のゴールは _ColorOffsetFilter_ として作ったものと同じです。
+描画ピクセルに対してカラーのオフセット指定ができるようにします。
+これを今回はスタイルとして制作するわけです。これを _ColorOffsetStyle_ と呼びましょう。
 
-.Applying a color offset with style.
+.スタイルでカラーオフセットを指定する。
 image::customfilter-offset.png[Offset with a Style]
 
-Before we continue, it's crucial that you understand the difference between a filter and a style.
+まずは、フィルターとスタイルの違いについて理解するのが重要です。
 
 ==== Filters vs. Styles
 
