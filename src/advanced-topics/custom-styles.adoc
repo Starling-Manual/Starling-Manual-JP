@@ -405,11 +405,13 @@ The fragment shader is an almost exact replica of its filter-class equivalent.
 Can you find the difference?
 It's the register we're reading the offset from; before, that was stored in a constant, now in `v2`.
 
-=== Trying it out
+=== 動作テスト
 
-There you have it: we're almost finished with our style!
-Let's give it a test-ride.
-In a truly bold move, I'll use it on two objects right away, so that we'll see if batching works correctly.
+オリジナルのスタイルの作成の完了まであと一歩です！
+//原文：There you have it: we're almost finished with our style!
+動作テストを行ってみましょう。
+いきなりですが、２つのオブジェクトにスタイルを適用してみます。バッチ処理が正しく動いている事が確認できるはずです。
+//原文：In a truly bold move, I'll use it on two objects right away, so that we'll see if batching works correctly.
 
 [source, as3]
 ----
@@ -427,22 +429,26 @@ image2.style = style2;
 addChild(image2);
 ----
 
-.Two styled images, rendered with just one draw call.
+.２つのスタイルのイメージがドローコール１回で描画されています。
 image::custom-style-sample.png[Custom Style Sample]
 
-Hooray, this actually works!
-Be sure to look at the draw count at the top left, which is an honest and constant "1".
+やりました、正しく動いています！
+左上のドローコール表示が１のままである事を確認してください。
 
-There's a tiny little bit more to do, though; our shaders above were created assuming that there's always a texture to read data from.
-However, the style might also be assigned to a mesh that doesn't use any texture, so we have to write some specific code for that case (which is so simple I'm not going to elaborate on it right now).
+しかし、まだ少しやらなけらばならない事があります。今回のシェーダーコードはテクスチャからデータを読み出す前提になっています。
+しかし、このスタイルはテクスチャを使わないメッシュに適用される事もあり得るので、そのようなケースのために特別なコードを書かなくてはいけないでしょう。
+（とてもシンプルなものですし、今ここで解説はしませんが。）
 
-The complete class, including this last-minute fix, can be found here: https://gist.github.com/PrimaryFeather/eaaa4a1b50cf546613d2[ColorOffsetStyle.as].
+その点を修正した完全なコードは ここ: https://gist.github.com/PrimaryFeather/eaaa4a1b50cf546613d2[ColorOffsetStyle.as] で確認が可能です。
 
-=== Where to go from here
+=== この先にたどり着く場所
+//原文：Where to go from here
 
-That's it with our style!
-I hope you're as thrilled as I am that we succeeded on our task.
-What you see above is the key to extending Starling in ways that are limited only by your imagination.
-The _MeshStyle_ class even has a few more tricks up its sleeve, so be sure to read through the complete class documentation.
+スタイルについては以上です！
+私と同じようにあなたもスタイルの作成を楽しんでくれたなら良いのですが。
+上記のやり方は、あなたの頭の中にある Starling 拡張を実現するキーとなるものです。
+//翻訳苦しい 原文：What you see above is the key to extending Starling in ways that are limited only by your imagination.
+_MeshStyle_ クラスにはまだいくつか実装のポイントがあります。クラスドキュメントも通して確認するようにしてください。
+//原文：The _MeshStyle_ class even has a few more tricks up its sleeve, so be sure to read through the complete class documentation.
 
-I'm looking forward to seeing what you guys come up with!
+みんなが作ったスタイルを見る事を楽しみにしています！
