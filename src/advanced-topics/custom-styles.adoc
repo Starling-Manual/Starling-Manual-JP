@@ -117,31 +117,33 @@ public class ColorOffsetStyle extends MeshStyle
 //原文：You'll see that there's already going on a little more than in our initial filter class from the last example.
 個々のコードも確認してみましょう。
 
-==== Vertex Formats
+==== 頂点フォーマット
 
-The first thing that's notable is the vertex format constant at the very top of the class.
-I mentioned already that styles work on a vertex level, giving you access to all the geometry of an object.
-The _VertexData_ class stores that geometry, but we never actually discussed how that class knows _which_ data is stored in this class, and _how_.
-That's defined by the _VertexDataFormat_.
+頂点フォーマット定数がクラスの上の方に記述されている事に注目してください。
+スタイルは頂点レベルで働くと先に述べました。オブジェクトの全ての形状にアクセスが可能です。
+//原文：I mentioned already that styles work on a vertex level, giving you access to all the geometry of an object.
+_VertexData_ クラスはその形状を保持しています。しかし、まだ各頂点が自身にどんなデーターが保持されているかをどうやって知るのかについては述べていませんでした。
+それが、_VertexDataFormat_ によって定義されているのです。
 
-The default format used by _MeshStyle_ is the following:
+_MeshStyle_によって扱われるデフォルトのフォーマットは以下のようになっています。
 
   position:float2, texCoords:float2, color:bytes4
 
-The syntax of this string should seem familiar; it's a list of attributes with certain data types.
+この文字列の書式には馴染みがあるように見えます。これは属性情報とデータタイプのリストです。
 
-* The `position` attribute stores two floats (for the x- and y-coordinates of a vertex).
-* The `texCoords` attribute stores two floats, as well (for the texture coordinates of the vertex).
-* The `color` attribute stores four bytes for the color of the vertex (one byte for each channel).
+* `position` 属性は２つの float 型を保持します。 (頂点のX座標、Y座標です。）
+* `texCoords` 属性も２つの float 型を保持します。 (テクスチャ座標を表します。).
+* `color` 属性は４バイトの色情報を保持します。 (１バイトごとに１チャンネルの情報です。)
 
-A _VertexData_ instance with this format will store those attributes for each vertex of the mesh, using the exact same order as in the format string.
-This means that each vertex will take up 20 bytes (8 + 8 + 4).
+このフォーマットの _VertexData_ インスタンスは、メッシュの各頂点にそれら属性値を保持します。属性値の格納順はフォーマット文字列と同じ順序です。
+つまり、各頂点は合計20バイト（8バイト + 8バイト + 4バイト）を保持する事になります。
 
-When you create a mesh and don't assign any style in particular, it will be rendered by the standard _MeshStyle_, forcing exactly this format onto its vertices.
-That's all the information you need to draw a textured, colored mesh, after all.
+もしもメッシュを作成してなんのスタイルも当てはめなかった場合、標準の _MeshStyle_ を用いて描画が行われます。
+各頂点にはまさに上記のフォーマットが適用されます。
+これが、各頂点にテクスチャと色味を付与したメッシュを描画するために必要な情報となります。
 
-But for our _ColorOffsetStyle_, that's not enough: we need to store our color offset as well.
-Thus, we need to define a new format that adds an `offset` attribute consisting of four float values.
+しかし、_ColorOffsetStyle_ にはこれで十分ではありません。カラーオフセット値も同じように保持する必要があります。
+よって、４つのfloat値からなる `offset` 属性を追加した新しいフォーマットを定義する必要があるのです。
 
 [source, as3]
 ----
