@@ -188,25 +188,26 @@ The rest is just updating the code so that the offset is read from the vertex da
 
 But I'm getting ahead of myself.
 
-==== Member Variables
+==== メンバ変数
 
-You'll note that even though I just insisted that all data is to be stored in the vertices, there's still a set of offsets stored in a member variable:
+全てのデーターは頂点に保持されると言いましたが、同時にメンバ変数にもデーターが保持されています。
+//原文：You'll note that even though I just insisted that all data is to be stored in the vertices, there's still a set of offsets stored in a member variable:
 
 [source, as3]
 ----
 private var _offsets:Vector.<Number>;
 ----
 
-That's because we want developers to be able to configure the style before it's assigned to a mesh.
-Without a target object, there's no vertex data we could store these offsets in, right?
-So we'll use this vector instead.
-As soon as a target is assigned, the values are copied over to the target's vertex data (see `onTargetAssigned`).
+何故ならば、実際にメッシュにスタイルが適用される前に、開発者がスタイルを調整できるようにしたいからです。
+ターゲットとなるオフジェクトがない場合、頂点にデーターを保持させる事ができませんね？
+それなので、このベクター型の変数を利用します。
+ターゲットとなるオブジェクトが紐づけられると、データーはターゲットの頂点にコピーされます。（`onTargetAssigned` メソッドを確認してみて下さい。）
 
 ==== copyFrom
 
-During batching, styles sometimes have to be copied from one instance to another (mainly to be able to re-use them without annoying the garbage collector).
-Thus, it's necessary to override the method `copyFrom`.
-We'll do that like this:
+バッチ処理の間、スタイルは時々（内部の値を）コピーされて使われる事があります。主な理由はスタイルを再利用してイライラするガーベジコレクションを避けるためです。
+そのため、`copyFrom` メソッドをオーバーライドする事が必要となります。
+実際のコードでは、下記のようになります。
 
 [source, as3]
 ----
@@ -223,12 +224,13 @@ override public function copyFrom(meshStyle:MeshStyle):void
 }
 ----
 
-This is rather straight-forward; we just check if the style we're copying from has the correct type and then duplicate all of its offsets on the current instance.
-The rest is done by the super-class.
+単純なコードです。
+もしもスタイルが正しい型である場合、現在のインスタンスのオフセット値をコピーしています。
+残りの処理はスーパークラスが受け持ってくれます。
 
 ==== createEffect
 
-This looks very familiar, right?
+このメソッドには見覚えがありますね？
 
 [source, as3]
 ----
@@ -238,17 +240,19 @@ override public function createEffect():MeshEffect
 }
 ----
 
-It works just like in the filter class; we return the `ColorOffsetEffect` we're going to create later.
-No, it's not the same as the one used in the filter (since the offset values are read from the vertices), but it would be possible to create an effect that works for both.
+これはフィルターのそれと同じように働きます。後ほど作成する `ColorOffsetEffect` を戻り値とします。
+この ColorOffsetEffect はフィルタークラスで使ったものと同じではありません。（オフセット値は頂点から読み取られています。）
+しかし、フィルターとスタイルの両方で動くエフェクトを作る事は可能です。
 
 ==== onTargetAssigned
 
-As mentioned above, we need to store our offsets in the vertex data of the target mesh.
-Yes, that means that each offset is stored on all vertices, even though this might seem wasteful.
-It's the only way to guarantee that the style supports batching.
+上で述べたように、ターゲットとなるメッシュの頂点にオフセット値を保持する必要があります。
+つまり、全ての頂点にオフセット値を保持させます。無駄な処理ではあるかもしれません。
+これが、スタイルがバッチ処理をサポートする事を保証する唯一の方法なのです。
 
-When the filter is assigned a target, this callback will be executed -- that is our cue to update the vertices.
-We're going to do that again elsewhere, so I moved the actual process into the `updateVertices` method.
+スタイルがターゲッチにアサインされるとこのコールバックが呼び出されます。これが頂点データを更新するきっかけとなります。
+//原文：フィルターと書いてあるが、間違いだろう。When the filter is assigned a target, this callback will be executed -- that is our cue to update the vertices.
+また後のタイミングでこの処理を行うことになるので、実際の処理は `updateVertices` メソッドに移動しました。
 
 [source, as3]
 ----
@@ -271,9 +275,9 @@ private function updateVertices():void
 }
 ----
 
-You might wonder where that `vertexData` object comes from.
-As soon as the target is assigned, the `vertexData` property will reference the target's vertices (the style itself never owns any vertices).
-So the code above loops through all vertices of the target mesh and assigns the correct offset values, ready to be used during rendering.
+ここで、`vertexData` がどこからやってきたのだろうと疑問に思うかもしれません。
+ターゲットがアサインされるとすぐに `vertexData` はターゲットの頂点を参照するようになります。（スタイル自身は頂点を保持していません。）
+よって、このコードはターゲットの全ての頂点をループで回し、正しいオフセット値を設定し、レンダリングのための準備を行います。
 
 === Extending MeshEffect
 
@@ -334,29 +338,31 @@ class ColorOffsetEffect extends MeshEffect
 
 If you compare that with the analog filter effect from the previous tutorial, you'll see that all the `offset`-properties were removed; instead, we're now overriding `vertexFormat`, which ensures that we are using the same format as the corresponding style, ready to have our offset values stored with each vertex.
 
-==== beforeDraw & afterDraw
+==== beforeDraw と afterDraw
 
-The `beforeDraw` and `afterDraw`-methods now configure the context so that we can read the offset attribute from the shaders as `va3` (_vertex attribute 3_).
-Let's have a look at that line from `beforeDraw`:
+`beforeDraw` と `afterDraw` メソッドは、シェーダーが `va3` レジスタ (_vertex attribute 3_) から値を読み込めるようにコンテキストを設定します。
+では、`beforeDraw` をみてみましょう。
 
 [source, as3]
 ----
 vertexFormat.setVertexBufferAt(3, vertexBuffer, "offset");
 ----
 
-That's equivalent to the following:
+上記のコードは下記と同等です。
 
 [source, as3]
 ----
 context.setVertexBufferAt(3, vertexBuffer, 5, "float4");
 ----
 
-That third parameter (`5 → bufferOffset`) indicates the position of the color offset inside the vertex format, and the last one (`float4 → format`) the format of that attribute.
-So that we don't have to calculate and remember those values, we can ask the `vertexFormat` object to set that attribute for us.
+三番目の引数 (`5 → bufferOffset`) は、頂点データのうち何番目がカラーオフセット値を示しているのかを表しています。
+最後の引数 (`float4 → format`) は、属性値のフォーマットを示します、
+寄ってこれらの値について、覚えておいたり再計算したりする必要はありません。`vertexFormat` に対してそれらの属性を設定するように頼めばいいのです。
+この方法では、
 That way, the code will continue to work if the format changes and we add, say, another attribute before the offset.
 
-Vertex buffer attributes should always be cleared when drawing is finished, because following draw calls probably use a different format.
-That's what we're doing in the `afterDraw` method.
+頂点の属性値は描画が終了した後に必ずクリアーされていなければいけません。なぜなら後続のドローコールが別のフォーマットで利用する可能性があるからです。
+それが `afterDraw` メソッドで行う処理となります。
 
 ==== createProgram
 
