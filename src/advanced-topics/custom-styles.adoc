@@ -20,28 +20,28 @@ image::customfilter-offset.png[Offset with a Style]
 
 まずは、フィルターとスタイルの違いについて理解するのが重要です。
 
-==== Filters vs. Styles
+==== フィルター vs スタイル
 
-As mentioned before, a filter works on a per-pixel-level: the object is rendered into a texture, and the filter processes that texture in some way.
-A style, on the other hand, has access to all the original geometry of the object, or to be more precise: to the object's vertices.
+先に述べた通り、フィルターは各ピクセル１ドット１ドットに対して働きます。オブジェクトは一度テクスチャーに描画され、フィルターはそのテクスチャをどうかして処理します。
+それに対してスタイルは、オブジェクトの元々の形状に対してアクセスします。もっと正確に言えば、オブジェクトの頂点に対してアクセスします。
 
-While that limits styles in some ways (e.g. you can't achieve a blur effect with a style), it makes them much more efficient.
-First, because you don't need that first step of drawing the object into a texture.
-Second, and most importantly: this allows styled meshes to be batched.
+そのようにスタイルにはある意味で制限があるのですが（例えばブラーフィルターを作ることはできません）、スタイルはずっと効率的に処理を行います。
+ます、最初のステップの一度テクスチャにオブジェクトを描画する必要がありません。
+さらに重要な事に、スタイルはバッチ処理される事ができます。
 
-As you know, keeping the number of draw calls down is very important for a high frame rate.
-To make sure that happens, Starling batches as many objects together as possible before drawing them.
-Question is, how to decide which objects may be batched together?
-This is where the style comes into play: only objects with the same style can be batched together.
+ご存知の通り、ドローコール数を低く抑えることは、高いフレームレートをキープするためにとても大事なことです。
+そのようにするためには、Starling にできる限りたくさんのオブジェクトをバッチ処置させる事が重要です。
+ここで疑問となるのは、どのようにしてオベジェクトをバッチ処理にまとめるかを決定しているかという事です。
+ここがスタイルが一役買っている所です。同じスタイル設定であるオブジェクトだけがバッチ対象となる事ができます。
 
-If you add three images to the stage that have a _ColorOffsetFilter_ applied to them, you'll see at least three draw calls.
-Add three objects with a _ColorOffsetStyle_ instead, and you'll have just one.
-That makes styles a little more difficult to write — but that's also what makes it worth the effort!
+もしもステージ上に３つのイメージを配置して、それぞれに _ColorOffsetFilter_ を適用した場合、少なくとも３回のドローコールが確認できます。
+代わりに _ColorOffsetStyle_ を適用した場合は、それがたったの１回となります。
+このあたりがスタイルのコードを記述することを若干難しくしてしまってはいますが、同時にやり遂げる価値があるものとなっているのです！
 
-=== Extending MeshStyle
+=== MeshStyle を継承する
 
-The base class for all styles is `starling.styles.MeshStyle`.
-This class provides all the infrastructure we need. Let's look at a stub first:
+全てのスタイルのベースクラスとなるのは、`starling.styles.MeshStyle` です。
+このクラスがスタイルの作成に必要な基盤を全て提供してくれます。まずは構造を確認してみましょう。
 
 [source, as3]
 ----
@@ -104,7 +104,7 @@ public class ColorOffsetStyle extends MeshStyle
         updateVertices();
     }
 
-    // the other offset properties need to be implemented accordingly.
+    // 他のカラーオフセット用のプロパティも同じように実装される必要があります。
 
     public function get/set greenOffset():Number;
     public function get/set blueOffset():Number;
@@ -112,9 +112,10 @@ public class ColorOffsetStyle extends MeshStyle
 }
 ----
 
-That's our starting point.
-You'll see that there's already going on a little more than in our initial filter class from the last example.
-So let's have a look at the individual parts of that code.
+これが、最初のステップとなるコードです。
+フィルターの制作サンプルの最初の状態よりも若干先に進んでいるので、
+//原文：You'll see that there's already going on a little more than in our initial filter class from the last example.
+個々のコードも確認してみましょう。
 
 ==== Vertex Formats
 
