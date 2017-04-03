@@ -151,15 +151,15 @@ MeshStyle.VERTEX_FORMAT.extend("offset:float4");
 // => position:float2, texCoords:float2, color:bytes4, offset:float4
 ----
 
-Now, you may ask: _Why do we need this?_ The filter worked just fine without a custom vertex format, after all.
+さて、ここでこういう疑問が湧くかもしれません。同士てこんな作業が必要なのか？フィルターでは頂点フォーマットを調整しなくてもうまくいったじゃないか、と。
 
-That's a very good question, I'm glad you ask!
-The answer lies in Starling's batching code.
-When we assign our style to some subsequent meshes, they will be batched together -- that's the whole reason we make this effort, right?
+これはとても良い質問です。質問されて嬉しいですね！
+答えは、Starlng のバッチ処理コードにあります。
+同じスタイルを次に描画するメッシュに適用する際、それらは一緒にバッチ処理されます。これが上記のような労力を払う理由です。
 
-But what does batching mean?
-It just means that we're copying the vertices of all individual meshes to one bigger mesh and render that.
-Somewhere inside Starling's rendering internals, you'll find code that will look similar to this:
+でも、バッチ処理とはそもそもなんでしょう？
+それは、個々のメッシュの頂点データをまとめて１つの大きなメッシュとしてレンダリングする事を意味します。
+Starling のレンダリング処理の中で、下記のようなコードを見つけることができるでしょう。
 
 [source, as3]
 ----
@@ -173,22 +173,25 @@ batch.style = meshA.style; // ← !!!
 batch.render();
 ----
 
-Do you see the problem? The big mesh (`batch`) receives a copy of the style of the mesh that was first added.
-Those three styles will probably use different settings, though.
-If those settings are just stored in the _style_, all but one will be lost on rendering.
-Instead, the style must store its data in the _VertexData_ of its target mesh!
-Only then will the big _batch_ mesh receive all the offsets individually.
+ここで問題となる箇所がわかるでしょうか？大きなメッシュ（＝`batch`）は最初のメッシュのスタイルのコピーを適用されています。
+しかし、３つのメッシュのスタイルはそれぞれ異なった設定になっていたかもしれません。
 
-IMPORTANT: Since it's so important, I'll rephrase that:
-*A style's settings must always be stored in the target mesh's vertex data.*
+もしもそれらの設定が _style_ の中にだけ保持されているとしたら、最初の１つをメッシュをのぞいてその設定は失われてしまいます。
+そうはならいように、スタイルはデーターをターゲットメッシュの頂点に格納しなくてはいけません。
+その場合だけ、巨大なメッシュは全てのオフセット値を個別に受け取ることができます。
 
-Per convention, the vertex format is always accessible as a static constant in the style's class, and also returned by the `vertexFormat` property.
-When the style is assigned to a mesh, its vertices will automatically be adapted to that new format.
+IMPORTANT: この事はとても重要なので、繰り返してお伝えします。
+*スタイルの設定はいつでもターゲットとなるメッシュの頂点データに格納される必要があります。*
 
-When you have understood that concept, you're already halfway through all of this.
-The rest is just updating the code so that the offset is read from the vertex data instead of fragment constants.
+頂点フォーマットはいつでもスタイルクラスの静的定数としてアクセスする事ができ、`vertexFormat` プロパティとしてアクセスが可能です。
+//原文：Per convention, the vertex format is always accessible as a static constant in the style's class, and also returned by the `vertexFormat` property.
+スタイルがメッシュに適用された際、メッシュの頂点は自動的に新しいデータフォーマットに適合されます。
 
-But I'm getting ahead of myself.
+このコンセプトを理解したのなら、このチャプターの半分はやり遂げたことになります。
+残りは、フラグメントシェーダーの定数ではなく、頂点データからオフセット値を読み出すようにコードをアップデートするだけです。
+
+この後で説明するので、先に進みましょう。
+//原文：But I'm getting ahead of myself.
 
 ==== メンバ変数
 
@@ -338,7 +341,8 @@ class ColorOffsetEffect extends MeshEffect
 }
 ----
 
-If you compare that with the analog filter effect from the previous tutorial, you'll see that all the `offset`-properties were removed; instead, we're now overriding `vertexFormat`, which ensures that we are using the same format as the corresponding style, ready to have our offset values stored with each vertex.
+１つ前のチュートリアルのアナログフィルターエフェクトと比較すると、全てのオフセット値設定が削除されているのがわかるでしょう。
+その代わりに `vertexFormat` メソッドをオーバーライドしています。オフセット値を頂点データとして格納するため、そのスタイルに対応するフォーマットを使う事を確実にしています。
 
 ==== beforeDraw と afterDraw
 
