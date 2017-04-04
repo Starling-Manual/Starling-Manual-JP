@@ -1,45 +1,47 @@
-== Custom Styles
+== カスタムスタイル
 
-Now that we have tapped the raw power of _Stage3D_, let's continue on this road!
-In this section, we will write a simple mesh style.
-In Starling 2, all rendering is done through styles; by creating your own style, you can create special effects without sacrificing performance in any way.
+_Stage3D_ の生のパワーの領域へと足を踏み入れました。このまま突き進んでいきましょう。
+このセクションでは、シンプルなメッシュスタイルのコードを記述します。
+Starling 2 では、全てのレンダリング処理はスタイルを通じて行われます。
+スタイルを自分自身で作る事で、パフォーマンスを犠牲にせずに独自な描画エフェクトを作ることができるのです。
 
-NOTE: Before you continue, please make sure you have read through the section <<Custom Filters>>, as well.
-Filters and styles share many concepts, so it makes sense to start with the simpler of the two.
-Below, I'll assume that you are familiar with everything that's shown in that other section.
+NOTE: この先に進む前に、必ず <<カスタムフィルター>> のセクションも目を通しておいてください。
+フィルターとスタイルでは多くのコンセプトを共通しています。ですので、より単純なフィルターから理解を始めた方が理にかなっています。
+この先は、フィルターのセクションの内容は理解していると仮定して話を進めます。
 
-=== The Goal
+=== ゴール
 
-The goal is just the same as the one we were shooting for with the _ColorOffsetFilter_; we want to allow adding an offset to the color value of every rendered pixel.
-Only this time, we're doing it with style! We'll call it ... _ColorOffsetStyle_.
+今回のゴールは _ColorOffsetFilter_ として作ったものと同じです。
+描画ピクセルに対してカラーのオフセット指定ができるようにします。
+これを今回はスタイルとして制作するわけです。これを _ColorOffsetStyle_ と呼びましょう。
 
-.Applying a color offset with style.
+.スタイルでカラーオフセットを指定する。
 image::customfilter-offset.png[Offset with a Style]
 
-Before we continue, it's crucial that you understand the difference between a filter and a style.
+まずは、フィルターとスタイルの違いについて理解するのが重要です。
 
-==== Filters vs. Styles
+==== フィルター vs スタイル
 
-As mentioned before, a filter works on a per-pixel-level: the object is rendered into a texture, and the filter processes that texture in some way.
-A style, on the other hand, has access to all the original geometry of the object, or to be more precise: to the object's vertices.
+先に述べた通り、フィルターは各ピクセル１ドット１ドットに対して働きます。オブジェクトは一度テクスチャーに描画され、フィルターはそのテクスチャになんらかの処理します。
+それに対してスタイルは、オブジェクトの元々の形状に対してアクセスします。もっと正確に言えば、オブジェクトの頂点に対して処理を行います。
 
-While that limits styles in some ways (e.g. you can't achieve a blur effect with a style), it makes them much more efficient.
-First, because you don't need that first step of drawing the object into a texture.
-Second, and most importantly: this allows styled meshes to be batched.
+スタイルにはある意味でそのような制限があるのですが（例えば、ブラー効果のスタイルを作ることはできません）、スタイルはフィルターよりもずっと効率的に処理を行います。
+ます、フィルターでは必要だった一度テクスチャにオブジェクトを描画する最初のステップの処理が必要がありません。
+さらに重要な事に、スタイルはバッチ処理の対象となる事ができます。
 
-As you know, keeping the number of draw calls down is very important for a high frame rate.
-To make sure that happens, Starling batches as many objects together as possible before drawing them.
-Question is, how to decide which objects may be batched together?
-This is where the style comes into play: only objects with the same style can be batched together.
+知っての通り、ドローコール数を低く抑えることは、高いフレームレートをキープするためにとても大事なことです。
+そのためには、Starling にできる限りたくさんのオブジェクトをバッチ処置させる事が重要です。
+ここで疑問となるのは、Starling がどのようにしてバッチ対象としてまとめるオブジェクトを決定しているかという事です。
+ここで、スタイルが一役買っています。同じスタイルが設定され散るオブジェクトが同じバッチ処理の対象となる事ができます。
 
-If you add three images to the stage that have a _ColorOffsetFilter_ applied to them, you'll see at least three draw calls.
-Add three objects with a _ColorOffsetStyle_ instead, and you'll have just one.
-That makes styles a little more difficult to write — but that's also what makes it worth the effort!
+もしもステージ上に３つのイメージを配置して、それぞれに _ColorOffsetFilter_ を適用した場合、少なくとも３回のドローコールが確認できます。
+代わりに _ColorOffsetStyle_ を適用した場合は、それがたったの１回となります。
+このあたりに絡んだ処理がスタイルのコードを若干難しくしてしまってはいますが、同時にやり遂げる価値があるものとなっているのです！
 
-=== Extending MeshStyle
+=== MeshStyle を継承する
 
-The base class for all styles is `starling.styles.MeshStyle`.
-This class provides all the infrastructure we need. Let's look at a stub first:
+全てのスタイルのベースクラスとなるのは、`starling.styles.MeshStyle` です。
+このクラスがスタイルの作成に必要な基盤機能を全て提供してくれます。まずは構造を確認してみましょう。
 
 [source, as3]
 ----
@@ -102,7 +104,7 @@ public class ColorOffsetStyle extends MeshStyle
         updateVertices();
     }
 
-    // the other offset properties need to be implemented accordingly.
+    // 他のカラーオフセット用のプロパティも同じように実装される必要があります。
 
     public function get/set greenOffset():Number;
     public function get/set blueOffset():Number;
@@ -110,35 +112,38 @@ public class ColorOffsetStyle extends MeshStyle
 }
 ----
 
-That's our starting point.
-You'll see that there's already going on a little more than in our initial filter class from the last example.
-So let's have a look at the individual parts of that code.
+これが、作業のとっかかりとなるコードです。
+フィルター作成時のそれよりも若干先に進んだ状態となっているので、
+//原文：You'll see that there's already going on a little more than in our initial filter class from the last example.
+個々のメソッドを確認してみましょう。
 
-==== Vertex Formats
+==== 頂点フォーマット
 
-The first thing that's notable is the vertex format constant at the very top of the class.
-I mentioned already that styles work on a vertex level, giving you access to all the geometry of an object.
-The _VertexData_ class stores that geometry, but we never actually discussed how that class knows _which_ data is stored in this class, and _how_.
-That's defined by the _VertexDataFormat_.
+頂点フォーマットが定数としてクラスの上部に記述されている事に注目してください。
+スタイルは頂点レベルで働くと先に述べました。オブジェクトの全ての形状情報にアクセスが可能です。
+//原文：I mentioned already that styles work on a vertex level, giving you access to all the geometry of an object.
+_VertexData_ クラスはその形状を保持しています。しかし、各頂点にどんなデーターが保持されているか、どうやって保持させるか、についてはまだ述べていませんでした。
+まさにそれが、_VertexDataFormat_ によって定義されているのです。
 
-The default format used by _MeshStyle_ is the following:
+_MeshStyle_によって扱われるデフォルトのフォーマットは以下のようになっています。
 
   position:float2, texCoords:float2, color:bytes4
 
-The syntax of this string should seem familiar; it's a list of attributes with certain data types.
+この文字列の書式には馴染みがあるように見えます。これは属性情報とデータ型の羅列です。
 
-* The `position` attribute stores two floats (for the x- and y-coordinates of a vertex).
-* The `texCoords` attribute stores two floats, as well (for the texture coordinates of the vertex).
-* The `color` attribute stores four bytes for the color of the vertex (one byte for each channel).
+* `position` 属性は２つの float 型を保持します。 (頂点のX座標、Y座標です。）
+* `texCoords` 属性も２つの float 型を保持します。 (テクスチャ座標を表します。).
+* `color` 属性は４バイトの色情報を保持します。 (１バイトごとに１チャンネルの情報です。)
 
-A _VertexData_ instance with this format will store those attributes for each vertex of the mesh, using the exact same order as in the format string.
-This means that each vertex will take up 20 bytes (8 + 8 + 4).
+このフォーマットの _VertexData_ インスタンスは、メッシュの各頂点にそれら属性値を保持します。属性値の格納順はフォーマット文字列と同じ順序です。
+つまり、各頂点は合計20バイト（8バイト + 8バイト + 4バイト）を保持する事になります。
 
-When you create a mesh and don't assign any style in particular, it will be rendered by the standard _MeshStyle_, forcing exactly this format onto its vertices.
-That's all the information you need to draw a textured, colored mesh, after all.
+もしもメッシュになんのスタイルも当てはめなかった場合、標準の _MeshStyle_ を用いて描画処理が行われます。
+各頂点の属性情報には上記のフォーマットが適用されます。
+それが、各頂点にテクスチャと色味を付与したメッシュを描画するために必要な情報です。
 
-But for our _ColorOffsetStyle_, that's not enough: we need to store our color offset as well.
-Thus, we need to define a new format that adds an `offset` attribute consisting of four float values.
+しかし、_ColorOffsetStyle_ にはこれで属性情報が十分ではありません。カラーオフセット値も保持させる必要があります。
+さらに４つのfloat値からなる `offset` 属性を追加した新しいフォーマットを定義する必要があるのです。
 
 [source, as3]
 ----
@@ -146,15 +151,16 @@ MeshStyle.VERTEX_FORMAT.extend("offset:float4");
 // => position:float2, texCoords:float2, color:bytes4, offset:float4
 ----
 
-Now, you may ask: _Why do we need this?_ The filter worked just fine without a custom vertex format, after all.
+さて、ここでまた疑問が湧くかもしれません。
+"なぜこんな作業が必要なのか？フィルターでは頂点フォーマットを調整しなくてもうまくいったじゃないか" と。
 
-That's a very good question, I'm glad you ask!
-The answer lies in Starling's batching code.
-When we assign our style to some subsequent meshes, they will be batched together -- that's the whole reason we make this effort, right?
+これはとても良い質問です。（質問されて嬉しいです！）
+答えは、Starlng のバッチ処理にあります。
+１つのスタイルを次に描画するメッシュにも適用できる場合にそれらのメッシュがバッチ処理されます。これが上記のような労力を払う理由です。
 
-But what does batching mean?
-It just means that we're copying the vertices of all individual meshes to one bigger mesh and render that.
-Somewhere inside Starling's rendering internals, you'll find code that will look similar to this:
+しかし、バッチ処理とはそもそもなんでしょう？
+それは、個々のメッシュの頂点データをまとめて１つの大きなメッシュとしてレンダリングする事を意味します。
+Starling のレンダリングコードの中で、下記のようなコードを見つけることができるでしょう。
 
 [source, as3]
 ----
@@ -168,42 +174,47 @@ batch.style = meshA.style; // ← !!!
 batch.render();
 ----
 
-Do you see the problem? The big mesh (`batch`) receives a copy of the style of the mesh that was first added.
-Those three styles will probably use different settings, though.
-If those settings are just stored in the _style_, all but one will be lost on rendering.
-Instead, the style must store its data in the _VertexData_ of its target mesh!
-Only then will the big _batch_ mesh receive all the offsets individually.
+ここで注目すべき箇所がわかるでしょうか？大きなメッシュ（＝`batch`）には最初のメッシュのスタイルのコピーが適用されています。
+しかし、３つのメッシュのスタイルはそれぞれ異なった設定になっているかもしれません。
 
-IMPORTANT: Since it's so important, I'll rephrase that:
-*A style's settings must always be stored in the target mesh's vertex data.*
+もしもその異なった設定が _style_ の中にだけ保持されているとしたら、最初の１つのメッシュをのぞき、その設定が失われてしまいます。
+そうならないように、スタイルはデーターをターゲットとなるメッシュの頂点に格納しなくてはいけません。
+そうすれば、巨大なメッシュは全てのオフセット情報を個別に受け取ることができます。
 
-Per convention, the vertex format is always accessible as a static constant in the style's class, and also returned by the `vertexFormat` property.
-When the style is assigned to a mesh, its vertices will automatically be adapted to that new format.
+IMPORTANT: この事はとても重要なので、２回言います。
+*スタイルの設定はいつでもターゲットとなるメッシュの頂点データに格納される必要があります。*
 
-When you have understood that concept, you're already halfway through all of this.
-The rest is just updating the code so that the offset is read from the vertex data instead of fragment constants.
+頂点フォーマットはいつでもスタイルクラスの静的な定数としてアクセスする事ができ、`vertexFormat` プロパティとしてもアクセスが可能です。
+//原文：Per convention, the vertex format is always accessible as a static constant in the style's class, and also returned by the `vertexFormat` property.
+スタイルがメッシュに適用される際、メッシュの頂点は自動的に新しいデータフォーマットが適用されます。
 
-But I'm getting ahead of myself.
+このコンセプトを理解したのなら、このチャプターの半分はなし遂げたことになります。
+残りは、フラグメントシェーダー定数ではなく、頂点データからオフセット値を読みとるようにコードをアップデートするだけです。
 
-==== Member Variables
+その件は後に説明します。まずは先に進みましょう。
+//原文：But I'm getting ahead of myself.
 
-You'll note that even though I just insisted that all data is to be stored in the vertices, there's still a set of offsets stored in a member variable:
+==== メンバ変数
+
+全てのデーターは頂点に保持されると言いましたが、同時にクラスのメンバ変数にもデーターを保持させています。
+//原文：You'll note that even though I just insisted that all data is to be stored in the vertices, there's still a set of offsets stored in a member variable:
 
 [source, as3]
 ----
 private var _offsets:Vector.<Number>;
 ----
 
-That's because we want developers to be able to configure the style before it's assigned to a mesh.
-Without a target object, there's no vertex data we could store these offsets in, right?
-So we'll use this vector instead.
-As soon as a target is assigned, the values are copied over to the target's vertex data (see `onTargetAssigned`).
+なぜならば、実際にメッシュにスタイルが適用される前に、開発者がスタイルのプロパティを調整できるようにしたいからです。
+ターゲットとなるオフジェクトがまだ紐づけられていない場合、頂点にデーターを保持させる事ができません。
+それなので、一旦このベクター型のメンバ変数にデータを保持させます。
+ターゲットとなるオブジェクトが紐づけられると、それらのデーターはターゲットの頂点へとコピーされます。
+（`onTargetAssigned` メソッドを確認してみて下さい。）
 
 ==== copyFrom
 
-During batching, styles sometimes have to be copied from one instance to another (mainly to be able to re-use them without annoying the garbage collector).
-Thus, it's necessary to override the method `copyFrom`.
-We'll do that like this:
+バッチ処理の間、スタイルは時々（内部の値を）コピーされて使われる事があります。主な理由はスタイルを再利用し、苛だたしいガーベジコレクションを抑制するためです。
+そのためには、`copyFrom` メソッドをオーバーライドする必要があります。
+実際のコードは下記のようになります。
 
 [source, as3]
 ----
@@ -220,12 +231,13 @@ override public function copyFrom(meshStyle:MeshStyle):void
 }
 ----
 
-This is rather straight-forward; we just check if the style we're copying from has the correct type and then duplicate all of its offsets on the current instance.
-The rest is done by the super-class.
+単純なコードです。
+もしもスタイルが正しい型である場合、現在のインスタンスのオフセット値をコピーしています。
+続きの処理はスーパークラスが受け持ってくれます。
 
 ==== createEffect
 
-This looks very familiar, right?
+このメソッドには見覚えがありますね？
 
 [source, as3]
 ----
@@ -235,17 +247,19 @@ override public function createEffect():MeshEffect
 }
 ----
 
-It works just like in the filter class; we return the `ColorOffsetEffect` we're going to create later.
-No, it's not the same as the one used in the filter (since the offset values are read from the vertices), but it would be possible to create an effect that works for both.
+これはフィルターの createEffect と同じように働きます。後ほど作成する `ColorOffsetEffect` を戻り値とします。
+ColorOffsetEffect はフィルタークラスで使ったものと同じではありません。（オフセット情報が頂点から読み取られています。）
+しかし、フィルターとスタイルの両方で動くエフェクトを作る事は可能です。
 
 ==== onTargetAssigned
 
-As mentioned above, we need to store our offsets in the vertex data of the target mesh.
-Yes, that means that each offset is stored on all vertices, even though this might seem wasteful.
-It's the only way to guarantee that the style supports batching.
+オフセット値をは、ターゲットとなるメッシュの頂点に保持する必要があります。
+*全て* の頂点に *同じ値* のオフセット値を保持させます。これは一見無駄な処理に思えるかもしれません。
+しかしこの方法がスタイルがバッチ処理をサポートすようにできる唯一の方法なのです。
 
-When the filter is assigned a target, this callback will be executed -- that is our cue to update the vertices.
-We're going to do that again elsewhere, so I moved the actual process into the `updateVertices` method.
+スタイルがターゲットにアサインされるとこの onTargetAssigned コールバックが呼び出されます。頂点データを更新するきっかけのタイミングです。
+//原文：フィルターと書いてあるが、間違いだろう。When the filter is assigned a target, this callback will be executed -- that is our cue to update the vertices.
+また後にもこの処理を行うことになるので、実際の処理は `updateVertices` メソッドに移動しました。
 
 [source, as3]
 ----
@@ -268,16 +282,18 @@ private function updateVertices():void
 }
 ----
 
-You might wonder where that `vertexData` object comes from.
-As soon as the target is assigned, the `vertexData` property will reference the target's vertices (the style itself never owns any vertices).
-So the code above loops through all vertices of the target mesh and assigns the correct offset values, ready to be used during rendering.
+`vertexData` 変数はどこからやってきたのだろう？と疑問に思うかもしれません。
+ターゲットのオブジェクトがアサインされるとすぐに `vertexData` はターゲットの頂点を参照するようになります。
+（スタイル自身は頂点データを保持していません。）
+よって、このコードではターゲットの全ての頂点をループで回し、正しいオフセット値を設定し、レンダリングのための準備を行っています。
 
-=== Extending MeshEffect
+=== MeshEffect を継承する
 
-We're done with the style class now -- time to move on to the effect, which is where the actual rendering takes place.
-This time, we're going to extend the _MeshEffect_ class.
-Remember, effects simplify writing of low-level rendering code.
-I'm actually talking about a group of classes with the following inheritance:
+スタイルクラスの設定は終わりました。次は実際のレンダリングが行われているエフェクト処理へ移りましょう。
+今度は _MeshEffect_ クラスを継承します。
+エフェクトではローレベルなレンダリングコードを書くだけである事を覚えていますか？
+解説は、下記のようなクラスの継承関係でグループ分けして進めます。
+//原文：I'm actually talking about a group of classes with the following inheritance:
 
 [plantuml, effect-classes]
 ....
@@ -287,13 +303,14 @@ Effect <|-- FilterEffect
 FilterEffect <|-- MeshEffect
 ....
 
-The base class (_Effect_) does only the absolute minimum: it draws white triangles.
-The _FilterEffect_ adds support for textures, and the _MeshEffect_ for color and alpha.
+ベースクラス（ _Effect_ ）は、とても小さいクラスです。三角ポリゴンを描画するだけです。
+_FilterEffect_ は、それにテクスチャのサポートを加え、_MeshEffect_ はwqらにそこにカラーとアルファの扱いを加えます。
 
-NOTE: Those two classes could also have been named _TexturedEffect_ and _ColoredTexturedEffect_, but I chose to baptize them with their usage in mind.
-If you create a filter, you need to extend _FilterEffect_; if you create a mesh style, _MeshEffect_.
+NOTE: これら２つのクラスは _TexturedEffect_ と _ColoredTexturedEffect_ という名前にする事もできました。しかし、実際にそのクラスが利用される場所を考慮に入れて別の名前としました。
+フィルターを作るのであれば、_FilterEffect_ を継承する必要があります。メッシュスタイルを作るのであれば、_MeshEffect_ を継承します。
 
-So let's look at the setup of our _ColorOffsetEffect_, with a few stubs we're filling in later.
+_ColorOffsetEffect_ の構成をざっと見てみましょう。実際の実装はこの後行います。
+//原文：So let's look at the setup of our _ColorOffsetEffect_, with a few stubs we're filling in later.
 
 [source, as3]
 ----
@@ -329,84 +346,90 @@ class ColorOffsetEffect extends MeshEffect
 }
 ----
 
-If you compare that with the analog filter effect from the previous tutorial, you'll see that all the `offset`-properties were removed; instead, we're now overriding `vertexFormat`, which ensures that we are using the same format as the corresponding style, ready to have our offset values stored with each vertex.
+フィルターの場合と比較すると、全てのオフセット値設定が削除されているのがわかるでしょう。
+その代わりに `vertexFormat` メソッドをオーバーライドしています。オフセット値は頂点データに格納された状態で受け取るため、スタイルに対応した頂点フォーマットを使っています。
 
-==== beforeDraw & afterDraw
+==== beforeDraw と afterDraw
 
-The `beforeDraw` and `afterDraw`-methods now configure the context so that we can read the offset attribute from the shaders as `va3` (_vertex attribute 3_).
-Let's have a look at that line from `beforeDraw`:
+`beforeDraw` と `afterDraw` メソッドは、シェーダーが `va3` レジスタ (_vertex attribute 3_) から値を読み込めるようにコンテキストを設定します。
+では、`beforeDraw` をみてみましょう。
 
 [source, as3]
 ----
 vertexFormat.setVertexBufferAt(3, vertexBuffer, "offset");
 ----
 
-That's equivalent to the following:
+上記のコードは下記と同等です。
 
 [source, as3]
 ----
 context.setVertexBufferAt(3, vertexBuffer, 5, "float4");
 ----
 
-That third parameter (`5 → bufferOffset`) indicates the position of the color offset inside the vertex format, and the last one (`float4 → format`) the format of that attribute.
-So that we don't have to calculate and remember those values, we can ask the `vertexFormat` object to set that attribute for us.
-That way, the code will continue to work if the format changes and we add, say, another attribute before the offset.
+三番目の引数 (`5 → bufferOffset`) は、頂点データのうち何番目がカラーオフセット値を示しているのかを表しています。
+最後の引数 (`float4 → format`) は、属性値のフォーマットを示します、
+よって、これらの値について覚えておいたり再計算したりする必要はありません。`vertexFormat` にそれらの属性を設定するように頼めばいいのです。
+この方法なら、もし頂点フォーマットが変更された場合でも、さらに他の属性値がオフセット値の前に追加された場合でも、コードがそのまま動作するようにする事ができます。
+//原文：That way, the code will continue to work if the format changes and we add, say, another attribute before the offset.
 
-Vertex buffer attributes should always be cleared when drawing is finished, because following draw calls probably use a different format.
-That's what we're doing in the `afterDraw` method.
+頂点の属性値は描画が終了した後に必ずクリアーされていなければいけません。なぜなら後続のドローコールが別のフォーマットで利用する可能性があるからです。
+それが `afterDraw` メソッドで行う処理となります。
 
 ==== createProgram
 
-It's finally time to tackle the core of the style; the AGAL code that does the actual rendering.
-This time, we have to implement the vertex-shader as well; it won't do to use a standard implementation, because we need to add some custom logic.
-The fragment shader, however, is almost identical to the one we wrote for the filter.
-Let's take a look!
+ついにスタイルのコードの核心に迫ります。AGAL コードで実際にレンダリング処理を行う部分です。
+バーテックスシェーダをにも改変を入れていきます。今回は標準の実装のままではうまくいかないのです。
+//原文：This time, we have to implement the vertex-shader as well; it won't do to use a standard implementation, because we need to add some custom logic.
+一方、フラグメントシェーダーのものとほぼ同じとなります。
+確認してみましょう。
 
 [source, as3]
 ----
 override protected function createProgram():Program
 {
     var vertexShader:String = [
-        "m44 op, va0, vc0", // 4x4 matrix transform to output clip-space
-        "mov v0, va1     ", // pass texture coordinates to fragment program
-        "mul v1, va2, vc4", // multiply alpha (vc4) with color (va2), pass to fp
-        "mov v2, va3     "  // pass offset to fp
+        "m44 op, va0, vc0", // 4x4行列で頂点座標をクリップスペースに変換します
+        "mov v0, va1     ", // テクスチャ座標をフラグメントシェーダーに送ります
+        "mul v1, va2, vc4", // アルファ値(vc4)とカラー値(va2)を掛け合わせてフラグメントシェーダーに送ります
+        "mov v2, va3     "  // カラーオフセット値をフラグメントシェーダーに送ります
     ].join("\n");
 
     var fragmentShader:String = [
-        tex("ft0", "v0", 0, texture) +  // get color from texture
-        "mul ft0, ft0, v1",             // multiply color with texel color
-        "mov ft1, v2",                  // copy complete offset to ft1
-        "mul ft1.xyz, v2.xyz, ft0.www", // multiply offset.rgb with alpha (pma!)
-        "add oc, ft0, ft1"              // add offset, copy to output
+        tex("ft0", "v0", 0, texture) +  // テクスチャからカラーを読み取ります
+        "mul ft0, ft0, v1",             // カラー値とテクスチャカラーを掛け合わせます
+        "mov ft1, v2",                  // オフセット値をft1レジスタにコピーします
+        "mul ft1.xyz, v2.xyz, ft0.www", // オフセットのrgb値をアルファ値を掛け合わせます(pma対応)
+        "add oc, ft0, ft1"              // カラーオフセット値とカラー値を足し合わせて最終出力とします
     ].join("\n");
 
     return Program.fromSource(vertexShader, fragmentShader);
 }
 ----
 
-To understand what the vertex-shader is doing, you first have to understand the input it's working with.
+バーテックスシェーダーが何をしているのか理解するには、まず始めに入力情報について理解しなくてはいけません。
+//原文：To understand what the vertex-shader is doing, you first have to understand the input it's working with.
 
-* The `va`-registers ("vertex attribute") contain the attributes from the current vertex, taken from the vertex buffer.
-  They are ordered just like the attributes in the vertex format we set up a little earlier: `va0` is the vertex position, `va1` the texture coordinates, `va2` the color, `va3` the offset.
-* Two constants are the same for all our vertices: `vc0-3` contain the modelview-projection matrix, `vc4` the current alpha value.
+* `va` レジスタ ("vertex attribute" レジスタ) は、バーテックスバッファーから得られた頂点の属性値情報を持ちます。属性値は先ほどバーテックスフォーマットで設定した順序で格納されています。それぞれ、`va0` は座標、`va1` はテクスチャ座標、`va2` はカラー、`va3`はカラーオフセットの情報です。
+* ２つの定数は全ての頂点で共通となります。`vc0-3` はmvpマトリックス、`vc4` は現在のアルファ値です。
 
-The main task of any vertex shader is to move the vertex position into the so-called "clip-space".
-That's done by multiplying the vertex position with the `mvpMatrix` (modelview-projection matrix).
-The first line takes care of that, and you'll find it in any vertex shader in Starling.
-Suffice it to say that it is responsible for figuring out where the vertex is ending up on the screen.
+どのバーテックスシェーダーでも行う主な処理とは、頂点座標をクリップスペースと呼ばれる座標空間に変換する事です。
+これは、頂点座標と`mvpマトリックス` (modelview-projection matrix) と掛け合わせる事で行う事ができます。
+最初の行でその処理が行われます。これは Starling のどのバーテックスシェーダーでも見かける処理です。
+頂点が画面上でどこに位置するのか求めている、という説明で十分でしょう。
 
-Otherwise, we're more or less just forwarding data to the fragment shader via the "varying registers" `v0` - `v2`.
+それとは別に、"varying レジスタ" の `v0` から `v2` を通じて、いくらかのデータをフラグメントシェーダーに送っています。
 
-The fragment shader is an almost exact replica of its filter-class equivalent.
-Can you find the difference?
-It's the register we're reading the offset from; before, that was stored in a constant, now in `v2`.
+フラグメントシェーダーの内容はフィルタークラスのものとほぼ同じような実装となっています。
+違いがわかるでしょうか？
+それは、カラーオフセット値を読み取っているレジスタです。フィルターでは定数レジスタ、今回のスタイルでは `v2` レジスタにそれが保持されています。
 
-=== Trying it out
+=== 動作テスト
 
-There you have it: we're almost finished with our style!
-Let's give it a test-ride.
-In a truly bold move, I'll use it on two objects right away, so that we'll see if batching works correctly.
+オリジナルのスタイルの作成の完了まであと一歩です！
+//原文：There you have it: we're almost finished with our style!
+動作テストを行ってみましょう。
+いきなりですが、２つのオブジェクトにスタイルを適用してみます。バッチ処理が正しく動いている事が確認できるはずです。
+//原文：In a truly bold move, I'll use it on two objects right away, so that we'll see if batching works correctly.
 
 [source, as3]
 ----
@@ -424,22 +447,26 @@ image2.style = style2;
 addChild(image2);
 ----
 
-.Two styled images, rendered with just one draw call.
+.２つのスタイルのイメージがドローコール１回で描画されています。
 image::custom-style-sample.png[Custom Style Sample]
 
-Hooray, this actually works!
-Be sure to look at the draw count at the top left, which is an honest and constant "1".
+やりました、正しく動いています！
+ここで、左上のドローコール表示が１のままである事を確認してください。
 
-There's a tiny little bit more to do, though; our shaders above were created assuming that there's always a texture to read data from.
-However, the style might also be assigned to a mesh that doesn't use any texture, so we have to write some specific code for that case (which is so simple I'm not going to elaborate on it right now).
+…まだ少しやらなけらばならない事があります。今回のシェーダーコードはテクスチャからデータを読み出す前提になっていますが、
+スタイルはテクスチャを使わないメッシュに適用される事もあり得るので、そのようなケースのために特別なコードを書かなくてはいけないでしょう。
+（今ここで解説はしませんが、とてもシンプルなものです。）
 
-The complete class, including this last-minute fix, can be found here: https://gist.github.com/PrimaryFeather/eaaa4a1b50cf546613d2[ColorOffsetStyle.as].
+その点を修正した完全なコードは ここ: https://gist.github.com/PrimaryFeather/eaaa4a1b50cf546613d2[ColorOffsetStyle.as] で確認が可能です。
 
-=== Where to go from here
+=== この先にたどり着く場所
+//原文：Where to go from here
 
-That's it with our style!
-I hope you're as thrilled as I am that we succeeded on our task.
-What you see above is the key to extending Starling in ways that are limited only by your imagination.
-The _MeshStyle_ class even has a few more tricks up its sleeve, so be sure to read through the complete class documentation.
+スタイルについては以上です！
+私と同じように、スタイルの作成を楽しんでくれたなら良いのですが。
+上記のやり方は、あなたの頭の中にある Starling 拡張を実現するキーとなるものです。
+//翻訳苦しい 原文：What you see above is the key to extending Starling in ways that are limited only by your imagination.
+_MeshStyle_ クラスにはまだいくつか実装ポイントがあります。クラスドキュメントも通して確認するようにしてください。
+//原文：The _MeshStyle_ class even has a few more tricks up its sleeve, so be sure to read through the complete class documentation.
 
-I'm looking forward to seeing what you guys come up with!
+みんなが作ったスタイルを見る事を楽しみにしています！
