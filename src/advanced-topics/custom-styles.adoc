@@ -374,50 +374,51 @@ That way, the code will continue to work if the format changes and we add, say, 
 
 ==== createProgram
 
-It's finally time to tackle the core of the style; the AGAL code that does the actual rendering.
-This time, we have to implement the vertex-shader as well; it won't do to use a standard implementation, because we need to add some custom logic.
-The fragment shader, however, is almost identical to the one we wrote for the filter.
-Let's take a look!
+ついにスタイルのコードの核心に迫ります。AGAL コードで実際にレンダリング処理を行う部分です。
+バーテックスシェーダをにも改変を入れていきます。今回は標準の実装のままではうまくいかないのです。
+//原文：This time, we have to implement the vertex-shader as well; it won't do to use a standard implementation, because we need to add some custom logic.
+一方、フラグメントシェーダーのものとほぼ同じとなります。
+確認してみましょう。
 
 [source, as3]
 ----
 override protected function createProgram():Program
 {
     var vertexShader:String = [
-        "m44 op, va0, vc0", // 4x4 matrix transform to output clip-space
-        "mov v0, va1     ", // pass texture coordinates to fragment program
-        "mul v1, va2, vc4", // multiply alpha (vc4) with color (va2), pass to fp
-        "mov v2, va3     "  // pass offset to fp
+        "m44 op, va0, vc0", // 4x4行列で頂点座標をクリップスペースに変換します
+        "mov v0, va1     ", // テクスチャ座標をフラグメントシェーダーに送ります
+        "mul v1, va2, vc4", // アルファ値(vc4)とカラー値(va2)を掛け合わせてフラグメントシェーダーに送ります
+        "mov v2, va3     "  // カラーオフセット値をフラグメントシェーダーに送ります
     ].join("\n");
 
     var fragmentShader:String = [
-        tex("ft0", "v0", 0, texture) +  // get color from texture
-        "mul ft0, ft0, v1",             // multiply color with texel color
-        "mov ft1, v2",                  // copy complete offset to ft1
-        "mul ft1.xyz, v2.xyz, ft0.www", // multiply offset.rgb with alpha (pma!)
-        "add oc, ft0, ft1"              // add offset, copy to output
+        tex("ft0", "v0", 0, texture) +  // テクスチャからカラーを読み取ります
+        "mul ft0, ft0, v1",             // カラー値とテクスチャカラーを掛け合わせます
+        "mov ft1, v2",                  // オフセット値をft1レジスタにコピーします
+        "mul ft1.xyz, v2.xyz, ft0.www", // オフセットのrgb値をアルファ値を掛け合わせます(pma対応)
+        "add oc, ft0, ft1"              // カラーオフセット値とカラー値を足し合わせて最終出力とします
     ].join("\n");
 
     return Program.fromSource(vertexShader, fragmentShader);
 }
 ----
 
-To understand what the vertex-shader is doing, you first have to understand the input it's working with.
+バーテックスシェーダーが何をしているのか理解するには、まず始めに入力情報について理解しなくてはいけません。
+//原文：To understand what the vertex-shader is doing, you first have to understand the input it's working with.
 
-* The `va`-registers ("vertex attribute") contain the attributes from the current vertex, taken from the vertex buffer.
-  They are ordered just like the attributes in the vertex format we set up a little earlier: `va0` is the vertex position, `va1` the texture coordinates, `va2` the color, `va3` the offset.
-* Two constants are the same for all our vertices: `vc0-3` contain the modelview-projection matrix, `vc4` the current alpha value.
+* `va` レジスタ ("vertex attribute" レジスタ) は、バーテックスバッファーから得られた頂点の属性値情報を持ちます。属性値は先ほどバーテックスフォーマットで設定した順序で格納されています。それぞれ、`va0` は座標、`va1` はテクスチャ座標、`va2` はカラー、`va3`はカラーオフセットの情報です。
+* ２つの定数は全ての頂点で共通となります。`vc0-3` はmvpマトリックス、`vc4` は現在のアルファ値です。
 
-The main task of any vertex shader is to move the vertex position into the so-called "clip-space".
-That's done by multiplying the vertex position with the `mvpMatrix` (modelview-projection matrix).
-The first line takes care of that, and you'll find it in any vertex shader in Starling.
-Suffice it to say that it is responsible for figuring out where the vertex is ending up on the screen.
+どのバーテックスシェーダーでも行う主な処理とは、頂点座標をクリップスペースと呼ばれる座標空間に変換する事です。
+これは、頂点座標と`mvpマトリックス` (modelview-projection matrix) と掛け合わせる事で行う事ができます。
+最初の行でその処理が行われます。これは Starling のどのバーテックスシェーダーでも見かける処理です。
+頂点が画面上でどこに位置するのか求めている、という説明で十分でしょう。
 
-Otherwise, we're more or less just forwarding data to the fragment shader via the "varying registers" `v0` - `v2`.
+それとは別に、"varying レジスタ" の `v0` から `v2` を通じて、いくらかのデータをフラグメントシェーダーに送っています。
 
-The fragment shader is an almost exact replica of its filter-class equivalent.
-Can you find the difference?
-It's the register we're reading the offset from; before, that was stored in a constant, now in `v2`.
+フラグメントシェーダーの内容はフィルタークラスのものとほぼ同じような実装となっています。
+違いがわかるでしょうか？
+それは、カラーオフセット値を読み取っているレジスタです。フィルターでは定数レジスタ、今回のスタイルでは `v2` レジスタにそれが保持されています。
 
 === 動作テスト
 
