@@ -284,12 +284,13 @@ private function updateVertices():void
 ターゲットがアサインされるとすぐに `vertexData` はターゲットの頂点を参照するようになります。（スタイル自身は頂点を保持していません。）
 よって、このコードはターゲットの全ての頂点をループで回し、正しいオフセット値を設定し、レンダリングのための準備を行います。
 
-=== Extending MeshEffect
+=== MeshEffect を継承する
 
-We're done with the style class now -- time to move on to the effect, which is where the actual rendering takes place.
-This time, we're going to extend the _MeshEffect_ class.
-Remember, effects simplify writing of low-level rendering code.
-I'm actually talking about a group of classes with the following inheritance:
+スタイルクラスの設定は終わりました。次は実際のレンダリングが行われているエフェクト側へ移りましょう。
+今度は _MeshEffect_ クラスを継承します。
+エフェクトはローレベルなレンダリングコードを書くだけである事を思い出してください。
+下記のような継承関係クラスでグループ分けして解説を進めています。
+//原文：I'm actually talking about a group of classes with the following inheritance:
 
 [plantuml, effect-classes]
 ....
@@ -299,13 +300,14 @@ Effect <|-- FilterEffect
 FilterEffect <|-- MeshEffect
 ....
 
-The base class (_Effect_) does only the absolute minimum: it draws white triangles.
-The _FilterEffect_ adds support for textures, and the _MeshEffect_ for color and alpha.
+ベースクラス（ _Effect_ ）は、とても小さいクラスです。三角ポリゴンを描画するだけとなっています。
+_FilterEffect_ は、それにテクスチャのサポートを加え、_MeshEffect_ はそこにカラーとアルファの扱いを加えます。
 
-NOTE: Those two classes could also have been named _TexturedEffect_ and _ColoredTexturedEffect_, but I chose to baptize them with their usage in mind.
-If you create a filter, you need to extend _FilterEffect_; if you create a mesh style, _MeshEffect_.
+NOTE: これら２つのクラスは _TexturedEffect_ と _ColoredTexturedEffect_ という名前にする事もできました。しかし、実際にそのクラスが利用される場所を踏まえて別の名前としました。
+フィルターを作るのであれば、_FilterEffect_ を継承する必要があります。スタイルを作るのであれば、_MeshEffect_ を継承します。
 
-So let's look at the setup of our _ColorOffsetEffect_, with a few stubs we're filling in later.
+_ColorOffsetEffect_ の構成をざっと見てみましょう。実際の実装はこの後行います。
+//原文：So let's look at the setup of our _ColorOffsetEffect_, with a few stubs we're filling in later.
 
 [source, as3]
 ----
@@ -342,7 +344,7 @@ class ColorOffsetEffect extends MeshEffect
 ----
 
 １つ前のチュートリアルのアナログフィルターエフェクトと比較すると、全てのオフセット値設定が削除されているのがわかるでしょう。
-その代わりに `vertexFormat` メソッドをオーバーライドしています。オフセット値を頂点データとして格納するため、そのスタイルに対応するフォーマットを使う事を確実にしています。
+その代わりに `vertexFormat` メソッドをオーバーライドしています。オフセット値を頂点データとして格納するため、スタイルに対応した頂点フォーマットを使っています。
 
 ==== beforeDraw と afterDraw
 
