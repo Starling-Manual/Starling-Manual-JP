@@ -62,7 +62,7 @@ assets.enqueue(appDir.resolvePath("textures"));
 ----
 
 テクスチャアトラスを読み込む場合、XMLと対応したテクスチャをそのままキューに積めば良いです。
-ただし、XML の `imagePath` 属性値に正しいファイル名が設定されている状態としてください。
+ただし、XML の `imagePath` 属性値に正しいファイル名が設定されている状態として下さい。
 AssetManager が実際にアトラスを実体化する際にその属性値を参照するからです。
 
 [source, as3]
@@ -72,7 +72,7 @@ assets.enqueue(appDir.resolvePath("textures/atlas.png"));
 ----
 
 **ビットマップフォント** も同じように動きます。
-その場合、XML の `file` 属性値がらdしい設定であるようにしてください。
+その場合、XML の `file` 属性値がらdしい設定であるようにして下さい。
 
 [source, as3]
 ----
@@ -80,16 +80,17 @@ assets.enqueue(appDir.resolvePath("fonts/desyrel.fnt"));
 assets.enqueue(appDir.resolvePath("fonts/desyrel.png"));
 ----
 
-==== Assets that are embedded
+==== 埋め込みアセットの読み込み
 
-For embedded assets, I recommend you put all the embed statements into one dedicated class.
-Declare them as `public static const` and follow these naming conventions:
+埋め込みアセットに対しては、全ての埋め込み処理を１つのクラスにまとめる事をおすすめします。
+`public static const` としてそれらを宣言して、下記の命名規則に従って下さい。
 
-* Classes for embedded images should have the exact same name as the file, without extension.
-  This is required so that references from XMLs (atlas, bitmap font) won't break.
-* Atlas and font XML files can have an arbitrary name, since they are never referenced by file name.
+* 埋め込まれた画像ファイルは、そのファイル名と完全に同じ名前を持つようにして下さい。その際、拡張子は含まなくて良いです。
+これは、XML(アトラスまたはフォント設定)からのファイル参照が壊れないために必要です。
 
-Here's a sample of such a class:
+* アトラスとビットマップフォントの XML ファイルは任意の名前を取ることができます。何故ならばファイルネームで参照されることはないからです。
+
+サンプルのクラスのコードは下記のようになります。
 
 [source, as3]
 ----
@@ -115,14 +116,14 @@ public class EmbeddedAssets
 }
 ----
 
-When you enqueue that class, the asset manager will later instantiate all the assets that are embedded within.
+このクラスをキューに積んだ場合、asset manager は全ての埋め込まれたアセットをインスタンス化します。
 
 [source, as3]
 ----
 var assets:AssetManager = new AssetManager();
 assets.enqueue(EmbeddedAssets); // <1>
 ----
-<1> Enqueues `bird` texture, `explosion` sound, and a texture atlas.
+<1> `bird` テクスチャーと、 `explosion` サウンドと、テクスチャアトラスがキューに積まれている。
 
 ==== Per-Asset Configuration
 
