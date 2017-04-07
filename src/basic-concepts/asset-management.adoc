@@ -158,11 +158,11 @@ assets.enqueue(appDir.resolvePath("textures/2x"));
 
 上記のやり方で、`1x` と `2x` それぞれのフォルダから読み込んだテクスチャーに、正しいスケールファクター値である１と２を設定する事ができます。
 
-=== Loading the Assets
+=== アセットのロード
 
-Now that the assets are enqueued, you can load all of them at once.
-Depending on the number and size of assets your are loading, this can take a while.
-For that reason, it probably makes sense to show some kind of progress bar or loading indicator to your users.
+アセットがキューに積まれたので、まとめていっぺんにロードをする事ができます。
+アセットの数とサイズによってはしばらく時間がかかります。
+そのため、プログレスバーかローディングインジケーターを表示してユーザーに見えるのが良いでしょう。
 
 [source, as3]
 ----
@@ -176,9 +176,9 @@ assets.loadQueue(function(ratio:Number):void
 });
 ----
 
-Note that the `startGame` method is something you have to implement yourself; that's where you could hide the loading screen and start the actual game.
+ここの `startGame` メソッドは、自身で実装して下さい。そこの実装ではローディング画面を消して、実際のゲームを開始できます。
 
-With an enabled `verbose` property, you'll see the names with which the assets can be accessed:
+`verbose` プロパティが有効になっていると、アクセスされたアセットの名前をログ画面で確認する事ができます。
 
 ----
 [AssetManager] Adding sound 'explosion'
@@ -190,13 +190,12 @@ With an enabled `verbose` property, you'll see the names with which the assets c
 
 [NOTE]
 ====
-Did you notice?
-In the last line, right after creating the texture atlas, the `atlas` texture is actually removed.
-Why is that?
+テクスチャを作成した後の最後の行で `atlas` テクスチャーが削除されている事に気づいたでしょうか？
+何故でしょう？
 
-Once the atlas is created, you are no longer interested in the atlas-texture, only in the subtextures it contains.
-Thus, the actual atlas-texture is removed, freeing up the slot for another texture.
-The same happens for bitmap fonts.
+一度アトラスが作成されると、アトラステクスチャ自体には用がなくなります。それに含まれているサブテクスチャだけが必要です。
+したがって、実際のアトラステクスチャは削除されます。他のテクスチャのために空きを作るのです。
+これと同じ事がビッットマップフォンとでも行われます。
 ====
 
 === Accessing the Assets
