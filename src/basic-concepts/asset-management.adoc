@@ -125,14 +125,14 @@ assets.enqueue(EmbeddedAssets); // <1>
 ----
 <1> `bird` テクスチャーと、 `explosion` サウンドと、テクスチャアトラスがキューに積まれている。
 
-==== Per-Asset Configuration
+==== アセットごとの設定
 
-When you create a texture manually (via the `Texture.from...()` factory methods), you've got a chance to fine-tune how it is created.
-For example, you can decide on a texture format or scale factor.
+テクスチャを（`Texture.from...()` メソッドを通して）手作業で作る場合、細かい設定を行うチャンスです。
+例えば、テクスチャのフォーマットとスケールファクター値をどのようにするか決めることができます。
 
-The problem with those settings: once the texture is created, you cannot change them any more.
-So you need to make sure the correct settings are applied right when the texture is created.
-The asset manager supports this kind of configuration, too:
+それらの設定の問題は、一度テクスチャーが作られると、設定が変更できないという事です。
+よってテクスチャーを作成する際は、確実に正しい設定がなされるようにしなくてはいけません。
+asset manager はこのような設定を行う事をサポートします。
 
 [source, as3]
 ----
@@ -142,9 +142,10 @@ assets.scaleFactor = 2;
 assets.enqueue(EmbeddedAssets);
 ----
 
-The asset manager will adhere to these settings for all the textures it creates.
-However, it seems that this would only allow one set of properties for _all_ the loaded textures, right?
-Actually, no: you just need to enqueue them in several steps, assigning the right settings prior to each call to `enqueue`.
+asset manager はこれらの設定を内部で作成する全てのテクスチャに適用します。
+しかし、このやり方では読み込んだ全てのテクスチャーに同じ設定をする事しか認めないように見えます。
+しかし、実際にはそんな事はありません。いくつかの手続きを踏んで読み込みファイルをロードのキューに積む事で実現できます。
+正しい設定をそれぞれの `enqueue` 実行前に行ってやればいいのです。
 
 [source, as3]
 ----
@@ -155,7 +156,7 @@ assets.scaleFactor = 2;
 assets.enqueue(appDir.resolvePath("textures/2x"));
 ----
 
-This will make the textures from the `1x` and `2x` folders use scale factors of one and two, respectively.
+上記のやり方で、`1x` と `2x` それぞれのフォルダから読み込んだテクスチャーに、正しいスケールファクター値である１と２を設定する事ができます。
 
 === Loading the Assets
 
