@@ -116,7 +116,7 @@ public class EmbeddedAssets
 }
 ----
 
-このクラスをキューに積んだ場合、asset manager は全ての埋め込まれたアセットをインスタンス化します。
+このクラスをキューに積んだ場合、AssetManager は全ての埋め込まれたアセットをインスタンス化します。
 
 [source, as3]
 ----
@@ -132,7 +132,7 @@ assets.enqueue(EmbeddedAssets); // <1>
 
 それらの設定の問題は、一度テクスチャーが作られると、設定が変更できないという事です。
 よってテクスチャーを作成する際は、確実に正しい設定がなされるようにしなくてはいけません。
-asset manager はこのような設定を行う事をサポートします。
+AssetManager はこのような設定を行う事をサポートします。
 
 [source, as3]
 ----
@@ -142,7 +142,7 @@ assets.scaleFactor = 2;
 assets.enqueue(EmbeddedAssets);
 ----
 
-asset manager はこれらの設定を内部で作成する全てのテクスチャに適用します。
+AssetManager はこれらの設定を内部で作成する全てのテクスチャに適用します。
 しかし、このやり方では読み込んだ全てのテクスチャーに同じ設定をする事しか認めないように見えます。
 しかし、実際にはそんな事はありません。いくつかの手続きを踏んで読み込みファイルをロードのキューに積む事で実現できます。
 正しい設定をそれぞれの `enqueue` 実行前に行ってやればいいのです。
@@ -198,10 +198,10 @@ assets.loadQueue(function(ratio:Number):void
 これと同じ事がビッットマップフォンとでも行われます。
 ====
 
-=== Accessing the Assets
+=== アセットへのアクセス
 
-Finally: now that the queue finished processing, you can access your assets with the various `get...` methods of the AssetManager.
-Each asset is referenced by a name, which is the file name of the asset (without extension) or the class name of embedded objects.
+キューの読み込みが終了しました。AssetManager の、さまざまな `get...` で始まるメソッドで読み込んだファイルにアクセスする事ができます。
+それぞれのアセットは名前によって参照可能で、拡張子なしのファイル名か、ソースに埋め込まれたクラスの名前となっています。
 
 [source, as3]
 ----
@@ -209,16 +209,17 @@ var texture:Texture = assets.getTexture("bird"); // <1>
 var textures:Vector.<Texture> = assets.getTextures("animation"); // <2>
 var explosion:SoundChannel = assets.playSound("explosion"); // <3>
 ----
-<1> This will first search named textures, then atlases.
-<2> Same as above, but returns all (sub) textures starting with the given String.
-<3> Plays a sound and returns the _SoundChannel_ that controls it.
+<1> この記述では、テクスチャ、次にテクスチャアトラス、の順序でファイルが探されます。
+<2> 上と同じですが、引数の文字列で始丸名前を持つ全てのテクスチャ/サブテクスチャが返されます。
+<3> サウンドが再生され、それをコントロールする _SoundChannel_ が戻り値で戻されます。
 
-If you enqueued a bitmap font along the way, it will already be registered and ready to use.
+もしもビットマップフォントを読み込ませているなら、すでに利用可能な状態となっています。
 
 [TIP]
 ====
-In my games, I typically store a reference to the asset manager at my root class, accessible through a `static` property.
-That makes it super easy to access my assets from anywhere in the game, simply by calling `Game.assets.get...()` (assuming the root class is called `Game`).
+自分がゲームを作る場合は、AssetManager をルートクラスの `static` プロパティとして保持しています。
+これによって、ゲームプログラムのどこからで各アセットにとても簡単に参照できます。
+やり方はシンプルに `Game.assets.get...()` と、するだけです。（ルートクラス名が `Game` だとした場合）
 ====
 
 // TODO: Restoring the Assets
