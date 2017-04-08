@@ -102,7 +102,7 @@ image::impressive.jpg[Impressive]
 Starling コミュニティはあなたの手助けをしたいと思っています。
 ぜひ、オフィシャルのフォーラムを訪れてください。 http://forum.starling-framework.org[Starling Forum].
 
-=== まだ、物足りない人へ
+=== このマニュアルでは物足りない人へ
 
 Starling の情報について、このドキュメントではまだ不十分だと思う人は、ここに http://eepurl.com/chQGpD[サインアップ] してください。
 http://gamua.com/blog/2016/09/the-starling-handbook/[Starling Handbook] の発売時にお知らせします！

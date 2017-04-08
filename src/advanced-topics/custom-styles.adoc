@@ -292,7 +292,7 @@ private function updateVertices():void
 スタイルクラスの設定は終わりました。次は実際のレンダリングが行われているエフェクト処理へ移りましょう。
 今度は _MeshEffect_ クラスを継承します。
 エフェクトではローレベルなレンダリングコードを書くだけである事を覚えていますか？
-解説は、下記のようなクラスの継承関係でグループ分けして進めます。
+解説は、下記のようなクラスの継承関係を踏まえて進めます。
 //原文：I'm actually talking about a group of classes with the following inheritance:
 
 [plantuml, effect-classes]

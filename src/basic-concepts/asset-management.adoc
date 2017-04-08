@@ -1,66 +1,69 @@
-== Asset Management
+== アセット管理
 
-One thing should be clear by now: textures make up a big part of every application's resources.
-Especially games require a lot of graphics; from the user interface to the characters, items, backgrounds, etc.
-But that's not all: you will probably need to manage sounds and configuration files, too.
+どのアプリケーションでもテクスチャーがリソースの大きな範囲をしめる事はここまででわかったかと思います。
+//原文：One thing should be clear by now: textures make up a big part of every application's resources.
+特にゲームではたくさんのギラフィックを必要とします。具体的には、ユーザインタフェース、キャラクター、アイテム、背景画像などです。
+しかし、それで全てではありません。サウンドファイルや設定ファイルもおそらく必要となるでしょう。
 
-For referencing these assets, you've got several choices.
+これらのアセットにアクセスして読み込むには、いくつかの方法があります。
 
-* Embed them right inside the application (via the `[Embed]` meta data).
-* Load them from disk (only possible for AIR applications).
-* Load them from an URL, e.g. from a webserver.
+* アプリケーションに `[Embed]` メタデータ指定で埋め込んでしまう。
+* ストレージからそれらを読み込む。 (AIR アプリケーションにでのみ可能です。)
+* 例えば Webサーバなどの URL からロードする。
 
-Since every option requires different code (depending on the asset type and loading mechanism), it's difficult to access the assets in a uniform way.
-Thankfully, Starling contains a class that helps you with that: the _AssetManager_.
+それぞれのやり方で異なったコーディングが必要なため（アセットのタイプとロードの仕組みによります。）、統一した方法でアセットにアクセスするのは難しいのです。
+幸運にも、Starling にはそれをうまく扱ってくれる _AssetManager_ というクラスを含まれています。
 
-It supports the following types of assets:
+_AssetManager_ は以下のタイプのアセット読み込みをサポートします。
 
-* Textures (either from Bitmaps or ATF data)
-* Texture atlases
-* Bitmap Fonts
-* Sounds
-* XML data
-* JSON data
-* ByteArrays
+* テクスチャ (ビットマップでも ATF 形式でも)
+* テクスチャーアトラス
+* ビットマップフォント
+* サウンド
+* XML データ
+* JSON データ
+* その他バイナリファイル
 
-To accomplish this, the AssetManager uses a three-step approach:
+アセットの読み込みを完了するまで、 AssetManager は３つのステップを取ります。
 
-1. You add pointers to your assets to a queue, e.g. `File` objects or URLs.
-2. You tell the AssetManager to process the queue.
-3. As soon as the queue finishes processing, you can access all assets with corresponding `get`-methods.
+1. 読み込みたいアセットの "ポインタ" をロード対象キューに積みます。"ポインタ" とは、`File` オブジェクトや URL などです。
+2. キューの処理実行を AssetManager に伝えます。
+3. キューの読み込みが完了次第、`get` で始まるいくつかのメソッドでアセットにアクセスが可能になります。
 
 [TIP]
 ====
-The AssetManager contains a `verbose` property.
-If enabled, all steps of the enqueuing and loading process will be traced to the console.
-That's very useful for debugging, or if you don't understand why a certain asset is not showing up!
-For that reason, the latest Starling versions have it enabled per default.
+AssetManager には `verbose` プロパティが存在します。
+これが 有効（true）に設定されると、キューイングとローディングの全てのステップがコンソールにログ出力されるようになります。
+あるアセットがロードされない理由がわからない場合など、デバッグ作業にとても有効です。
+この理由から、最新の Starling ではこのプロパティがデフォルトで有効とされています。
 ====
 
-=== Enqueuing the Assets
+=== アセット読み込みのキュー管理
 
-The first step is to enqueue all the assets you want to use.
-How that's done exactly depends on the type and origin of each asset.
+最初のステップは扱いたいファイルを全てキューに入れる事です。
+//原文：The first step is to enqueue all the assets you want to use.
+どのように処理されるかは、アセットのタイプとそれぞれをどこから読み込むかによります。
 
-==== Assets from disk or from the network
+==== ディスクまたはネットワークからのアセット読み込み
 
-Enqueuing **files** from disk or from a remote server is rather straight-forward:
+キューにファイルを積む祭の読み込み元が、ディスクもしくはリモートのサーバーである場合はわかりやすいです。
 
 [source, as3]
 ----
-// Enqueue an asset from a remote URL
+// リモートURLからキューに積む
 assets.enqueue("http://gamua.com/img/starling.jpg");
 
-// Enqueue an asset from disk (AIR only)
+// ディスクからキューに積む (AIR のみ)
 var appDir:File = File.applicationDirectory;
 assets.enqueue(appDir.resolvePath("sounds/music.mp3"));
 
-// Enqueue all contents of a directory, recursively (AIR only).
+// 全てのファイルを再帰的にディレクトリから読み込む (AIR のみ).
 assets.enqueue(appDir.resolvePath("textures"));
 ----
 
-To load a **texture atlas**, just enqueue both its XML file and the corresponding texture.
-Just make sure that the `imagePath` attribute in the XML file contains the correct filename, because that's what the AssetManager will look for when it creates the atlas later.
+テクスチャーアトラスを読み込む場合、XMLと対応したテクスチャをそのままキューに積めば良いです。
+ただし、XML 内に記述されている `imagePath` 属性値に正しいファイル名が設定されている状態として下さい。
+AssetManager が実際にアトラスを実体化する際にその属性値を参照するからです。
 
 [source, as3]
 ----
@@ -68,8 +71,8 @@ assets.enqueue(appDir.resolvePath("textures/atlas.xml"));
 assets.enqueue(appDir.resolvePath("textures/atlas.png"));
 ----
 
-**Bitmap Fonts** work just the same.
-In this case, you need to make sure that the `file` attribute in the XML (the `.fnt`-file) is set up correctly.
+**ビットマップフォント** も同じように動きます。
+その場合、XML の `file` 属性値が正しい設定であるようにして下さい。
 
 [source, as3]
 ----
@@ -77,16 +80,17 @@ assets.enqueue(appDir.resolvePath("fonts/desyrel.fnt"));
 assets.enqueue(appDir.resolvePath("fonts/desyrel.png"));
 ----
 
-==== Assets that are embedded
+==== 埋め込みアセットの読み込み
 
-For embedded assets, I recommend you put all the embed statements into one dedicated class.
-Declare them as `public static const` and follow these naming conventions:
+埋め込みアセットに対しては、全ての埋め込み処理を１つのクラスにまとめる事をおすすめします。
+`public static const` としてそれらを宣言して、下記の命名規則に従って下さい。
 
-* Classes for embedded images should have the exact same name as the file, without extension.
-  This is required so that references from XMLs (atlas, bitmap font) won't break.
-* Atlas and font XML files can have an arbitrary name, since they are never referenced by file name.
+* 埋め込まれた画像ファイルは、そのファイル名と完全に同じ名前を持つようにして下さい。その際、拡張子は含まなくて良いです。
+これは、XML(アトラスまたはフォント設定)からのファイル参照を正しく行うために必要です。
 
-Here's a sample of such a class:
+* アトラスとビットマップフォントの XML ファイルは任意のファイル名を取ることができます。なぜならばファイルネームで参照されることはないからです。
+
+サンプルのクラスのコードは下記のようになります。
 
 [source, as3]
 ----
@@ -112,23 +116,23 @@ public class EmbeddedAssets
 }
 ----
 
-When you enqueue that class, the asset manager will later instantiate all the assets that are embedded within.
+このクラス自体をキューに積んだ場合、AssetManager は埋め込み設定されたアセットを全てインスタンス化します。
 
 [source, as3]
 ----
 var assets:AssetManager = new AssetManager();
 assets.enqueue(EmbeddedAssets); // <1>
 ----
-<1> Enqueues `bird` texture, `explosion` sound, and a texture atlas.
+<1> `bird` テクスチャーと、 `explosion` サウンドと、テクスチャーアトラスがキューに積まれている。
 
-==== Per-Asset Configuration
+==== アセットごとの設定
 
-When you create a texture manually (via the `Texture.from...()` factory methods), you've got a chance to fine-tune how it is created.
-For example, you can decide on a texture format or scale factor.
+テクスチャを（`Texture.from...()` メソッドを通して）マニュアルで作成する場合、細かい設定を行うチャンスです。
+例えば、テクスチャのフォーマットとスケールファクター値をどのようにするか決めることができます。
 
-The problem with those settings: once the texture is created, you cannot change them any more.
-So you need to make sure the correct settings are applied right when the texture is created.
-The asset manager supports this kind of configuration, too:
+それらの設定の際の注意点は、一度テクスチャーが作られると、設定が変更できないという事です。
+よってテクスチャーを作成する際は、確実に正しい設定をするようにしなくてはいけません。
+AssetManager はこの設定作業をサポートします。
 
 [source, as3]
 ----
@@ -138,9 +142,10 @@ assets.scaleFactor = 2;
 assets.enqueue(EmbeddedAssets);
 ----
 
-The asset manager will adhere to these settings for all the textures it creates.
-However, it seems that this would only allow one set of properties for _all_ the loaded textures, right?
-Actually, no: you just need to enqueue them in several steps, assigning the right settings prior to each call to `enqueue`.
+AssetManager は、これらの設定を作成する全てのテクスチャに適用します。
+さて、このやり方では読み込んだ全てのテクスチャーに同じ設定をする事しかできないようにも見えますが、実際にはそんな事はありません。
+正しい手続き順序を踏んで対象ファイルをロードのキューに積む事で実現できます。
+各々の設定をそれぞれの `enqueue` 実行前に行ってやればいいのです。
 
 [source, as3]
 ----
@@ -151,13 +156,12 @@ assets.scaleFactor = 2;
 assets.enqueue(appDir.resolvePath("textures/2x"));
 ----
 
-This will make the textures from the `1x` and `2x` folders use scale factors of one and two, respectively.
+上記のやり方で、`1x` と `2x` のフォルダから読み込んだテクスチャーに、正しいスケールファクター値である１と２をそれぞれ設定する事ができます。
 
-=== Loading the Assets
+=== アセットのロード
 
-Now that the assets are enqueued, you can load all of them at once.
-Depending on the number and size of assets your are loading, this can take a while.
-For that reason, it probably makes sense to show some kind of progress bar or loading indicator to your users.
+アセットがキューに積まれた後は、まとめていっぺんにロード処理を行う事ができますが、アセットの数とサイズによっては、しばらく時間がかかります。
+そのため、ユーザーにはプログレスバーかローディングインジケーターを表示して見せるのが良いでしょう。
 
 [source, as3]
 ----
@@ -171,9 +175,8 @@ assets.loadQueue(function(ratio:Number):void
 });
 ----
 
-Note that the `startGame` method is something you have to implement yourself; that's where you could hide the loading screen and start the actual game.
-
-With an enabled `verbose` property, you'll see the names with which the assets can be accessed:
+この `startGame` メソッドは、自身で実装して下さい。そこはローディング画面を消して、実際のゲームを開始する処理の箇所です。
+また、`verbose` プロパティが有効になっていると、アクセスされたアセットの名前をログ画面で確認する事ができます。
 
 ----
 [AssetManager] Adding sound 'explosion'
@@ -185,19 +188,18 @@ With an enabled `verbose` property, you'll see the names with which the assets c
 
 [NOTE]
 ====
-Did you notice?
-In the last line, right after creating the texture atlas, the `atlas` texture is actually removed.
-Why is that?
+テクスチャを作成した後の最後の行で `atlas` テクスチャーが削除されている事に気づいたでしょうか？
+何故でしょうか？
 
-Once the atlas is created, you are no longer interested in the atlas-texture, only in the subtextures it contains.
-Thus, the actual atlas-texture is removed, freeing up the slot for another texture.
-The same happens for bitmap fonts.
+一度アトラスが作成されると、アトラステクスチャ自体には用がなくなります。そこに含まれているサブテクスチャだけが必要です。
+したがって、実際のアトラステクスチャは削除されます。他のテクスチャのためにメモリに空きを作るのです。
+これと同じ事がビッットマップフォントでも行われます。
 ====
 
-=== Accessing the Assets
+=== アセットへのアクセス
 
-Finally: now that the queue finished processing, you can access your assets with the various `get...` methods of the AssetManager.
-Each asset is referenced by a name, which is the file name of the asset (without extension) or the class name of embedded objects.
+キューの読み込みが終了した後は AssetManager の、さまざまな `get...` で始まるメソッドで読み込んだファイルにアクセスする事ができます。
+それぞれのアセットは名前を引数にして参照可能です。拡張子なしのファイル名か、ソースに埋め込まれたクラス名がその名前となっています。
 
 [source, as3]
 ----
@@ -205,16 +207,17 @@ var texture:Texture = assets.getTexture("bird"); // <1>
 var textures:Vector.<Texture> = assets.getTextures("animation"); // <2>
 var explosion:SoundChannel = assets.playSound("explosion"); // <3>
 ----
-<1> This will first search named textures, then atlases.
-<2> Same as above, but returns all (sub) textures starting with the given String.
-<3> Plays a sound and returns the _SoundChannel_ that controls it.
+<1> この記述では、まずテクスチャー、次にテクスチャーアトラス、の順序でファイルが探されます。
+<2> 上と同じですが、引数の文字列で始まる名前を持つ全てのテクスチャ/サブテクスチャが返されます。
+<3> サウンドが再生され、それをコントロールする _SoundChannel_ が戻り値で戻されます。
 
-If you enqueued a bitmap font along the way, it will already be registered and ready to use.
+ビットマップフォントを読み込ませている場合は、すでに利用可能な状態となっています。
 
 [TIP]
 ====
-In my games, I typically store a reference to the asset manager at my root class, accessible through a `static` property.
-That makes it super easy to access my assets from anywhere in the game, simply by calling `Game.assets.get...()` (assuming the root class is called `Game`).
+自分がゲームを作る場合は、AssetManager をルートクラスの `static` プロパティとして保持しています。
+これによって、ゲームプログラムのどこからでも各アセットにとても簡単に参照できます。
+やり方はシンプルに `Game.assets.get...()` と、するだけです。（ルートクラス名が `Game` だとした場合）
 ====
 
 // TODO: Restoring the Assets
