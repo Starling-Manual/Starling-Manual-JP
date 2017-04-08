@@ -1,11 +1,12 @@
-== Performance Optimization
-// TODO  他ページとの連携で 'パフォーマンス チューニング' と訳すこと
+== パフォーマンス チューニング
+// 他ページとの連携で 'パフォーマンス チューニング' と訳すこと
 
-While Starling mimics the classic display list of Flash, what it does behind the scenes is quite different.
-To achieve the best possible performance, you have to understand some key concepts of its architecture.
-Here is a list of best practices you can follow to have your game run as fast as possible.
+Starling は Flash のディスプレイリストの構成を真似ていますが、背後にある実装の仕組みは全く異なっています。
+最も良いパフォーマンスを得るためには、どのような仕組みで動いているのか、そのキーコンセプトを理解する必要があります。
+下記のリストは、ゲームをできるだけ早く動かすために必要なベストプラクティスとなります。
 
-=== General AS3 Tips
+=== 一般的な AS3 のチップス
+//↑見出しなので =  の数が異なる
 
 ==== Always make a Release Build
 
@@ -23,13 +24,14 @@ The speed difference is immense; depending on the platform you're working on, yo
 .Don't get confused by this Flash Builder dialog.
 image::not-release-build.png[Flash Builder Dialog]
 
-==== Check your Hardware
+==== ハードウェアをチェックする
 
-Be sure that Starling is indeed using the GPU for rendering.
-That's easy to check: if `Starling.current.context.driverInfo` contains the string `Software`, then Stage3D is in software fallback mode, otherwise it's using the GPU.
+Starling が本当に GPU レンダリングで動いているか確かめましょう。
+やり方は簡単です。もしも、`Starling.current.context.driverInfo` の値が `Software` という文字列を含んでいたら、それは Stage3D がフォールバックモードになっている事を示します。
+そうでなければ GPU を使ったレンダリングが行われています。
 
-Furthermore, some mobile devices can be run in a _Battery Saving Mode_.
-Be sure to turn that off when making performance tests.
+また、いくつかのモバイルデバイスでは、 _バッテリーセーブモード_ で動いている事があります。
+パフォーマンステストを行う場合は、それが間違いなく off となっている事を確認しましょう。
 
 ==== Set the Framerate
 
@@ -134,7 +136,9 @@ for (var i:int=0; i<10; ++i)
 Pool.putPoint(point); // don't forget this!
 ----
 
-=== Starling Specific Tips
+=== Starling 固有のチップス
+//↑見出しなので =  の数が異なる
+
 
 ==== Minimize State Changes
 
@@ -263,13 +267,15 @@ As expected, this has some downsides, though:
 For these reasons, it's only suitable for very specific use-cases (the _BitmapFont_ class, for example, uses a mesh batch internally).
 In those cases, it's definitely the fastest option, though. You won't find a more efficient way to render a huge number of objects in Starling.
 
-==== Batch your TextFields
+==== テキストフィールドをバッチする
 
-Per default, a TextField will require one draw call, even if your glyph texture is part of your main texture atlas.
-That's because long texts require a lot of CPU time to batch; it's faster to simply draw them right away (without copying them to a _MeshBatch_).
+デフォルトでは、１つのテキストフィールドは１回のドローコールを必要とします。フォントのテクスチャが他のメインのテクスチャと同じだったとしてもです。
+何故ならば、長いテキストはバッチするために、たくさんの CPU 時間を必要とするからです。
 
-However, if your text field contains only a few letters (rule of thumb: below 16), you can enable the `batchable` property on the TextField.
-With that enabled, your texts will be batched just like other display objects.
+_MeshBatch_ にメッシュをコピーせず、そのままシンプルにドローした方が速いのです。
+
+しかし、テキストフィールドのテキスト数が少ない場合（経験的には16文字より少ない場合)、TextField の `batchable` プロパティを有効にする事ができます。
+これが有効の場合、テキストフィールドは他のディスプレイオブジェクトと同様にバッチ処置されます。
 
 ==== Use BlendMode.NONE
 
