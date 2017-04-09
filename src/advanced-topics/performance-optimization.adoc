@@ -33,12 +33,12 @@ Starling が本当に GPU レンダリングで動いているか確かめまし
 また、いくつかのモバイルデバイスでは、 _バッテリーセーブモード_ で動いている事があります。
 パフォーマンステストを行う場合は、それが間違いなく off となっている事を確認しましょう。
 
-==== Set the Framerate
+==== フレームレートの設定
 
-Your framerate is somehow stuck at 24 frames per second, no matter how much you optimize?
-Then you probably never set your desired framerate, and you'll see the Flash Player's default setting.
+どのように頑張っても、何故かフレームレートが 24FPS で頭打ちになった場合、
+おそらく目的のフレームレートをまだ設定しておらず、Flash Player のデフォルトの状態になっているのかと思われます。
 
-To change that, either use the appropriate _metadata_ on your startup class, or manually set the framerate at the Flash stage.
+変更するには、起動クラスの適切な _metadata_ を使うか、stage の framerate 設定を行います。
 
 [source, as3]
 ----
@@ -46,7 +46,7 @@ To change that, either use the appropriate _metadata_ on your startup class, or 
 public class Startup extends Sprite
 { /* ... */ }
 
-// or anywhere else
+// もしくはソース中のどこかで
 Starling.current.nativeStage.frameRate = 60;
 ----
 
@@ -79,39 +79,41 @@ loader.load(url, loaderContext);
 On the other hand, you are probably using Starling's _AssetManager_ to load your textures, aren't you?
 In that case, don't worry: it makes use of this practice, anyway.
 
-==== Avoid "for each"
+==== "for each" の利用を控える
 
-When working with loops that are repeated very often or are deeply nested, it's better to avoid `for each`; the classic `for i` yields a http://jacksondunstan.com/articles/358[better] performance.
-Furthermore, beware that the loop condition is executed once per loop, so it's faster to save it into an extra variable.
+頻繁に繰り返されるループや深くネストされたループを扱う場合、`for each` を避けた方が良いです。
+原始的な `for i` は http://jacksondunstan.com/articles/358[より良い] パフォーマンスをもたらします。
+さらに、ループ終了条件がループごとに１度しか評価されないように気をつけましょう。
+つまり、別の変数にそれを保持するのがさらに速いという事です。
 
 [source, as3]
 ----
-// slowish:
+// やや遅い:
 for each (var item:Object in array) { ... }
 
-// better:
+// 取り良い:
 for (var i:int=0; i<array.length; ++i) { ... }
 
-// fastest:
+// 最も速い:
 var length:int = array.length;
 for (var i:int=0; i<length; ++i) { ... }
 ----
 
-==== Avoid Allocations
+==== アロケーションを避ける
 
-Avoid creating a lot of temporary objects.
-They take up memory and need to be cleaned up by the garbage collector, which might cause small hiccups when it's running.
+たくさんの一時的なオブジェクトを利用するのは避けましょう。
+メモリを利用した後にガベージコレクターによって回収される必要が生じます。その間小さなしゃっくり(プチフリーズ)を伴うかもしれません。
 
 [source, as3]
 ----
-// bad:
+// 悪い例:
 for (var i:int=0; i<10; ++i)
 {
     var point:Point = new Point(i, 2*i);
     doSomethingWith(point);
 }
 
-// better:
+// 良い例:
 var point:Point = new Point();
 for (var i:int=0; i<10; ++i)
 {
@@ -120,20 +122,21 @@ for (var i:int=0; i<10; ++i)
 }
 ----
 
-Actually, Starling contains a class that helps with that: _Pool_.
-It provides a pool of objects that are often required, like _Point_, _Rectangle_ and _Matrix_.
-You can "borrow" objects from that pool and return them when you're done.
+実際には、Starling は上記の最適化を手助けするクラスが存在します。_Pool_ というクラスです。
+このクラスはしばしば利用されるオブジェクトを再利用のために保持する"プール"を提供してくれます。
+保持されるクラスは_Point_、 _Rectangle_、 _Matrix_ などです。
+プールからこれらのオブジェクトを "借りて"、使い終わった後はそこへ返しましょう。
 
 [source, as3]
 ----
-// best:
+// 最も良い例t:
 var point:Point = Pool.getPoint();
 for (var i:int=0; i<10; ++i)
 {
     point.setTo(i, 2*i);
     doSomethingWith(point);
 }
-Pool.putPoint(point); // don't forget this!
+Pool.putPoint(point); // この処理を忘れない事！
 ----
 
 === Starling 固有のチップス
@@ -277,18 +280,18 @@ _MeshBatch_ にメッシュをコピーせず、そのままシンプルにド�
 しかし、テキストフィールドのテキスト数が少ない場合（経験的には16文字より少ない場合)、TextField の `batchable` プロパティを有効にする事ができます。
 これが有効の場合、テキストフィールドは他のディスプレイオブジェクトと同様にバッチ処置されます。
 
-==== Use BlendMode.NONE
+==== BlendMode 設定を NONE にする
 
-If you've got totally opaque, rectangular textures, help the GPU by disabling blending for those textures.
-This is especially useful for large background images.
+もしも矩形テクスチャが完全に不透明であるのなら、ブレンド処理を無効にする事で、GPU の負荷を減らしてあげましょう。
+大きな背景画像などで役に立つと思います。
 
 [source, as3]
 ----
 backgroundImage.blendMode = BlendMode.NONE;
 ----
 
-Naturally, this will also mean an additional state change, so don't overuse this technique.
-For small images, it's probably not worth the effort (except if they'd cause a state change, anyway, for some other reason).
+通常は、このテクニックによって描画ステートの変化ももたらす（ドローコールが増える）ため、多用してはいけません。
+小さな画像に対しては、おそらく適用する価値がありません。（なんにしろ何か別の理由で描画ステートが変化するのなら避けましょう。）
 
 ==== Use stage.color
 
@@ -319,17 +322,19 @@ public class Startup extends Sprite
 }
 ----
 
-==== Avoid querying width and height
+==== width 及び height の参照を控える
 
-The `width` and `height` properties are more expensive than one would guess intuitively, especially on sprites.
-A matrix has to be calculated, and each vertex of each child will be multiplied with that matrix.
+`width` と `height` プロパティは予想するよりもずっと高コストな物となっています。特にスプライトにおいてそれが顕著です。
+行列演算が必要であり、各々の子孫ディスプレイオブジェクトの各々の頂点を処理させる必要があります。
 
-For that reason, avoid accessing them repeatedly, e.g. in a loop.
-In some cases, it might even make sense to use a constant value instead.
+そのような理由で、例えばループの中など、繰り返しそれらのプロパティにアクセスする事は避けるようにしましょう。
+いくつのかのクラスでは、定数値を代わりに使った方が理にかないます。
+//原文：In some cases, it might even make sense to use a constant value instead.
+//具体的にはどういう事だろう？
 
 [source, as3]
 ----
-// bad:
+// 悪い例:
 for (var i:int=0; i<numChildren; ++i)
 {
     var child:DisplayObject = getChildAt(i);
@@ -337,7 +342,7 @@ for (var i:int=0; i<numChildren; ++i)
         child.removeFromParent();
 }
 
-// better:
+// 良い例:
 var wallWidth:Number = wall.width;
 for (var i:int=0; i<numChildren; ++i)
 {
@@ -347,21 +352,22 @@ for (var i:int=0; i<numChildren; ++i)
 }
 ----
 
-==== Make containers non-touchable
+==== コンテナのタッチ判定を無効にする
 
-When you move the mouse/finger over the screen, Starling has to find out which object is hit.
-This can be an expensive operation, because it requires a hit-test on each and every display object (in the worst case).
+指やマウスを画面上でスライドして動かす際、Starling はどのオブジェクトがその下に存在するのか探索しなければいけません。
+これは高負荷な処理です。最悪の場合、全てのディスプレイオブジェクトとの当たり判定を行わなくてはいけないのです。
 
-Thus, it helps to make objects _untouchable_ if you don't care about them being touched, anyway.
-It's best to disable touches on complete containers: that way, Starling won't even have to iterate over their children.
+よってタッチ判定される必要のないオブジェクトに関しては、タッチ無効の設定にしてしまうと状況が改善します。
+コンテナであるディスプレイオブジェクトのタッチを完全に無効としてしまうのが最善です。
+そうすれば Starling が子孫ディスプレイオブジェクト全ての当たり判定を行う必要がなくなります。
 
 [source, as3]
 ----
-// good:
+// 良い例:
 for (var i:int=0; i<container.numChildren; ++i)
     container.getChildAt(i).touchable = false;
 
-// even better:
+// さらに良い例:
 container.touchable = false;
 ----
 
