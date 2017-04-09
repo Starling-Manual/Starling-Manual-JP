@@ -50,18 +50,22 @@ public class Startup extends Sprite
 Starling.current.nativeStage.frameRate = 60;
 ----
 
-==== Use Adobe Scout
+==== Adobe Scout を用いる
 
-_Adobe Scout_ is not only useful for <<memory_management_scout, memory analysis>>; it's just as powerful when it comes to performance profiling.
+_Adobe Scout_ は <<memory_management_scout, メモリー利用状況の分析>> だけに役に立つのではありません。
+パフォーマンスのプロファイリングという事であればとてもパワフルに役に立ちます。
 
-It allows you to actually see how much time is actually spent in each of your (and Starling's) _ActionScript_ methods.
-This is extremely useful, because it shows you where you can gain most from any optimizations.
-Without it, you might end up optimizing areas of your code that are actually not relevant to the framerate at all!
+Scout を使うと、Starling 内外の _ActionScript_ 各々のコードが、どのくらい実行に時間がかかっているのか確認する事ができます。
+これはとても有用です。なぜなら、最適化処理を施すべき箇所を示してくれるからです。
 
-TIP: Remember, premature optimization is the root of all evil!
+そのような場所の特定をしない場合、実際には全くフレームレートの改善に役に立たないコードを最適化してしまうかもしれません！
 
-What's nice compared to classic profilers is that it also works in release mode, with all optimizations in place.
-That ensures that its output is extremely accurate.
+TIP: 早い段階でのパフォーマンスチューニングは、諸悪の根源！ である事を知っておいて下さい。
+
+古典的なプロファイラと比べて良いと言える部分は、Scout はリリースビルドである(デバッグモードではないので全ての最適化がなされた)swfやAIRを対象にしても動くという所です。
+//原文：What's nice compared to classic profilers is that it also works in release mode, with all optimizations in place.
+Scout で計測される内容がとても正確である事が保証されます。
+//原文：That ensures that its output is extremely accurate.
 
 ==== Decode Loaded Images Asynchronously
 
@@ -129,7 +133,7 @@ for (var i:int=0; i<10; ++i)
 
 [source, as3]
 ----
-// 最も良い例t:
+// 最も良い例:
 var point:Point = Pool.getPoint();
 for (var i:int=0; i<10; ++i)
 {
