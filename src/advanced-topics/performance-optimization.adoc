@@ -8,20 +8,21 @@ Starling は Flash のディスプレイリストの構成を真似ています�
 === 一般的な AS3 のチップス
 //↑見出しなので =  の数が異なる
 
-==== Always make a Release Build
+==== いつでもリリースビルドを使う
 
-The most important rule right at the beginning: always create a _release build_ when you test performance.
-Unlike conventional Flash projects, a release build makes a huge difference when you use a Stage3D framework.
-The speed difference is immense; depending on the platform you're working on, you can easily get a multiple of the framerate of a debug build.
+最初に考えなくてはならない最も大事なルールは、パフォーマンステストを行う際は、必ずリリースビルドを使うという事です。
+通常の Flash プロジェクトと異なり、Stage3D を使ったフレームワークを扱う場合、リリースビルドとデバッグビルドには大きな違いがあります。
+スピードの差は膨大です。開発対象のプラットフォームによっては、デバッグビルドのフレームレートの何倍もの値を得る事ができるでしょう。
 
-* In Flash Builder, release builds are created by clicking on _menu:Project[Export Release Build]_.
-* In Flash Develop, choose the "Release" configuration and build the project;
-  then choose "ipa-ad-hoc" or "ipa-app-store" option when you execute the "PackageApp.bat" script.
-* In IntelliJ IDEA, select _menu:Build[Package AIR Application]_; choose "release" for Android and "ad hoc distribution" for iOS.
-  For non-AIR projects, deselect "Generate debuggable SWF" in the module's compiler options.
-* If you build your Starling project from command line, make sure `-optimize` is true and `-debug` is false.
+* Flash Builder では、_menu:Project[Export Release Build]_ をクリックする事でリリースビルドを作成できます。
+* Flash Develop では、"Release" 設定を選択して、プロジェクトをビルドしましょう。
+その後、"ipa-ad-hoc" もしくは "ipa-app-store" オプションを選択して、"PackageApp.bat" スクリプトを実行します。
+* IntelliJ IDEA では、_menu:Build[Package AIR Application]_ を選択し、アンドロイドでは "release"、 iOS では "ad hoc distribution" を選択します。
+//原文： In IntelliJ IDEA, select _menu:Build[Package AIR Application]_; choose "release" for Android and "ad hoc distribution" for iOS.
+AIR プロジェクトでない場合は、モジュールのコンパイラオプション設定にて、"Generate debuggable SWF" の選択を外します。
+* Starling プロジェクトをコマンドラインでビルドしている場合は、必ず、`-optimize` を true にして `-debug` が false になるようにします。
 
-.Don't get confused by this Flash Builder dialog.
+.Flash Builder のダイアログに惑わされないようにしましょう。
 image::not-release-build.png[Flash Builder Dialog]
 
 ==== ハードウェアをチェックする
@@ -67,12 +68,12 @@ TIP: 早い段階でのパフォーマンスチューニングは、諸悪の根
 Scout で計測される内容がとても正確である事が保証されます。
 //原文：That ensures that its output is extremely accurate.
 
-==== Decode Loaded Images Asynchronously
+==== ロードされたイメージを非同期でデコードする
 
-By default, if you use a _Loader_ to load a PNG or JPEG image, the image data is not decoded right away, but when you first use it.
-This happens on the main thread and can cause your application to stutter on texture creation.
-To avoid that, set the image decoding policy flag to `ON_LOAD`.
-This will cause the image to be decoded directly in the Loader's background thread.
+デフォルトでは、_Loader_ クラスを PNG や JPEG をロードするために使った場合、イメージデータはすぐさまデコードされません。実際に最初に使うタイミングでデコードされるのです。
+これはメインスレッド上で処理され、テクスチャの作成時に青アプリケーションが突っかかるような状態になる事があります。
+そのような事態を避けるには、デコードのポリシー設定を `ON_LOAD` にしましょう。
+そうすれば、デコード処理はローダーのバックグラウンドスレッドで直接行われるようになります。
 
 [source, as3]
 ----
@@ -80,8 +81,8 @@ loaderContext.imageDecodingPolicy = ImageDecodingPolicy.ON_LOAD;
 loader.load(url, loaderContext);
 ----
 
-On the other hand, you are probably using Starling's _AssetManager_ to load your textures, aren't you?
-In that case, don't worry: it makes use of this practice, anyway.
+一方で、イメージのロードには Starling の _AssetManager_ を使っているでしょうか？
+そうであれば、上記のテクニックはすでに使われているので心配はしなくて大丈夫です。
 
 ==== "for each" の利用を控える
 
@@ -297,13 +298,12 @@ backgroundImage.blendMode = BlendMode.NONE;
 通常は、このテクニックによって描画ステートの変化ももたらす（ドローコールが増える）ため、多用してはいけません。
 小さな画像に対しては、おそらく適用する価値がありません。（なんにしろ何か別の理由で描画ステートが変化するのなら避けましょう。）
 
-==== Use stage.color
+==== ステージカラー設定を活用する
 
-Oftentimes, the actual stage color is actually never seen in your game, because there are always images or meshes on top of the stage.
-
-In that case, always set it to clear black (`0x0`) or white (`0xffffff`).
-There seems to be a fast hardware optimization path for a `context.clear` on some mobile hardware when it is called with either all 1's or all 0's.
-Some developers reported a full millisecond of spared rendering time per frame, which is a very nice gain for such a simple change!
+しばしば、ステージに設定されたカラーはゲーム中に見えない状態である事があります。なぜならステージ上にあるイメージやメッシュによって隠されてしまっているからです。
+その場合、ステージ色の設定は完全な黒（`0x0`）か完全な白（`0xffffff`）に設定するようにしましょう。
+いくつかのモバイルプラットフォームでは、`context.clear` が '1' または '0' で呼ばれた場合に、ハードウェアの最適化処理が走る事があります、
+何人かの開発者が１フレームごとにミリ秒単位でのレンダリング時間をレポートしてくれましたが、そのような簡単な変更で大きな速度改善があったとの事です！
 
 [source, as3]
 ----
@@ -314,8 +314,9 @@ public class Startup extends Sprite
 }
 ----
 
-On the other hand, if the background of your game is a flat color, you can make use of that, too: just set the stage color to that value instead of displaying an image or a colored quad.
-Starling has to clear the stage once per frame, anyway -- thus, if you change the stage color, that operation won't cost anything.
+一方で、バックグラウンドカラーがフラットな色である場合、それをステージをうまく使う事ができます。
+イメージや着色された Quad を配置するのでなく、ステージ色を設定しましょう。
+どちらにしろ Starling は１フレームに１回画面をクリアし直すのです。したがってステージカラーを変更したとしてもなんの描画コストも増えません。
 
 [source, as3]
 ----
