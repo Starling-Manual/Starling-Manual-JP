@@ -148,50 +148,51 @@ Pool.putPoint(point); // この処理を忘れない事！
 //↑見出しなので =  の数が異なる
 
 
-==== Minimize State Changes
+==== ステージの変化を最小にする
 
-As you know, Starling uses Stage3D to render the display list.
-This means that all drawing is done by the GPU.
+知っての通り、Starling は Stage3D をディスプレイリストの描画に利用します。
+これは全ての描画処理が GPU で行われる事を意味します。
 
-Now, Starling could send one quad after the other to the GPU, drawing one by one.
-In fact, this is how the very first Starling release worked!
-For optimal performance, though, GPUs prefer to get a huge pile of data and draw all of it at once.
+ここで、Starling はQuad (矩形) の１つ１つを個別に GPU に送って描画させる事もできます。
+実際、これは Starling の最初の頃のリリースで行なっていた方法です。
+しかし、最高のパフォーマンスを出すために、GPU にはいっぺんにたくさんのでデーターを渡して１回で描画してもらうのが良いのです。
 
-That's why newer Starling versions batch as many quads together as possible before sending them to the GPU.
-However, it can only batch quads that have similar properties.
-Whenever a quad with a different "state" is encountered, a "state change" occurs, and the previously batched quads are drawn.
+これが、その後の Starling のバージョンができるだけたくさんの Quad をバッチして GPU に送っている理由です。
+ですが、バッチ処理でまとめられるのは似たようなプロパティを持っている Quad だけなのです。
+Quad の状態が切り替わるたび、"ステートの変更" が生じて、そこまでのバッチが描画されます。
 
 [NOTE]
 ====
-I use _Quad_ and _Image_ synonymously in this section.
-Remember, _Image_ is just a subclass of _Quad_ that adds a few methods.
-Besides, _Quad_ extends _Mesh_, and what you read below is true for meshes, as well.
+このセクションでは _Quad_ と _Image_ を同義的に扱っています。
+_Image_ は _Quad_ のサブクラスで、いくつかのメソッドが追加されただけなのです。
+さらに、_Quad_　は _Mesh_ を継承しており、以下に書く事はメッシュに対しても同様に当てはまります。 .
 ====
 
-These are the crucial properties that make up a state:
+以下は、ステートを決定する重要なプロパティです。
 
-* The _texture_ (different subtextures from the same atlas are fine, though)
-* The _blendMode_ of display objects
-* The _textureSmoothing_ value of meshes/quads/images
-* The _textureRepeat_ mode of meshes/quads/images
+* _テクスチャー_ の設定。 (なのですが、同じアトラス内の異るサブテクスチャーは状態を変えません)
+* ディスプレイオブジェクトの _ブレンドモード_ 設定。
+* メッシュ/Quad/イメージ　の _textureSmoothing_ 設定。
+* メッシュ/Quad/イメージ　の _textureRepeat_ 設定。
 
-If you set up your scene in a way that creates as little state changes as possible, your rendering performance will profit immensely.
+できる限りステート変化を抑えるようにアプリのシーンを設定する事で、
+レンダリングのパーフォーマンスは著しく向上するでしょう。
 
-Again, Starling's statics display provides useful data.
-It shows exactly how many draw calls are executed per frame.
-The more state changes you have, the higher this number will be.
+再度言います、Starling の statics 表示は有益な情報を与えてくれます。
+１フレームでどれだけのドローコールが発生したかの回数を表示します。
+ステートの変化が多いほど、ドローコール回数も多くなっていくでしょう。
 
-.The statistics display includes the current number of draw calls.
+.statistics 表示には 現在のドローコール数も表示されています。
 image::stats-display.png[Statistics Display]
 
 [NOTE]
 ====
-The statistics display causes draw calls, as well.
-However, Starling explicitly decrements the draw count displayed to take that into account.
+statistics 表示自体もドローコールを消費します。
+しかし、Starling はその増加分を差し引いたドローコール数を表示してくれます。
 ====
 
-Your target should always be to keep it as low as possible.
-The following tips will show you how.
+やるべき事は、できる限りステートの変化を抑える事、です。
+具体的な方法については下に続きます。
 
 ===== The Painter's Algorithm
 
@@ -391,21 +392,23 @@ Within the high level game logic, it's often easier to make visibility checks (y
 If you've got lots of objects that are outside those bounds, it's worth the effort.
 Remove those elements from the stage or set their `visible` property to `false`.
 
-==== Make use of Event Pooling
+==== Event オブジェクトをプールする
 
-Compared to classic Flash, Starling adds an additional method for event dispatching:
+Starling は Flash のシステムにはない、イベントの発火に関する新しいメソッドを追加しました。
 
 [source, as3]
 ----
-// classic way:
+// 今までのやり方
 object.dispatchEvent(new Event("type", bubbles));
 
-// new way:
+// 新しいやり方
 object.dispatchEventWith("type", bubbles);
 ----
 
-The new approach will dispatch an event object just like the first one, but behind the scenes, it will pool event objects for you.
-That means that you will save the garbage collector some work.
+新しいアプローチは、今までのものとあまり変わりがないように見えます。
+しかしシーンの裏側では、イベントオブジェクトの使い回しを行なっています。
+これによって、無駄なガベージコレクションの発動を抑えることができます。
 
-In other words, it's less code to write _and_ is faster -- thus, it's the preferred way to dispatch events.
-(Except if you need to dispatch a custom subclass of `Event`; they cannot be dispatched with that method.)
+言い換えると、コード記述量が減って、動作も速くなる、という事です。したがってこれが推奨されるイベントの発火方法となります。
+(もしも `Event` クラスのカスタムサブクラスを用いる必要がある場合、新しいやり方は取れません。)
+
