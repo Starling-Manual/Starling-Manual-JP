@@ -377,20 +377,21 @@ for (var i:int=0; i<container.numChildren; ++i)
 container.touchable = false;
 ----
 
-==== Hide objects that are outside the Stage bounds
+==== ステージ領域から外れたオブジェクトを隠す
 
-Starling will send any object that is part of the display list to the GPU.
-This is true even for objects that are outside the stage bounds!
+Starling はディスプレイリスト上のどのオブジェクトも GPU へと送信します。
+これは、オブジェクトがステージの領域外にあった場合でも同様です。
 
-You might wonder: why doesn't Starling simply ignore those invisible objects?
-The reason is that checking the visibility in a universal way is quite expensive.
-So expensive, in fact, that it's faster to send objects up to the GPU and let it do to the clipping.
-The GPU is actually very efficient with that and will abort the whole rendering pipeline very early if the object is outside the screen bounds.
+こう思うかもしれません。Starling は目に見えないそれらのオブジェクトを無効にしてくれないのだろうと。
+その理由は、表示されているかどうかを普遍的にチェックする事は、とても計算が高くつくからです。
+実際にそれはとても割高で、全てのオブジェクトを GPU に送信して、クリッピングして表示した方が早いのです。
+GPU はそのような動作でとても効率的で、オブジェクトが画面外である場合、レンダリング処理の早い段階で、それらは描画処理から取り除かれます。
 
-However, it still takes time to upload that data, and you can avoid that.
-Within the high level game logic, it's often easier to make visibility checks (you can e.g. just check the x/y coordinates against a constant).
-If you've got lots of objects that are outside those bounds, it's worth the effort.
-Remove those elements from the stage or set their `visible` property to `false`.
+しかし、やはりデータのアップロードには時間がかかります。そしてそれを避ける事は可能です。
+ハイレベルなゲームロジックでは、オブジェクトが実際に表示されているかのチェックはしばしば簡単なものとなります。
+（例えば、ただ定数に対して、x及びy座標をチェックするだけで済む事があります。）
+もしもたくさんのオブジェクトがその表示領域から外れている場合、チェックする努力を払う価値はあります。
+それらをステージから取りさるか、`visible` 値を false にしましょう。
 
 ==== Event オブジェクトをプールする
 
