@@ -194,26 +194,25 @@ statistics 表示自体もドローコールを消費します。
 やるべき事は、できる限りステートの変化を抑える事、です。
 具体的な方法については下に続きます。
 
-===== The Painter's Algorithm
+===== ペインターアルゴリズム
 
-To know how to minimize state changes, you need to know the order in which Starling processes your objects.
+どのようにステートの変化を抑えるかを知るためには、まず Starling がどのようにディスプレイオブジェクトを処理するのかを知らなくてはいけません。
 
-Like Flash, Starling uses the _Painter's algorithm_ to process the display list.
-This means that it draws your scene like a painter would do it: starting at the object at the bottom layer (e.g. the background image) and moving upwards, drawing new objects on top of previous ones.
+Flash のように、Starling もディスプレイリストを処理するために _ペインターアルゴリズム_ を利用します。これは、実際の画家のようにシーンを描画するアルゴリズムです。
+一番背面のオブジェクト（例えば背景画像など）から処理を初めて、だんだんと前面に進んでいきます。前に描画したオブジェクトの上に次のものを重ねて描画していきます。
 
-.Drawing a scene with the Painter's algorithm.
+.ペインターアルゴリズムで描画されたシーン。
 image::painters-algorithm.png[Painter's algorithm]
 
-If you'd set up such a scene in Starling, you could create three sprites: one containing the mountain range in the distance, one with the ground, and one with the vegetation.
-The mountain range would be at the bottom (index 0), the vegetation at the top (index 2).
-Each sprite would contain images that contain the actual objects.
+Starling でシーンを生成した際、３つのスプライトを配置したとします。一つは山の領域、１つは地面、一つは植物を描画という具合です。
+山は一番下層にあり (index 0)、植物は最前面 (index 2) にあります。各々のスプライトはそれぞれを構成する画像をいくつか含むとします。
 
-.The scene graph of the landscape from above.
+.上記の設定による光景のシーン構造。
 image::landscape.png[Landscape Scene Graph]
 
-On rendering, Starling would start at the left with "Mountain 1" and continue towards the right, until it reaches "Tree 2".
-If all those objects have a different state, this would mean six draw calls.
-That's exactly what will happen if you load each object's texture from a separate Bitmap.
+レンダリングのタイミングでは、Starling は図の左の "Mountain 1" から右に向かい、一番右の "Tree 2" に到達するまで処理を進めます。
+もしもそれら全てのオブジェクトが異なったステートである場合、6回のドローコールが必要となってしまいます。
+これは、それぞれのテクスチャーを異なるビットマップ画像から読み込んでいる場合に起こりえる事です。
 
 // <note tip>
 // Another tool at your disposal is the [[http://doc.starling-framework.org/core/starling/display/DisplayObjectContainer.html#sortChildren()|DisplayObjectContainer::sortChildren()]] method which can be used to sort layers, within a ''Sprite'' object for example, based on properties such as ''x'', ''y'', ''alpha'' etc. The method accepts a compare function which means you can sort objects based on any criteria you wish! :-D
