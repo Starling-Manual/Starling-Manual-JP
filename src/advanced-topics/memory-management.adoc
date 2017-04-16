@@ -289,6 +289,8 @@ Make use of this!
 Packing more textures into one atlas not only reduces your overall memory consumption, but also the number of draw calls (more on that in the next chapter).
 
 [[memory_management_scout]]
+//パフォチューノページと記載を合わせる 英語のままでいい
+
 === Use Adobe Scout
 
 https://www.adobe.com/products/scout.html[Adobe Scout] is a lightweight but comprehensive profiling tool for ActionScript and Stage3D.
