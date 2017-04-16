@@ -207,7 +207,7 @@ image::painters-algorithm.png[Painter's algorithm]
 Starling でシーンを生成した際、３つのスプライトを配置したとします。一つは山の領域、１つは地面、一つは植物を描画という具合です。
 山は一番下層にあり (index 0)、植物は最前面 (index 2) にあります。各々のスプライトはそれぞれを構成する画像をいくつか含むとします。
 
-.上記の設定による光景のシーン構造。
+.上記の設定によるシーン構造。
 image::landscape.png[Landscape Scene Graph]
 
 レンダリングのタイミングでは、Starling は図の左の "Mountain 1" から右に向かい、一番右の "Tree 2" に到達するまで処理を進めます。
@@ -218,33 +218,34 @@ image::landscape.png[Landscape Scene Graph]
 // Another tool at your disposal is the [[http://doc.starling-framework.org/core/starling/display/DisplayObjectContainer.html#sortChildren()|DisplayObjectContainer::sortChildren()]] method which can be used to sort layers, within a ''Sprite'' object for example, based on properties such as ''x'', ''y'', ''alpha'' etc. The method accepts a compare function which means you can sort objects based on any criteria you wish! :-D
 // </note>
 
-===== The Texture Atlas
+===== テクスチャーアトラス
 
-That's one of the reasons why texture atlases are so important.
-If you load all those textures from one single atlas, Starling will be able to draw all objects at once!
-(At least if the other properties listed above do not change.)
+それが、テクスチャーアトラスがとても重要である理由の１つなのです。
+１つのアトラスから全てのテクスチャーを読み取る場合、Starling は一度に全てのオブジェクトを描画する事ができます。
+（上のリストにあるプロパティが変化しない場合に置いては。）
 
-.The same scene graph, now using a single atlas texture.
+.１つのアトラスを利用した、先ほどと同じシーンの構造。
 image::landscape-2.png[Landscape Scene Graph 2]
 
-The consequence of this is that you should _always_ use an atlas for your textures.
-Here, each image uses the same atlas (depicted by all nodes having the same color).
+ここから導かれる結果は、_いつでも_ テクスチャは１枚のアトラスにまとめられるべきだという事です。
+ここでは、各々の画像が同じアトラスえお利用しています。（描画された全てのノードは同じカラー設定です。）
 
-Sometimes, though, not all of your textures will fit into a single atlas.
-The size of textures is limited, so you'll run out of space sooner or later.
-But this is no problem, as long as you arrange your textures in a smart way.
+時には１枚のアトラスに全てのテクスチャーが収まらない場合もあります。
+テクスチャーのサイズには限度があり、遅かれ早かれ空きスペースは足りなくなってしまうでしょう。
+しかし、大丈夫です。うまい方法でテクスチャーを調整する事ができます。
 
-.The order of objects makes a difference.
+.オブジェクトの順番が違いを生む。
 image::landscape-3.png[Landscape Scene Graph 3]
 
-Both those examples use two atlases (again, one color per atlas).
-But while the display list on the left will force a state change for each object, the version on the right will be able to draw all objects in just two batches.
+この例の両者では２つのアトラスを利用しています。（カラー設定はそれぞれに対して１つだけです。）
+左のディスプレイリストでは各々のオブジェクトごとにステートの変更がなされてしまうのに対して、
+右のディスプレイリストでは全てのオブジェクトを描画するのに2回だけのバッチ処理で抑えられています。
 
-==== Use the MeshBatch class
+==== MeshBatch クラスを用いる
 
-The fastest way to draw a huge number of quads or other meshes at once is to use the _MeshBatch_ class.
-That's the same class that is used internally by Starling for all rendering, so it's heavily optimized.footnote:[If you're still using Starling 1.x, look for ''QuadBatch'' instead.]
-It works like this:
+たくさんの Quad やメッシュをまとめて描画する最も速い方法は、_MeshBatch_ クラスを利用する事です。
+これは Starling の全てのレンダリングの内部処理で使われているのと同じクラスで、とてもよく最適化がなされています。footnote:[もし 使っている Starling のバージョンが 1.x であるなら、代わりに ''QuadBatch'' を使ってください。]
+下記のように使います。
 
 [source, as3]
 ----
@@ -260,20 +261,19 @@ for (var i:int=0; i<100; ++i)
 addChild(meshBatch);
 ----
 
-Did you notice? You can add the same image as often as you want!
-Furthermore, adding it is a very fast operation; e.g. no event will be dispatched (which is the case when you add an object to a container).
+気づいたでしょうか？ここでは１つのイメージを何度でも好きなだけバッチ処理対象に追加しています。
+さらに、この追加に伴う処理はとても速いのです。例えば、なんのイベントも発火しません。（スプライトなどのコンテナにオブジェクトを追加した場合はイベントが発火します。）
 
-As expected, this has some downsides, though:
+しかし、下記のようなマイナス面も予想されます。
 
-* All the objects you add must have the same state (i.e. use textures from the same atlas).
-  The first image you add to the MeshBatch will decide on its state.
-  You can't change the state later, except by resetting it completely.
-* You can only add instances of the _Mesh_ class or its subclasses (that includes _Quad_, _Image_, and even _MeshBatch_).
-* Object removal is quite tricky: you can only remove meshes by trimming the number of vertices and indices of the batch.
-  However, you can overwrite meshes at a certain index.
+* バッチ対象に追加する全てのオブジェクトは、同じステートでなくてはいけません。（例えば、テクスチャーが同じアトラスから構成されている、など。）
+一番最初に MeshBatch に追加するイメージがそのステートを決定する事になります。完全にリセットすること以外に、後からステートを変更することはできません。
+* バッチ対象として追加できるのは、メッシュクラスかそのサブクラスのインスタンスだけです。（_Quad_、_イメージ_、別の _MeshBatch_ などのクラスもそれに含まれます。）
+* 追加したオブジェクトを後から削除するのはとても特殊な対応を取る事になります。全体の大きなメッシュから頂点やインデックスを直接削除する事しかできないのです。しかし、ある場所のメッシュを上書きするようなこともできます。
 
-For these reasons, it's only suitable for very specific use-cases (the _BitmapFont_ class, for example, uses a mesh batch internally).
-In those cases, it's definitely the fastest option, though. You won't find a more efficient way to render a huge number of objects in Starling.
+これらの理由から、特別な状況のみにこの方法は適している事になります。（例えば、_BitmapFont_ クラスは内部でメッシュのバッチ処理を行なっています。）
+しかし、そのような状況であるならば、MeshBatch が間違いなく最も速い描画方法となります。
+Starling において、たくさんのオブジェクトをさらに効率的に描画する方法は見つけられないでしょう。
 
 ==== テキストフィールドをバッチする
 
