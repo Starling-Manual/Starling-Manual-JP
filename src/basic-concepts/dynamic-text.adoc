@@ -1,13 +1,15 @@
-== Dynamic Text
+== ダイナミックテキスト
 ifndef::imagesdir[:imagesdir: ../../img]
 
-Text is an important part of every application.
-You can only convey so much information with images; some things simply need to be described with words, dynamically at run-time.
+そのアプリケーションにもテキスト表示は大事な項目です。
+たくさんの情報はイメージを通してのみ伝える事ができます。そのうちいくらかは言葉としてランタイム時に動的に描画されます。
+//なんか翻訳辛い 原文：You can only convey so much information with images; some things simply need to be described with words, dynamically at run-time.
 
-=== TextFields
+=== テキストフィールド
 
-Starling makes it easy to display dynamic text.
-The _TextField_ class should be quite self explanatory!
+Starling では動的なテキスト（ダイナミックテキスト）を簡単に表示できます。
+_TextField_ クラスについては説明するまでもないかもしれません。
+//原文：The _TextField_ class should be quite self explanatory!
 
 [source, as3]
 ----
@@ -16,16 +18,16 @@ textField.format.setTo("Arial", 12, Color.RED); // <2>
 textField.format.horizontalAlign = Align.RIGHT; // <3>
 textField.border = true; // <4>
 ----
-<1> Create a TextField with a size of 100×20 points, displaying the text "text".
-<2> We set the format to "Arial" with a size of 12 points, in red.
-<3> The text is aligned to the right.
-<4> The border property is mainly useful during development: it will show the boundaries of the TextField.
+<1> 00×20 ポイントのサイズでテキストフィールドを作成し、"text" という文字を表示しています。.
+<2> テキストの装飾を "Arial" フォント、12 ポイントのサイズ、赤い色、と設定しています。
+<3> テキストが右寄せに設定されています。
+<4> borderの設定は開発時に役に立つ事が多いです。テキストフィールドの周りに枠線が表示されます。
 
-NOTE: Note that the style of the text is set up via the `format` property, which points to a `starling.text.TextFormat` instance.
+NOTE: テキストの装飾は `format` プロパティを通して設定されます。`starling.text.TextFormat` のインスタンスがその値となります。
 
-Once created, you can use a _TextField_ just like you'd use an image or quad.
+一度 _TextField_ が生成されれば、そのあとはイメージや Quad と同じように扱う事ができます。
 
-.A few samples of Starling's text rendering capabilities.
+.Starling の テキスト表示機能に関するいくつかの例。
 image::textfield-samples.png[TextField Samples, 320]
 
 === TrueType Fonts
