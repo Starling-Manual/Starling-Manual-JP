@@ -129,27 +129,29 @@ textField.format.fontSize = BitmapFont.NATIVE_SIZE; // <2>
 <1> To use the font, simply reference it by its name. By default, that's what is stored in the `face`-attribute within the XML file.
 <2> Bitmap fonts look best when they are displayed in the exact size that was used to create the font texture. You could assign that size manually -- but it's smarter to let Starling do that, via the `NATIVE_SIZE` constant.
 
-==== Gotchas
+==== 了解事項
+//原文。。：==== Gotchas
 
-There's one more thing you need to know: if your bitmap font uses just a single color (like a normal TrueType font, without any color effects), your glyphs need to be exported in pure white.
-The `format.color` property of the TextField can then be used to tint the font into an arbitrary color at runtime (simply by multiplication with the RGB channels of the texture).
+もう一つ、知っておかなくてはいけない事があります。もしもビットマップフォントのカラー設定が単色だった場合（カラーエフェクトなしの通常の truetype フォントだった場合）、フォント画像は白一色で書き出される必要があります。
+そうすれば、テキストフィールドの `format.color` プロパティを用いてフォントを動的に着色する事ができます。
+//原文：The `format.color` property of the TextField can then be used to tint the font into an arbitrary color at runtime
+（テクスチャの RGB チャンネルにシンプルに乗算処理がかかるだけの処理とされます。）
 
-On the other hand, if your font does contains colors (like the sample image above), it's the TextField's `format.color` property that needs to be set to white (`Color.WHITE`).
-That way, the color tinting of the TextField will not affect the texture color.
+一方で、フォントが上の画像にあるように、カラー情報を含んでいる場合、テキストフィールドの `format.color` プロパティは白 (`Color.WHITE`).に設定されるべきです。
+そのようにすれば、テキストフィールドのカラー設定がテクスチャカラーに影響を与える事はありません。
 
-TIP: For optimal performance, you can even add font textures to your texture atlas!
-That way, your texts may be batched together with regular images, reducing draw calls even more.
+TIP: パフォーマンス向上のため、フォントテクスチャーもテクスチャーアトラスに含める事ができます。そうする事で、テキスト表示も他のイメージとともにバッチされる事があります。結果ドローコールの削減となります。
 
-==== The MINI Font
+==== MINI フォント
 
-Starling actually comes with one very lightweight bitmap font included.
-It probably won't win any beauty contests -- but it's perfect when you need to display text in a prototype, or maybe for some debug output.
+Starling には最初からとても軽量なフォントが含まれています。
+美しさで賞される事はないかもしれません。しかし、開発中やデバッグ用途のテキスト表示にはもってこいです。
 
-.The "MINI" bitmap font.
+."MINI" ビットマップフォント。
 image::mini-font.png[BitmapFont.MINI, 396]
 
-When I say lightweight, I mean it: each letter is only 5 pixels high.
-There is a trick, though, that will scale it up to exactly 200% its native size.
+"軽量" と言いましたが、それぞれの文字は 5 ピクセルの高さしか持たないのです。
+実際に表示される際には、200% の大きさで拡大して使います。
 
 [source, as3]
 ----
@@ -157,5 +159,5 @@ var textField:TextField = new TextField(100, 10, "The quick brown fox ...");
 textField.format.font = BitmapFont.MINI; // <1>
 textField.format.fontSize = BitmapFont.NATIVE_SIZE * 2; // <2>
 ----
-<1> Use the MINI font.
-<2> Use exactly twice the native size. Since the font uses nearest neighbor scaling, it will stay crisp!
+<1> MINI フォントの利用。
+<2> 元の大きさの２倍とします。このフォントはニアレスネイバー法で拡大されるため、くっきりとした表示が保たれます！
