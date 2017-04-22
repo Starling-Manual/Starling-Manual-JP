@@ -1,13 +1,15 @@
-== Dynamic Text
+== ダイナミックテキスト
 ifndef::imagesdir[:imagesdir: ../../img]
 
-Text is an important part of every application.
-You can only convey so much information with images; some things simply need to be described with words, dynamically at run-time.
+どのアプリケーションでもテキストの表示は大事な要素です。
+多量の情報はイメージを通してのみ伝える事ができますが、そのうちいくらかは言葉としてランタイムで動的に描画されます。
+//なんか翻訳辛い 原文：You can only convey so much information with images; some things simply need to be described with words, dynamically at run-time.
 
-=== TextFields
+=== テキストフィールド
 
-Starling makes it easy to display dynamic text.
-The _TextField_ class should be quite self explanatory!
+Starling では、動的なテキスト（ダイナミックテキスト）を簡単に表示する事ができます。
+_TextField_ クラスについては説明するまでもないかもしれません。
+//原文：The _TextField_ class should be quite self explanatory!
 
 [source, as3]
 ----
@@ -16,27 +18,26 @@ textField.format.setTo("Arial", 12, Color.RED); // <2>
 textField.format.horizontalAlign = Align.RIGHT; // <3>
 textField.border = true; // <4>
 ----
-<1> Create a TextField with a size of 100×20 points, displaying the text "text".
-<2> We set the format to "Arial" with a size of 12 points, in red.
-<3> The text is aligned to the right.
-<4> The border property is mainly useful during development: it will show the boundaries of the TextField.
+<1> 100 × 20 ポイントのサイズでテキストフィールドを作成し、"text" という文字を表示しています。.
+<2> テキストの装飾は "Arial" フォント、12 ポイント、赤、に設定されています。
+<3> テキストが右寄せに設定されています。
+<4> borderの設定は開発時に役に立ちます。テキストフィールドの周りに枠線が表示されます。
 
-NOTE: Note that the style of the text is set up via the `format` property, which points to a `starling.text.TextFormat` instance.
+NOTE: テキストの装飾は `format` プロパティを通して設定されます。`starling.text.TextFormat` のインスタンスです。
 
-Once created, you can use a _TextField_ just like you'd use an image or quad.
+一度 _TextField_ が生成されれば、その後はイメージや Quad と同じように扱う事ができます。
 
-.A few samples of Starling's text rendering capabilities.
+.Starling の テキスト表示機能のいくつかの例。
 image::textfield-samples.png[TextField Samples, 320]
 
-=== TrueType Fonts
+=== TrueType フォント
 
-Per default, Starling will use system fonts to render text.
-For example, if you set up your TextField to use "Arial", it will use the one installed on the system (if it is).
+デフォルトでは、Starling はシステムフォントをテキストのレンダリングに利用します。
+例えば、"Arial" フォント をテキストフィールドに適用した場合、システムにインストールされたものを使います。（もしインストールされていれば。）
 
-However, the rendering quality of that approach is not optimal; for example, the font might be rendered without anti-aliasing.
-
-For a better output, you should embed your _TrueType_ fonts directly into the SWF file.
-Use the following code to do that:
+しかし、そのやり方ではレンダリングクオリティがあまりよくなりません。例えば、アンチエイリアス処理が行われず。フォントがレンダリングされてしまったりします。
+より良い出力を得るためには、_TrueType_ フォントを直接 swf ファイルに埋め込みます。
+下記のコードに従ってください。
 
 [source, as3]
 ----
@@ -52,50 +53,54 @@ private static const ArialItalic:Class; // <3>
 [Embed(source="Arial.ttf", embedAsCFF="false", fontFamily="Arial", unicodeRange = "U+0020-U+007e")]
 private static const ArialJustLatin:Class; // <4>
 ----
-<1> Embedding the standard _Arial_ font. Note the _embedAsCFF_ part: don't skip it! Otherwise, the font simply won't show up.
-<2> Bold and italic styles must be embedded separately. Note the _fontWeight_ attribute here,
-<3> and the _fontStyle_ attribute here.
-<4> You can also define which glyphs to include, which is useful for big fonts when you don't need all _Unicode_ letters.
-    The range shown here is for basic Latin (upper- and lowercase chars, numerals and common symbols/punctuations).
+<1> 標準的な _Arial_ フォントを埋め込みます。_embedAsCFF_ という項目の記述を忘れないでください。記述がないとフォントが表示されなくなります。
+<2> Bold と italic スタイルではそれぞれ別の埋め込み指定が必要です。_fontWeight_ 属性に注目してください。
+<3> こちらには _fontStyle_ 属性があります。
+<4> どの文字を含めるか指定する事もできます。この機能はフォントデータの文字の一部しか必要がない場合に便利です。
+この例で指定しているのは 基本的な Latin の範囲（英数字の大文字小文字と一般的な記号と句読点）です。
 
-After embedding the font, any TextField that is set up with a corresponding font name (font family) and weight will use it automatically.
-There's nothing else to set up or configure.
+フォントを埋め込んだ後は、対応したフォント名（もしくはフォントファミリー）とウェイトをテキストフィールドに設定するだけで利用する事ができます。
+そのほかの設定・準備は必要ありません。
 
-TIP: Beware of the big footprint when embedding all glyphs of a font.
-The "unicodeRange" shown above mitigates this problem. You can generate the ranges using e.g. http://renaun.com/blog/2011/10/flash-embed-font-unicode-range-generator[Unicode Range Generator].
+TIP: フォントのすべての文字を埋め込んだ場合、とても大きなデータ範囲指定となってしまう事に気をつけてください。
+//Beware of the big footprint when embedding all glyphs of a font.
+上記のようにユニコードの範囲指定をすると、その問題が軽減します。範囲の設定は、例えばこのサイトで作成する事ができます。
+http://renaun.com/blog/2011/10/flash-embed-font-unicode-range-generator[Unicode Range Generator].
 
-TIP: If your text is clipped or does not appear at the correct position, have a look at your current `stage.quality` setting.
-A low quality value often causes Flash/AIR to report incorrect values regarding the text bounds, and Starling depends on those values when it draws the text.
-(I'm talking about the Flash stage here; and this applies only to TrueType fonts.)
+TIP: もしもフォントの表示にかけが生じたり、正しい位置に表示されないような場合は、`stage.quality` 設定を確認してくみてださい。
+低いクオリティ設定の場合、テキストの大きさを Flash/AIR が正しく認識できない事があります。Starling はその値を元に描画を行なっています。
+（Flash のステージについての話です。そしてこの問題は TrueType フォントだけに起こります。）
 
-=== Bitmap Fonts
+=== ビットマップフォント
 
-Using _TrueType_ fonts as shown above is adequate for text that does not change very often.
-However, if your TextField constantly changes its contents, or if you want to display a fancy font that's not available in TrueType format, you should use a bitmap font instead.
+_TrueType_ フォントを使うのは、あまりテキストの内容に変更がない場合に適しています。
+内容が頻繁に変更される場合、もしくは TrueType フォントでは再現できないような見た目が豪華な装飾付きのフォントを表示したい場合には、ビットマップフォントを代わりに使うべきです。
 
-A bitmap font is a texture containing all the characters you want to display.
-Similar to a _TextureAtlas_, an XML file stores the positions of the glyphs inside the texture.
+ビットマップフォントは、表示したい全ての文字を含ませたテクスチャーと、
+テクスチャーアトラスと同じように、テクスチャー内の文字の位置情報を保持したXML ファイルからなります。
 
-This is all Starling needs to render bitmap fonts.
-To create the necessary files, there are several options:
+それだけ揃えれば Starling でビットマップフォントを表示する事ができます。
+それらのファイルを用意するには、いくつかの方法があります。
 
-* http://kvazars.com/littera/[Littera], a full-featured free online bitmap font generator.
-* http://www.angelcode.com/products/bmfont/[Bitmap Font Generator], a tool provided by AngelCode that lets you create a bitmap font out of any TrueType font. It is, however, only available for Windows.
-* http://glyphdesigner.71squared.com[Glyph Designer] for _macOS_, an excellent tool that allows you to add fancy special effects to your fonts.
-* http://www.bmglyph.com[bmGlyph], also exclusive for _macOS_, available on the App Store.
+* http://kvazars.com/littera/[Littera], フリーで高機能なオンライン上のビットマップフォント作成ツールです。
+* http://www.angelcode.com/products/bmfont/[Bitmap Font Generator], AngelCode から提供されている TrueType フォントからビットマップフォントを生成するツールです。Windows 専用です。
+* http://glyphdesigner.71squared.com[Glyph Designer] 豪華なエフェクトをフォントに加える事もできるツールです。_macOS_ 用。
+* http://www.bmglyph.com[bmGlyph], こちらも _macOS_専用。App Store で入手できます。
 
-The tools are all similar to use, allowing you to pick one of your system fonts and optionally apply some special effects.
-On export, there are a few things to consider:
+どのツールも使い方は似ています。システムフォントから使いたい文字を選択し、文字にエフェクトを施す事ができます。
 
-* Starling requires the XML variant of the ".fnt" format.
-* Make sure to pick the right set of glyphs; otherwise, your font texture will grow extremely big.
+フォントの書き出しにあたって、考慮すべき点があります。
 
-The result is a ".fnt" file and an associated texture containing the characters.
+* Starling は 独自 XML 形式の ".fnt" ファイルを必要とします。
+//原文：* Starling requires the XML variant of the ".fnt" format.
+* 必要な文字だけを正しく選択するようにしましょう。必要ないものも含めると、フォントのテクスチャーが巨大なものになります。
 
-.A bitmap font that has color and drop shadow included.
+書き出されるのは、".fnt" ファイルと、選択した文字を含んだテクスチャーです。
+
+.このビットマップフォントには色がついており、シャドウの装飾も含希ています。
 image::desyrel-font.png[Bitmap Font, 400]
 
-To make such a font available to Starling, you can embed it in the SWF and register it at the TextField class.
+Starling で、フォントを表示するには、SWF にそれらのファイルを埋め込んで、テキストフィールドクラスに登録します。
 
 [source, as3]
 ----
@@ -111,12 +116,12 @@ var font:BitmapFont = new BitmapFont(texture, xml); // <1>
 
 TextField.registerCompositor(font); // <2>
 ----
-<1> Create an instance of the _BitmapFont_ class.
-<2> Register the font at the _TextField_ class.
+<1> _BitmapFont_ クラスをインスタンス化します。
+<2> _TextField_ クラスにそのインスランスを登録します。
 
-Once the bitmap font instance has been registered at the _TextField_ class, you don't need it any longer.
-Starling will simply pick up that font when it encounters a _TextField_ that uses a font with that name.
-Like here:
+ビットマップフォントが _TextField_ クラスに一度登録されると、その後はそのインスタンスは必要無くなります。
+Starling はビットマップフォントの名前が指定された _TextField_ を見つけると、自動的に対応したフォントを利用します。
+以下のような感じです。
 
 [source, as3]
 ----
@@ -124,30 +129,34 @@ var textField:TextField = new TextField(100, 20, "Hello World");
 textField.format.font = "fontName"; // <1>
 textField.format.fontSize = BitmapFont.NATIVE_SIZE; // <2>
 ----
-<1> To use the font, simply reference it by its name. By default, that's what is stored in the `face`-attribute within the XML file.
-<2> Bitmap fonts look best when they are displayed in the exact size that was used to create the font texture. You could assign that size manually -- but it's smarter to let Starling do that, via the `NATIVE_SIZE` constant.
+<1> 使いたいフォントの名前を指定をします。デフォルトでは、XML ファイル内の `face` 属性で、フォント名が設定された物が使われます。
+<2> テクスチャーを作成する時と同じフォントサイズでフォントが表示される際に、最もビットマップフォントが美しく描画されます。
+手作業でそのサイズを設定する事もできますが、`NATIVE_SIZE` という定数指定で Starling にそれを自動で行わせた方がスマートです。
 
-==== Gotchas
+==== 了解事項
+//原文。。：==== Gotchas
 
-There's one more thing you need to know: if your bitmap font uses just a single color (like a normal TrueType font, without any color effects), your glyphs need to be exported in pure white.
-The `format.color` property of the TextField can then be used to tint the font into an arbitrary color at runtime (simply by multiplication with the RGB channels of the texture).
+もう一つ、知っておかなくてはいけない事があります。もしもビットマップフォントのカラー設定が単色だった場合（カラーエフェクトなしの通常の truetype フォントだった場合）、フォント形状は白一色で書き出される必要があります。
+そのようになっていれば、テキストフィールドの `format.color` プロパティを用いてフォント表示を着色する事ができます。
+//原文：The `format.color` property of the TextField can then be used to tint the font into an arbitrary color at runtime
+（テクスチャの RGB チャンネルに乗算処理がかかるだけのシンプルな処理がなされます。）
 
-On the other hand, if your font does contains colors (like the sample image above), it's the TextField's `format.color` property that needs to be set to white (`Color.WHITE`).
-That way, the color tinting of the TextField will not affect the texture color.
+一方で、フォントに（上の画像の例のように）カラー情報が含まれている場合、テキストフィールドの `format.color` プロパティは白 (`Color.WHITE`).に設定されるべきです。
+その設定であれば、テキストフィールドのカラー設定がテクスチャカラーに影響を与える事はありません。
 
-TIP: For optimal performance, you can even add font textures to your texture atlas!
-That way, your texts may be batched together with regular images, reducing draw calls even more.
+TIP: パフォーマンス向上のため、フォントテクスチャーもテクスチャーアトラスに含める事ができます。
+１毎のテクスチャーアトラスにまとまっていれば、テキストの表示も他のイメージとともにバッチされる事があります。結果ドローコールの削減となります。
 
-==== The MINI Font
+==== MINI フォント
 
-Starling actually comes with one very lightweight bitmap font included.
-It probably won't win any beauty contests -- but it's perfect when you need to display text in a prototype, or maybe for some debug output.
+Starling ライブラリには、とても軽量なフォントが最初から含まれています。
+美しさで賞される事はないかもしれませんが、開発中やデバッグ用途のテキスト表示用途にはもってこいです。
 
-.The "MINI" bitmap font.
+."MINI" ビットマップフォント。
 image::mini-font.png[BitmapFont.MINI, 396]
 
-When I say lightweight, I mean it: each letter is only 5 pixels high.
-There is a trick, though, that will scale it up to exactly 200% its native size.
+"軽量" と書いた通り、それぞれの文字は 5 ピクセルの高さしか持たないのです。
+実際に表示される時は、200% の大きさで拡大表示して使われます。
 
 [source, as3]
 ----
@@ -155,5 +164,5 @@ var textField:TextField = new TextField(100, 10, "The quick brown fox ...");
 textField.format.font = BitmapFont.MINI; // <1>
 textField.format.fontSize = BitmapFont.NATIVE_SIZE * 2; // <2>
 ----
-<1> Use the MINI font.
-<2> Use exactly twice the native size. Since the font uses nearest neighbor scaling, it will stay crisp!
+<1> MINI フォントの利用。
+<2> 元の大きさの２倍とします。このフォントはニアレスネイバー法で拡大されるため、くっきりとした表示が保たれます！
