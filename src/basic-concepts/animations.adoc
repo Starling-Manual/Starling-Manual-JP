@@ -1,16 +1,24 @@
-== Animations
+== アニメーション
 
-Animations are not only a fundamental part of any game; even modern business apps are expected to provide smooth and dynamic transitions.
-Some well placed animations go a long way towards providing a responsive and intuitive interface.
-To help with that, Starling offers a very flexible animation engine.
+アニメーションはゲームの重要な要素であるというだけでなく、最近ではビジネス系のアプリであってもスムーズな動きを期待されています。
+うまく配置されたアニメーションは、直感的でレスポンシブなインターフェースを提供するために大いに役立ちます。
+//原文：Some well placed animations go a long way towards providing a responsive and intuitive interface.
+そのような目的を満たせるように、Starling は柔軟なアニメーションエンジンを提供します。
 
-If you think about it, there are two types of animations.
+アニメーションには２つのタイプがあります。
+//原文：If you think about it, there are two types of animations.
 
-* On the one hand, you've got animations that are so dynamic that you don't know beforehand what exactly will happen. Think of an enemy that's moving toward the player: it's direction and speed need to be updated each frame, depending on the environment. Or physics: each additional force or collision changes everything.
+* 一方では、アニメーションはとても動的なので、前もって何が起こるかを知る事は出来ない事がわかります。
+//原文：On the one hand, you've got animations that are so dynamic that you don't know beforehand what exactly will happen.
+自キャラに向かってやって来る敵キャラの事を考えてみてください。移動の方向とスピードを毎フレーム状況に合わせて更新しなくてはいけません。
+物理演算もそうです。力の設定やあたり判定の存在が全てを変えてしまいます。
+//原文：Or physics: each additional force or collision changes everything.
 
-* Then there are animations that follow a meticulous plan; you know from the beginning exactly what will happen. Think of fading in a message box or transitioning from one screen to another.
+* そして詳細な計画通りに動作するアニメーションもあります。
+最初の時点で何がどう起こるのかを知る事ができるのです。
+消えていくメッセージボックスや、シーンの遷移アニメーションなど考えてみて下さい。
 
-We will look at both of these types in the following sections.
+以下で、その２つのアニメーションを詳しく見ていきます。
 
 === EnterFrameEvent
 
