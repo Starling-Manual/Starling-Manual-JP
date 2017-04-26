@@ -20,17 +20,19 @@
 
 以下で、その２つのアニメーションを詳しく見ていきます。
 
-=== EnterFrameEvent
+=== EnterFrame イベント
 
-In some game engines, you have what is called a _run-loop_.
-That's an endless loop which constantly updates all elements of the scene.
+いくつかのゲームエンジンでは、_run-loop_ というものが実装されています。
+//原文：In some game engines, you have what is called a _run-loop_.
+これは終わりのない無限ループ処理で、定期的にシーン上の全ての物体に更新処理を行います。
 
-In Starling, due to the display list architecture, such a run loop would not make much sense.
-You separated your game into numerous different custom display objects, and each should know for itself what to do when some time has passed.
+Starling では、ディスプレイリストの構造による理由から、そのような run loop 処理が適していません。
+ゲームをたくさんのディスプレイオブジェクトで構成しているかと思いますが、それぞれのディスプレイオブジェクトは時間の経過ごとに何をすればいいのか把握しているべきです。
+//原文：You separated your game into numerous different custom display objects,and each should know for itself what to do when some time has passed.
 
-That's exactly the point of the _EnterFrameEvent_: allowing a display object to update itself over time.
-Every frame, that event is dispatched to all display objects that are part of the display list.
-Here is how you use it:
+それこそが、_EnterFrameEvent_ がポイントとする所です。時間がたつとともにディスプレイオブジェクトが自分自身を更新する事が出来るようになります。
+毎フレームでディスプレイリストを構成する全てのディスプレイオブジェクトに EnterFrame イベントが発信されます。
+下記はそのイベントの利用例です。
 
 [source, as3]
 ----
@@ -45,16 +47,17 @@ private function onEnterFrame(event:Event, passedTime:Number):void // <2>
     bird.advanceTime(passedTime);
 }
 ----
-<1> You can add a listener to this event anywhere, but the constructor is a good candidate.
-<2> That's how the corresponding event listener looks like.
+<1> どこでも EnterFrame に対してりすな登録を行うことできます。コンストラクタに書くのも良い選択です。
+<2> イベントリスナーでは、このようにイベントを受け取ります。
 
-The method `onEnterFrame` is called once per frame, and it's passed along the exact time that has elapsed since the previous frame.
-With that information, you can move your enemies, update the height of the sun, or do whatever else is needed.
+`onEnterFrame` メソッドは１フレームに１度だけ呼び出されます。
+その際に前のフレームから経過した時間を引数として受け取る事ができます。
+その情報を元に、敵キャラや太陽の位置や、その他必要な処理を行う事ができるのです。
 
-The power behind this event is that you can do completely different things each time it occurs.
-You can dynamically react to the current state of the game.
-
-For example, you could let an enemy take one step towards the player; a simple form of enemy AI, if you will!
+このイベントに隠された強力な機能は、完全に異なる処理をその時々で行えるという事です。
+//原文：The power behind this event is that you can do completely different things each time it occurs.
+現在のゲームの状況に合わせて柔軟に対応する事ができます。
+例えば、シンプルな敵AIとして、敵キャラをプレイヤーの方向に移動させたりする事ができるのです。
 
 === Tweens
 
