@@ -59,20 +59,23 @@ private function onEnterFrame(event:Event, passedTime:Number):void // <2>
 現在のゲームの状況に合わせて柔軟に対応する事ができます。
 例えば、シンプルな敵AIとして、敵キャラをプレイヤーの方向に移動させたりする事ができるのです。
 
-=== Tweens
+=== トゥイーン
 
-Now to predefined animations.
+アニメーションについて
+//原文：Now to predefined animations.
+
 They are very common and have names such as _movement_, _scale_, _fade_, etc.
-Starling's approach on these kinds of animations is simple -- but at the same time very flexible.
-Basically, you can animate any property of any object, as long as it is numeric (`Number`, `int`, `uint`).
-Those animations are described in an object called _Tween_.
+Starling のこれらに対するアニメーションの取り組み方はシンプルです。そして同時にとても柔軟でもあります。
+基本的にどのオブジェクトのどのプロパティであっても、それが数値 (`Number`、`int`、`uint`) で表されるものであればアニメーションさせる事ができます。
+それらのアニメーションは _Tween_ と呼ばれるオブジェクトにより表されます。
+//原文：Those animations are described in an object called _Tween_.
 
-NOTE: The term "Tween" comes from hand drawn animations, where a lead illustrator would draw important key frames, while the rest of the team drew the frames in-be**tween** those frames.
+NOTE: "Tween" の語源は手書きのアニメーションから来ています。 チーフイラストレーターが動画の大事なコマだけを描き、残りのつなぎ部分 (be**tween**) はチームの別の担当者が描くのです。
 
-.The different frames of a tween.
+.tween の異なったフレーム。
 image::soccer-tween.png[Soccer Tween]
 
-Enough theory, let's go for an example:
+理屈はこのくらいにして、実際の例を見てみましょう。
 
 [source, as3]
 ----
@@ -83,32 +86,32 @@ tween.animate("scale", 2.0);
 tween.animate("alpha", 0.0);
 ----
 
-This tween describes an animation that moves the `ball` object to `x = 20`, scales it to twice its size and reduces its opacity until it is invisible.
-All those changes will be carried out simultaneously over the course of half a second.
-The start values are simply the current values of the specified properties.
+この tween では　'ボール' の位置が　X＝20 、サイズは倍、透明度は 0 になるように設定されています。
+これらの変化は 0.5 秒をかけて、一斉に進行します。
+それぞれのパラメータのトゥイーン開始時の値は、単純に現在のプロパティ値となります。
 
-This sample showed us that
+この例では以下のような事がわかります。
 
-* you can animate arbitrary properties of an object, and that
-* you can combine multiple animations in one tween object.
+* オブジェクトの任意の値をアニメーションさせる事が可能です。
+* いくつかのアニメーションを１つのオブジェクトにまとめて実行させる事ができます。
 
-Apropos: since scaling, fading and movement are done so frequently, the _Tween_ class provides specific methods for that, too.
-So you can write the following instead:
+ところで、拡大とフェードと移動のアニメーションは、しばしば実行されるので、_Tween_ クラスはそれらに専用のメソッドを用意しています。
+同じ処理は下記のようにも書けます。
 
 [source, as3]
 ----
-tween.moveTo(20, 0); // animate "x" and "y"
-tween.scaleTo(2);    // animate "scale"
-tween.fadeTo(0);     // animate "alpha"
+tween.moveTo(20, 0); // "x" and "y" のアニメーション
+tween.scaleTo(2);    // "scale" のアニメーション
+tween.fadeTo(0);     // "alpha" のアニメーション
 ----
 
-An interesting aspect of tweens is that that you can change the way the animation is executed, e.g. letting it start slow and get faster over time.
-That's done by specifying a transition type.
+tween 処理の面白いところは、アニメーションの実行の方法を変更できると言う事です。例えば、初めはゆっくり動き、だんだん早くなる、と言うような事ができます。
+トランジションのタイプを指定する事で、それが可能です。
 
-.The available transition types. The default, `linear`, was omitted.
+.指定可能なトランジションタイプのうち、デフォルトの `linear` の指定は省略できます。
 image::transitions.png[Transitions]
 
-The following example shows how to specify such a transition and introduces a few more tricks the class is capable of.
+下記の例は、トランジションの指定をどのように行うかと、tween が提供するその他いくつかの機能についてです。
 
 [source, as3]
 ----
@@ -121,16 +124,17 @@ tween.repeatCount = 3; // <4>
 tween.reverse = true;
 tween.nextTween = explode; // <5>
 ----
-<1> Specify the transition via the third constructor argument.
-<2> These callbacks are executed when the tween has started, each frame, or when it has finished, respectively.
-<3> Wait two seconds before starting the animation.
-<4> Repeat the tween three times, optionally in yoyo-style (`reverse`). If you set `repeatCount` to zero, the tween will be repeated indefinitely.
-<5> Specify another tween to start right after this one is complete.
+<1> 3番目の引数でトランジションのタイプを指定します。
+<2> これらのコールバックはそれぞれ、トゥイーンが始まった時、トゥイーン中の毎フレーム、トゥイーン終了後に呼び出されます。
+<3> アニメーションの開始前に2秒間待ちます。
+<4> トゥイーンを 3回繰り返します。オプション指定で行ったり来たりするヨーヨースタイルに設定しています。
+もしも `repeatCount` をゼロに設定した場合は、トゥイーンが永久に繰り返されます。
+<5> 最初のトゥイーンが終了した後に、別のトゥイーン処理を開始します。
 
-We just created and configured a tween -- but nothing is happening yet.
-A tween object _describes_ the animation, but it does not _execute_ it.
+さて、これでトゥイーンの設定を終えたのですが、まだ何も起きません。
+tween オブジェクトはアニメーションを設定しますが、実行はしないのです。
 
-You could do that manually via the tweens `advanceTime` method:
+tween の `advanceTime` メソッドを手動で実行する事で、アニメーションを進める事ができます。
 
 [source, as3]
 ----
@@ -144,11 +148,13 @@ tween.advanceTime(0.25); // -> ball.x =  75
 tween.advanceTime(0.25); // -> ball.x = 100
 ----
 
-Hm, that works, but it's a little cumbersome, isn't it?
-Granted, one could call `advanceTime` in an `ENTER_FRAME` event handler, but still: as soon as you've got more than one animation, it's bound to become tedious.
+上記のやり方で確かに動きますが、しかし、これではちょっと面倒ですよね。
+`ENTER_FRAME` イベントハンドラ内で `advanceTime` を呼ぶこともできますが、それでもやはり、アニメーションの数が増えてくると面倒になってしまうでしょう。
 
-Don't worry: I know just the guy for you.
-He's really good at handling such things.
+心配しないでください。それをなんとかしてくれる"ヤツ"を知っています。
+//原文：Don't worry: I know just the guy for you.
+そのような事の取り扱いに慣れているヤツです。
+//原文：He's really good at handling such things.
 
 === Juggler
 
