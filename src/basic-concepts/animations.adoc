@@ -158,33 +158,34 @@ tween.advanceTime(0.25); // -> ball.x = 100
 
 === Juggler
 
-The juggler accepts and executes any number of animatable objects.
-Like any true artist, it will tenaciously pursue its true passion, which is: continuously calling `advanceTime` on everything you throw at it.
-
-There is always a default juggler available on the active Starling instance.
-The easiest way to execute an animation is through the line below -- just add the animation (tween) to the default juggler and you are done.
+ジャグラー (Juggler）というクラスは、アニメーションするオブジェクトをいくつでも受け取り、アニメーションを再生してくれます。
+実際の曲芸師(ジャグラー)のように、粘り強く情熱を遂行します。つまり、登録されたオブジェクトの `advanceTime` メソッドを呼び出し続けてくれます。
+//原文：Like any true artist, it will tenaciously pursue its true passion, which is: continuously calling `advanceTime` on everything you throw at it.
+Starling インスタンスには、デフォルトで利用できるジャグラーが１つ用意されています。
+アニメーションを実行する最も簡単な方法は、下記の１行です。ただ、アニメーション（トゥイーン) をデフォルトのジャグラーに登録して終わりです。
 
 [source, as3]
 ----
 Starling.juggler.add(tween);
 ----
 
-When the tween has finished, it will be thrown away automatically.
-In many cases, that simple approach will be all you need!
+トゥイーンが終了すると、自動ですぐに登録されたアニメーションは破棄されます。
+たいていの場合、このシンプルな方法で十分であるかと思います。
 
-In other cases, though, you need a little more control.
-Let's say your stage contains a game area where the main action takes place.
-When the user clicks on the pause button, you want to pause the game and show an animated message box, maybe providing an option to return to the menu.
+しかし別のケースでは、もっと細かくコントロールしたい事もあります。
+例えば、ステージ上にメイン処理を行うゲームエリアがあるとします。
+ユーザーがポーズボタンを押した時には、ゲームを停止させて、メッセージボックスをアニメーションとともに表示させ、ゲームに戻るメニューも提供するかもしれません。
+//原文：maybe providing an option to return to the menu.
 
-When that happens, the game should freeze completely: none of its animations should be advanced any longer.
-The problem: the message box itself use some animations, too, so we can't just stop the default juggler.
+この時、ゲーム部分は完全に停止するべきです。内部のアニメーションは進行しません。
+しかし問題は、メッセージボックスもアニメーションを持っているので、デフォルトのジャグラーを停止する事は出来ないという事です。
 
-In such a case, it makes sense to give the game area its own juggler.
-As soon as the exit button is pressed, this juggler should just stop animating anything.
-The game will freeze in its current state, while the message box (which uses the default juggler, or maybe another one) animates just fine.
+そのようなケースでは、ゲームエリアに固有のジャグラーを提供するのが良いでしょう。
+ゲーム停止ボタンを押されるとすぐに、このジャグラーのアニメーション全てを停止しましょう。
+ゲームは現在の状態のまま停止しますが、メッセージボックスのアニメーション（デフォルトのジャグラーか、また別のジャグラーを使っている）は普通に動きます。
 
-When you create a custom juggler, all you have to do is call its `advanceTime` method in every frame.
-I recommend using jugglers the following way:
+カスタムジャグラーを使う場合、その `advanceTime` メソッドを毎フレーム呼んでやります。
+下記のようにジャグラーを制御するのが良いでしょう。
 
 [source, as3]
 ----
@@ -211,27 +212,27 @@ public class GameArea
     }
 }
 ----
-<1> In your Game's root class, listen to `Event.ENTER_FRAME`.
-<2> Advance the `gameArea` only when there is no active message box.
-<3> The _GameArea_ contains its own juggler. It will manage all in-game animations.
-<4> The juggler is advanced in its `advanceTime` method (called by _Game_).
+<1> ゲームのルートクラスで、`Event.ENTER_FRAME` イベントをリッスンします。
+<2> メッセージボックスが存在する際は、`gameArea` のみ進行するようにします。
+<3> _GameArea_ は自身に専用のジャグラーを持っています。ゲーム中のアニメーション全てをそれがまかないます。
+<4> ジャグラーは _Game_ により呼ばれた `advanceTime` メソッド内で、実際に進行されます。
 
-That way, you have neatly separated the animations of the game and the message box.
+このやり方で、ゲームとメッセージボックスのアニメーションを適切に分けることができます。
 
-By the way: the juggler is not restricted to Tweens.
-As soon as a class implements the `IAnimatable` interface, you can add it to the juggler.
-That interface has only one method:
+しかし、ジャグラーが扱うことができるのは、トゥイーンだけではありません。
+`IAnimatable` インターフェースを実装したクラスであれば、なんでもジャグラーに登録できるのです。
+このインターフェースには１つのメソッドしか定義されていません。
 
 [source, as3]
 ----
 function advanceTime(time:Number):void;
 ----
 
-By implementing this method, you could e.g. create a simple MovieClip-class yourself.
-In its `advanceTime` method, it would constantly change the texture that is displayed.
-To start the movie clip, you'd simply add it to a juggler.
+このメソッドを実装する事で、例えば簡単なムビークリップのようなクラスを自身で作る事もできます。
+`advanceTime` メソッド内で、定期的に表示されているテクスチャーを切り替えればいいのです。
+ムービークリップを再生するには、ただジャグラーに登録するでけで良いです。
 
-This leaves one question, though: when and how is an object removed from the juggler?
+さて、ここで疑問が残るかもしれません。いつどのようにしてジャグラーから登録されたオブジェクトが取り除かれるのだろうか、と。
 
 ==== Stopping Animations
 
@@ -267,12 +268,13 @@ Starling.juggler.purge(); // <4>
 Be a little careful with the `purge` method, though: if you call it on the default juggler, another part of your code might suddenly be faced with an aborted animation, bringing the game to a halt.
 I recommend you use `purge` only on your custom jugglers.
 
-==== Automatic Removal
+==== アニメーション登録の自動削除
 
-You might have asked yourself how the _Tween_ class manages to have tweens removed from the juggler automatically once they are completed.
-That's done with the `REMOVE_FROM_JUGGLER` event.
+アニメーションが終了した際に、どのようにして _Tween_ クラスが、ジャグラーからトゥイーンを削除するのか、疑問に思ったかもしれません。
+//原文:You might have asked yourself how the _Tween_ class manages to have tweens removed from the juggler automatically once they are completed.
+これは、`REMOVE_FROM_JUGGLER` イベントを利用して行われています。
 
-Any object that implements `IAnimatable` can dispatch such an event; the juggler listens to those events and will remove the object accordingly.
+`IAnimatable` を実装したオブジェクトは、そのイベントを投げる事ができます。ジャグラーはそのイベントを受け取り、それに応じてそのオブジェクトを登録から削除します。
 
 [source, as3]
 ----
@@ -285,11 +287,11 @@ public class MyAnimation extends EventDispatcher implements IAnimatable
 }
 ----
 
-==== Single-Command Tweens
+==== 複数 Tween を１コマンドで実行する
 
-While the separation between tween and juggler is very powerful, it sometimes just stands in the way, forcing you to write a lot of code for simple tasks.
-That's why there is a convenience method on the juggler that allows you to create and execute a tween with a single command.
-Here's a sample:
+ジャグラーとトゥイーンが分離されている事はとてもパワフルですが、簡単なアニメーションの登録にたくさんのコードを記述しなくてはいけない状況になる事があるでしょう。
+これが、ジャグラー側に１コマンドでトゥイーンを実行する便利なメソッドが用意されている理由です。
+下記がサンプルです。
 
 [source, as3]
 ----
@@ -301,9 +303,9 @@ juggler.tween(msgBox, 0.5, {
 });
 ----
 
-This will create a tween for the `msgBox` object with a duration of 0.5 seconds, animating both the `x` and `rotation` properties.
-As you can see, the `{}`-parameter is used to list all the properties you want to animate, as well as the properties of the Tween itself.
-A huge time-saver!
+このコードでは、`msgBox` オブジェクトにトゥイーンを設定しています。0.5秒間で `x` 及び `rotation` を変更するものです。
+トゥイーン自体のプロパティと同じように、`{}` パラメータでオブジェクトにアニメーションさせたい項目が並んでいる事がわかるかと思います。
+時間を節約する事ができますね。
 
 === Delayed Calls
 
@@ -361,11 +363,13 @@ juggler.removeByID(animID);
 juggler.removeDelayedCalls(gameOver);
 ----
 
-=== Movie Clips
+=== ムービークリップ
 
-You might have noticed the _MovieClip_ class already when we looked at the class diagram surrounding _Mesh_.
-That's right: a _MovieClip_ is actually just a subclass of _Image_ that changes its texture over time.
-Think of it as Starling's equivalent of an animated GIF!
+すでに _Mesh_ 周辺のクラス図を見た際に、_MovieClip_ クラスの存在に気づいたかもしれません。
+//原文：You might have noticed the _MovieClip_ class already when we looked at the class diagram surrounding _Mesh_.
+実際、_MovieClip_ は _Image_ のサブクラスで、そのテクスチャーを時間経過毎に変更するだけの物です。
+//原文：That's right: a _MovieClip_ is actually just a subclass of _Image_ that changes its texture over time.
+Starling 上でのアニメーションGIFだと理解しましょう。
 
 ==== Acquiring Textures
 
