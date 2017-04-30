@@ -371,14 +371,16 @@ juggler.removeDelayedCalls(gameOver);
 //原文：That's right: a _MovieClip_ is actually just a subclass of _Image_ that changes its texture over time.
 Starling 上でのアニメーションGIFだと理解しましょう。
 
-==== Acquiring Textures
+==== テクスチャーの獲得
+//原文：Acquiring Textures
 
-It is recommended that all frames of your movie clip are from one texture atlas, and that all of them have the same size (if they have not, they will be stretched to the size of the first frame).
-You can use tools like _Adobe Animate_ to create such an animation; it can export directly to Starling's texture atlas format.
+ムービークリップのすべての画像は１枚のアトラスから読み込まれる事が推奨されます。そしてそれらはすべて同じ大きさである必要があります。
+（もし同じサイズでない場合、１コマ目のサイズに変形されます。）
+_Adobe Animate_ のようなツールを使って、そのようなアニメーションを用意する事ができます。Animate からは直接 Starling 用のテクスチャーアトラスデータを書き出す事ができます。
 
-This is a sample of a texture atlas that contains the frames of a movie clip.
-First, look at the XML with the frame coordinates.
-Note that each frame starts with the prefix `flight_`.
+下記は、ムービークリップ用のフレームを持つテクスチャーアトラスデータのサンプルです。
+まずはXML内のフレーム座標設定を確認しましょう。
+どのフレームも `flight_` の名前で始まる事に注目してください。
 
 [source, xml]
 ----
@@ -391,15 +393,16 @@ Note that each frame starts with the prefix `flight_`.
 </TextureAtlas>
 ----
 
-Here is the corresponding texture:
+下記が対応するテクスチャです。
 
-.The frames of our MovieClip.
+.ムービークリップの各フレーム。
 image::flight-animation.png[Flight Animation]
 
-==== Creating the MovieClip
+==== ムービークリップの作成
 
-Now let's create the MovieClip.
-Supposing that the `atlas` variable points to a _TextureAtlas_ containing all our frames, that's really easy.
+さあ、ムービークリップを作成しましょう。
+下記の atlas 変数がすべてのフレームを含む _TextureAtlas_ の参照であるならば、話はとても簡単です。
+//原文：Supposing that the `atlas` variable points to a _TextureAtlas_ containing all our frames, that's really easy.
 
 [source, as3]
 ----
@@ -413,29 +416,34 @@ movie.stop();
 
 Starling.juggler.add(movie); // <4>
 ----
-<1> The `getTextures` method returns all textures starting with a given prefix, sorted alphabetically.
-<2> That's ideal for our _MovieClip_, because we can pass those textures right to its constructor. The second parameter depicts how many frames will be played back per second.
-<3> Those are the methods controlling playback of the clip. It will be in "play" mode per default.
-<4> Important: just like any other animation in Starling, the movie clip needs to be added to the juggler!
+<1> `getTextures` メソッドは与えられた接頭語で始まるすべてのテクスチャーをABC順で返します。
+<2> これだけでOKです。上記のテクスチャー一覧をコンストラクタに渡します。
+//原文：That's ideal for our _MovieClip_, because we can pass those textures right to its constructor. 
+２番目のパラメータは１秒間に何回描画更新がかかるかを示します。
+<3> ムービークリップの再生状態をコントロールするメソッドがいくつか存在します。デフォルトでは再生している状態から始まります。
+<4> Important: 他の Starling 上のアニメーションと同じように、ムービークリップもジャグラーに登録される必要があります！
 
-Did you notice how we referenced the textures from the atlas by their prefix `flight_`?
-That allows you to create a mixed atlas that contains other movie clips and textures, as well.
-To group the frames of one clip together, you simply use the same prefix for all of them.
+接頭語の `flight_` を使ってどのようにテクスチャアトラスからテクスチャーの一覧を参照したか、わかったでしょうか？
+このやり方では、アトラスにムービークリップ以外の画像を含ませる事も可能になります。
+一つのムービークリップのフレームをグループ化する為に、それぞれで同じ接頭語を持たせるわけです。
 
-The class also supports executing a sound or an arbitrary callback whenever a certain frame is reached.
-Be sure to check out its API reference to see what's possible!
+ムービークリップには、サウンドや任意の処理を実行するため、あるフレームが再生された際に実行されるコールバックを仕込む事ができます。
+APIリファレンスを確認して、何ができるのか把握しましょう！
 
-==== More Complex Movies
+==== さらに複雑なアニメーション
 
-A downside of this animation technique has to be mentioned, though: you will run out of texture memory if your animations are either very long or if the individual frames are very big.
-If your animations take up several big texture atlases, they might not fit into memory.
+このアニメーションの仕組みの悪い面も伝えなくてはいけません。
+//原文：A downside of this animation technique has to be mentioned, though:
+もしもアニメーションの尺が長かったり、各フレームの画像が大きい場合、テクスチャーメモリーが足りなくなってしまう場合があるという事です。
+アニメーションが複数の大きなテクスチャアトラスにまたがっている場合、メモリに収まらないでしょう。
+//原文：If your animations take up several big texture atlases, they might not fit into memory.
 
-For these kinds of animations, you need to switch to a more elaborate solution: skeletal animation.
-This means that a character is split up into different parts (bones); those parts are then animated separately (according to the character's skeleton).
-This is extremely flexible.
+そのようなタイプのアニメーションには、もっと手の込んだ作りの仕組みに切り替えましょう。それが、スケルタル（ボーン）アニメーションです。
+そこでは、キャラクターはいくつかのパーツ（ボーン）に分解され、それぞれが別々にアニメーション制御されます。（そのキャラクターの骨格によります。）
+これはとても柔軟な方法です。
 
-Support for such animations isn't part of Starling itself, but there are several other tools and libraries coming to the rescue.
-All of the following work really well with Starling:
+そのようなアニメーション機能は Starling に含まれていません。しかし、いくつかの外部ツール・ライブラリが役立ちます。
+下記のリストにあるソリューションはそれぞれ Starling とともに、とてもうまく動きます。
 
 * http://esotericsoftware.com/[Spine]
 * https://github.com/threerings/flump[Flump]
