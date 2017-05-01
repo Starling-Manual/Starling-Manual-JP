@@ -61,7 +61,7 @@ image::handbook-mockup.jpg[The Starling Handbook, 250]
 ステップ・バイ・ステップで記述されたチュートリアルは、ゲーム開発の最初から最後までの手助けとなるでしょう。
 
 * 本について詳しくは http://gamua.com/blog/2016/09/the-starling-handbook/[Gamua ブログ] を参照してください。
-* 本の http://bit.ly/2dfNIQF[お試しプレビュー] がダウンロード可能です。
+* 本の http://bit.ly/2dfNIQF[お試しプレビュー版] がダウンロード可能です。
 * ここに http://eepurl.com/chQGpD[サインアップ] すれば、本が完成した際のお知らせを受ける事ができます！
 ====
 
