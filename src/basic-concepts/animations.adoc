@@ -234,12 +234,12 @@ function advanceTime(time:Number):void;
 
 さて、ここで疑問が残るかもしれません。いつどのようにしてジャグラーから登録されたオブジェクトが取り除かれるのだろうか、と。
 
-==== Stopping Animations
+==== アニメーションの停止
 
-When a tween finishes, it is removed from the juggler automatically.
-If you want to abort the animation before it is finished, you simply remove it from the juggler.
+トゥイーンが終了した際、ジャグラーからは自動的に登録が取り除かれます。
+もしもアニメーションを途中で中断したい場合は、ジャグラーからシンプルに取り除いてください。
 
-Let's say you just created a tween that animates a ball and added it to the default juggler:
+ボールをアニメーションさせるトゥイーンを作成して、ジャグラーに登録したとします。
 
 [source, as3]
 ----
@@ -248,8 +248,8 @@ tween.moveTo(x, y);
 Starling.juggler.add(tween);
 ----
 
-There are several ways you can abort that animation.
-Depending on the circumstances, simply pick the one that suits your game logic best.
+このアニメーションを中断させる方法はいくつか存在します。
+状況に応じてゲームの実装に一番適した方法を選んでください。
 
 [source, as3]
 ----
@@ -260,13 +260,14 @@ Starling.juggler.removeTweens(ball); // <2>
 Starling.juggler.removeByID(animID); // <3>
 Starling.juggler.purge(); // <4>
 ----
-<1> Remove the tween directly. This works with any `IAnimatable` object.
-<2> Remove all tweens that affect the ball. Only works for tweens!
-<3> Remove the tween by its ID. Useful when you don't have access to the _Tween_ instance.
-<4> If you want to abort everything, purge the juggler.
+<1> トゥイーンを直接削除します。この方法は、どんな `IAnimatable` に対しても有効です。
+<2> ボールに影響するすべてのトゥイーンを削除します。これはトゥイーンだけに有効です。
+<3> ID指定でトゥイーンを削除します。_Tween_ インスタンスへアクセスできないような場合に有効です。
+<4> すべてを停止したい場合は、ジャグラーを purge します。
 
-Be a little careful with the `purge` method, though: if you call it on the default juggler, another part of your code might suddenly be faced with an aborted animation, bringing the game to a halt.
-I recommend you use `purge` only on your custom jugglers.
+`purge` メソッドに関しては若干の注意をはらってください。
+デフォルトのジャグラーに対してこのメソッドを実行した場合、別の場所のアニメーションが停止してしまい、ゲーム自体が停止してしまうかもしれません。
+`purge` メソッドを使うのは、カスタムジャグラーだけにする事を推奨します。
 
 ==== アニメーション登録の自動削除
 
@@ -307,40 +308,40 @@ juggler.tween(msgBox, 0.5, {
 トゥイーン自体のプロパティと同じように、`{}` パラメータでオブジェクトにアニメーションさせたい項目が並んでいる事がわかるかと思います。
 時間を節約する事ができますね。
 
-=== Delayed Calls
+=== 遅延実行
 
-Technically, we have now covered all the animation types Starling supports.
-However, there's actually another concept that's deeply connected to this topic.
+技術的な面では、Starling がサポートするすべてのアニメーションをカバーし終えました。
+しかし、このトピックに深く関係する、また別のコンセプトを持つ機能があります。
 
-Remember _Einstein_, our dog-hero who introduced us to the event system?
-The last time we saw him, he had just lost all his health points and was about to call `gameOver`.
-But wait: don't call that method immediately -- that would end the game too abruptly.
-Instead, call it with a delay of, say, two seconds (time enough for the player to realize the drama that is unfolding).
+_Einstein_ (犬のキャラです) が、イベントシステムを紹介した事を覚えていますか？
+彼を最後に見た際は、ライフゲージが０であり、ゲームオーバーがコールされる直前でした。
+しかし待ってください。すぐにゲームオーバーメソッドを実行しないで欲しいのです。それでは唐突にゲームが終わってしまいます。
+代わりに、そうですね、２秒ほど後に実行してください。（プレイヤーが自体が変化した事を把握するのに十分な時間です。）
+//原文：(time enough for the player to realize the drama that is unfolding).
 
-To implement that delay, you could use a native _Timer_ or the `setTimeout`-method.
-However, you can also use the juggler, and that has a huge advantage: you remain in full control.
+この遅延を実装するには、ネイティブの _Timer_ か `setTimeout` メソッドを使うことができます。
+しかし、ここでジャグラーを利用する事もできます。そしてその方が、全てを制御する事ができるという大きな利点があります。
 
-It becomes obvious when you imagine that the player hits the "Pause" button right now, before those two seconds have passed.
-In that case, you not only want to stop the game area from animating; you want this delayed `gameOver` call to be delayed even more.
+プレイヤーがその２秒が経たたないうちにポーズボタンを押してしまような場合を考えると、その利点が明らかになるでしょう。
+その場合は、ゲームエリアのアニメーションを一時的に止めるだけでなく、この `gameOver` 呼び出しのタイミングも一時停止させておきたいはずです。
 
-To do that, make a call like the following:
+そのためには、下記のように処理を実行しましょう。
 
 [source, as3]
 ----
 juggler.delayCall(gameOver, 2);
 ----
 
-The `gameOver` function will be called two seconds from now (or longer if the juggler is disrupted).
-It's also possible to pass some arguments to that method.
-Want to dispatch an event instead?
+`gameOver` 関数は今から２秒後（もしジャグラーが一時停止されていればもっと後に）に実行されます。
+このメソッドには引数を渡す事も可能です。代わりにイベントを実行したいでしょうか。
 
 [source, as3]
 ----
 juggler.delayCall(dispatchEventWith, 2, "gameOver");
 ----
 
-Another handy way to use delayed calls is to perform periodic actions.
-Imagine you want to spawn a new enemy once every three seconds.
+delayed コールを使う別の便利な方法は、繰り返しの処理実行を行う事です。
+３秒に１回敵キャラクターを生み出す事を考えてみてださい。
 
 [source, as3]
 ----
@@ -349,11 +350,11 @@ juggler.repeatCall(spawnEnemy, 3);
 
 [NOTE]
 ====
-Behind the scenes, both `delayCall` and `repeatCall` create an object of type _DelayedCall_.
-Just like the `juggler.tween` method is a shortcut for using tweens, those methods are shortcuts for creating delayed calls.
+処理の裏側では、`delayCall` も `repeatCall` も _DelayedCall_ というタイプのオブジェクトを生成します。
+`juggler.tween` メソッドが、トゥイーンを簡単に実行するためのメソッドだったのと同じように、それら２つのメソッドも delayed コール を作成するためのショートカットなのです。
 ====
 
-To abort a delayed call, use one of the following methods:
+遅れて処理が実行されるのを避けるには、下記のうちどちらかのメソッドを実行してください。
 
 [source, as3]
 ----
