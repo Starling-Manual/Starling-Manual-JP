@@ -1,10 +1,14 @@
-== Display Programming
+== ディスプレイオブジェクト　プログラミング
+//原文:Display Programming
 ifndef::imagesdir[:imagesdir: ../../img]
 
-With all the setup procedures out of the way, we can start to actually put some content onto the screen!
+すべての準備が整ったので、画面上に何か表示してみましょう。
+//原文：we can start to actually put some content onto the screen!
 
-In every application you create, one of your main tasks will be to split it up into a number of logical units.
-More often than not, those units will have a visual representation.
+どんなアプリケーションを作成する際でも、メインのタスクはアプリケーションをたくさんのユニットに分割する事になるでしょう。
+//原文：In every application you create one of your main tasks will be to split it up into a number of logical units.
+大抵の場合、それらのユニットは見た目を持ちます。
+つまり、それぞれのユニットは _ディスプレイオブジェクト_ になる事が多い、と言えます。
 In other words: each unit will be a _display object_.
 
 === Display Objects
