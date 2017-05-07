@@ -1,4 +1,4 @@
-== ディスプレイオブジェクト　プログラミング
+== 表示に関するプログラミング
 //原文:Display Programming
 ifndef::imagesdir[:imagesdir: ../../img]
 
@@ -9,32 +9,33 @@ ifndef::imagesdir[:imagesdir: ../../img]
 //原文：In every application you create one of your main tasks will be to split it up into a number of logical units.
 大抵の場合、それらのユニットは見た目を持ちます。
 つまり、それぞれのユニットは _ディスプレイオブジェクト_ になる事が多い、と言えます。
-In other words: each unit will be a _display object_.
 
-=== Display Objects
+=== ディスプレイオブジェクト
 
-All elements that appear on screen are types of display objects.
-The `starling.display` package includes the abstract _DisplayObject_ class; it provides the basis for a number of different types of display objects, such as images, movie clips, and text fields, to name just a few.
+画面上に表示されている構成要素は全てがディスプレイオブジェクトです。
+`starling.display` パッケージには _DisplayObject_ という抽象クラスが存在します。
+このクラスはたくさんの種類のディスプレイオブジェクトに対して基本的な機能を提供します。
+いくつか具体的にあげるとイメージ、ムービークリップ、テキストフィールドなどです。
 
-The _DisplayObject_ class provides the methods and properties that all display objects share.
-For example, the following properties are used to configure an object's location on the screen:
+_DisplayObject_ クラスはすべてのディスプレイオブジェクトが保持するメソッドとプロパティを提供します。
+例えば、下記のプロパティは画面上のオブジェクトの位置を調整するものです。
 
-* `x`, `y`: the position in the current coordinate system.
-* `width`, `height`: the size of the object (in points).
-* `scaleX`, `scaleY`: another way to look at the object size; `1.0` means unscaled, `2.0` doubles the size, etc.
-* `rotation`: the object's rotation around its origin (in radians).
-* `skewX`, `skewY`: horizontal and vertical skew (in radians).
+* `x`, `y`: 現在の座標系での位置を表します。
+* `width`, `height`: オブジェクトの大きさです。 (単位はポイント)
+* `scaleX`, `scaleY`: オブジェクトの大きさを表す別の方法です。`1.0` は変化なし、`2.0` は倍の大きさである、など。
+* `rotation`: 元々の位置からの回転角度です。(単位はラジアン).
+* `skewX`, `skewY`: 水平及び垂直方向への skew(傾き) 値です。 (単位はラジアン).
 
-Other properties modify the way the pixels appear on the screen:
+その他のプロパティは、画面上のピクセル表示を変更します。
 
-* `blendMode`: determines how the object's pixels are blended with those underneath.
-* `filter`: special GPU programs (shaders) that modify the look of the object. Filters can e.g. blur the object or add a drop shadow.
-* `mask`: masks cut away all parts that are outside a certain area.
-* `alpha`: the opacity of the object, from `0` (invisible) to `1` (fully opaque).
-* `visible`: if false, the object is hidden completely.
+* `blendMode`: ピクセルが背面の描画内容とどのようにブレンドされるかを設定します。
+* `filter`: 特別な GPU プログラム（シェーダー）でオブジェクトの見た目を装飾します。例えば、ぼけや影の効果を与えることなどが可能です。
+* `mask`: ある設定されたエリア外の表示をカットします。
+* `alpha`: オブジェクトの透明度です。`0` (非表示)から` 1`（完全に不透明) までの値をとります。
+* `visible`: 値が false の場合、完全にオブジェクトの表示が隠れます。
 
-Those are the basics that every display object must support.
-Let's look at the class hierarchy around this area of Starling's API:
+これらはどのディスプレイオブジェクトもサポートしなくてはならない基本機能となります。
+この周辺の Starling's API クラス継承図を見てみましょう。
 
 [plantuml, class-hierarchy]
 ....
@@ -54,16 +55,16 @@ Quad <|-- Image
 Image <|-- MovieClip
 ....
 
-You'll notice that the diagram is split up in two main sub-branches.
-On the one side, there are a couple of classes that extend `Mesh`: `Quad`, `Image`, and `MovieClip`.
+ツリーが主に大きく２つに枝分かれしている事に気づいたでしょうか。
+片方のツリーでは、`Mesh` を継承した `Quad`、`Image`、`MovieClip` などが並びます。
 
-Meshes are a fundamental part of Starling's rendering architecture.
-Everything that is drawn to the screen is a mesh, actually!
-_Stage3D_ cannot draw anything but triangles, and a mesh is nothing else than a list of points that spawn up triangles.
+Meshes は、Starling のレンダリングのアーキテクチャーの基本的な部分です。
+実際、画面上に描画された全てはメッシュなのです！
+_Stage3D_ は三角ポリゴン以外を画面に描画できないのです。そして、メッシュは三角ポリゴンを作り出すためのポイント(点)の集まり以外の何物でもありません。
 
-On the other side, you'll find a couple of classes that extend _DisplayObjectContainer_.
-As its name suggests, this class acts as a container for other display objects.
-It makes it possible to organize display objects into a logical system -- the _display list_.
+一方で、_DisplayObjectContainer_ を継承したいくつかのクラスにも気づいたでしょうか。
+文字通り、このクラスは他のディスプレイオブジェクトのコンテナーとして振舞います。
+このクラスにより、ディスプレイオブジェクトをまとめて管理する事ができるようになる、"ディスプレイリスト" という,システムを作り出すのです。
 
 === The Display List
 
