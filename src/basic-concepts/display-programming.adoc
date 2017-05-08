@@ -64,48 +64,51 @@ _Stage3D_ は三角ポリゴン以外を画面に描画できないのです。�
 
 一方で、_DisplayObjectContainer_ を継承したいくつかのクラスにも気づいたでしょうか。
 文字通り、このクラスは他のディスプレイオブジェクトのコンテナーとして振舞います。
-このクラスにより、ディスプレイオブジェクトをまとめて管理する事ができるようになる、"ディスプレイリスト" という,システムを作り出すのです。
+このクラスにより、ディスプレイオブジェクトをまとめて管理する事ができるようになる、"ディスプレイリスト" というシステムを作り出すのです。
 
-=== The Display List
+=== ディスプレイリスト
 
-The hierarchy of all display objects that will be rendered is called the _display list_.
-The _Stage_ makes up the root of the display list.
-Think of it as the literal "stage": your users (the audience) will only see objects (actors) that have entered the stage.
-When you start Starling, the stage will be created automatically for you.
-Everything that's connected to the stage (directly or indirectly) will be rendered.
+描画されるディスプレイオブジェクトのヒエラルキー構造を _display list_ と呼びます。
+_Stage_ はディスプレイリストのルートです。
 
-When I say "connected to", I mean that there needs to be a _parent-child_ relationship.
-To make an object appear on the screen, you make it the child of the stage, or any other _DisplayObjectContainer_ that's connected to the stage.
+文字通りそれを"ステージ"だと考えてみましょう。ユーザー（観客）はステージに登場したオブジェクト（俳優）だけを見る事ができます。
+Starling を開始した時、自動的にステージが作成されます。
+ステージに関連した全て（それが直接であれ間接であれ）が描画されます。
 
-.Display objects are organized in the display list.
+"関連した" と言いましたが、これは親子関係がある、という意味です。
+画面上にオブジェクトを表示させるには、ステージの子とするとか、ステージに関連する _DisplayObjectContainer_ の子とする必要があります。
+
+.ディスプレイオブジェクトがディスプレイリストに属しています。
 image::display-list.png[Display List, 350]
 
-The first (and, typically: only) child of the stage is the _application root_: that's the class you pass to the Starling constructor.
-Just like the stage, it's probably going to be a _DisplayObjectContainer_.
-That's where you take over!
+最初の（そして通常唯一の）ステージの子は _application root_ です。
+これは、Starling のコンストラクタに引数として渡したクラスです。
+ステージと同じように、これもまた _DisplayObjectContainer_ となります。
+大元の継承元であるわけです。
+//原文：That's where you take over!
 
-You will create containers, which in turn will contain other containers, and meshes (e.g. images).
-In the display list, those meshes make up the _leaves_: they cannot have any child objects.
+いくつかコンテナ要素を作ることになるでしょうが、またそれはコンテナ要素を子として持つ事ができます。そして image のようなメッシュも子として持つ事ができます。
+ディスプレイリストでは、それらのメッシュ要素は葉要素となります。子を持てない要素です。
 
-Since all of this sounds very abstract, let's look at a concrete example: a speech bubble.
-To create speech bubble, you will need an image (for the bubble), and some text (for its contents).
+話が抽象的すぎたかもしれないので、ここで実際の例を見てみましょう。漫画の "ふきだし" を例とします。
+ふきだしを作るには、背景となる画像と内容としてテキストが必要となるでしょう。
 
-Those two objects should act as one: when moved, both image and text should follow along.
-The same applies for changes in size, scaling, rotation, etc.
-That can be achieved by grouping those objects inside a very lightweight _DisplayObjectContainer_: the _Sprite_.
+これら２つのオブジェクトは、一体となって働きます。移動する際は、画像とテキストが一緒に移動するべきです。
+サイズの変更、拡大縮小、回転などの際も同じ事が言えます。
+これは、とても軽量な _DisplayObjectContainer_ の実装である _Sprite_ に２つのオブジェクトをグルーピングさせる事で実現できます。
 
 [NOTE]
-.DisplayObjectContainer vs. Sprite
+.DisplayObjectContainer と Sprite
 ====
-_DisplayObjectContainer_ and _Sprite_ can be used almost synonymously.
-The only difference between those two classes is that one (_DisplayObjectContainer_) is abstract, while the other (_Sprite_) is not.
-Thus, you can use a _Sprite_ to group objects together without the need of a subclass.
-The other advantage of _Sprite_: it's just much faster to type.
-Typically, that's the main reason why I'm preferring it.
-Like most programmers, I'm a lazy person!
+_DisplayObjectContainer_ と _Sprite_ はほとんど同じように利用されます。
+２つのクラスのたった一つの違いは、片方 (_DisplayObjectContainer_) は抽象クラスで、(_Sprite_) がそうではない、という事です。
+したがって、他のサブクラスなしで、_Sprite_ によってオブジェクトをグループにまとめる事ができます。
+_Sprite_ の別の優位な点、それは、タイピングするのが早いという事です。
+概して、私が _Sprite_ を好む主な理由もそれなのです。
+他の大抵のプログラマと同じように、私も怠惰な人間なのですから！
 ====
 
-So, to group text and image together, you create a sprite and add text and image as _children_:
+テキストとイメージをグループ化するために、Sprite を作成して、画像とテキストを子として登録したと思います。
 
 [source, as3]
 ----
@@ -115,17 +118,17 @@ var textField:TextField = new TextField(200, 50, "Ay caramba!");
 sprite.addChild(image); // <2>
 sprite.addChild(textField); // <3>
 ----
-<1> Create a sprite.
-<2> Add an _Image_ to the sprite.
-<3> Add a _TextField_ to the sprite.
+<1> sprite を作成します。
+<2> _Image_ を  sprite に追加します。
+<3> _TextField_ を sprite に追加します。
 
-The order in which you add the children is important -- they are placed like layers on top of each other.
-Here, `textField` will appear in front of `image`.
+子を追加する順番は重要です。レイヤーのようにお互いの上に配置されていきます。
+ここでは、`textField` が `image` の前に配置されます。
 
-.A speech bubble, made up by an image and a TextField.
+.ふきだしは、画像とテキストで構成されます。
 image::speech-bubble.png[Speech Bubble, 600]
 
-Now that those objects are grouped together, you can work with the sprite just as if it was just one object.
+オブジェクトのグループ化はできたので、１つのオブジェクトとしてスプライトを扱う事ができます。
 
 [source, as3]
 ----
@@ -134,12 +137,12 @@ var totalWidth:Number = sprite.width; // <2>
 sprite.x += 50; // <3>
 sprite.rotation = deg2rad(90); // <4>
 ----
-<1> Query the number of children. Here, the result will be `2`.
-<2> `width` and `height` take into account the sizes and positions of the children.
-<3> Move everything 50 points to the right.
-<4> Rotate the group by 90 degrees (Starling always uses radians).
+<1> 子の数を取得するとここでは `2` が返ってきます。
+<2> `width` と `height` は、子要素の大きさや位置を計算に入れて求められます。
+<3> 全てを 50 ポイント右に移動します。
+<4> グループを 90度回転します。 (Starling では単位に radian を使います。)
 
-In fact, _DisplayObjectContainer_ defines many methods that help you manipulate its children:
+実際、_DisplayObjectContainer_ は子要素を操作するのに役立つたくさんのメソッドを持っています。
 
 [source, as3]
 ----
