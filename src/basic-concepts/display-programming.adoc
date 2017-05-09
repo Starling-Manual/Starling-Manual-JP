@@ -157,44 +157,44 @@ function swapChildren(child1:DisplayObject, child2:DisplayObject):void;
 function swapChildrenAt(index1:int, index2:int):void;
 ----
 
-=== Coordinate Systems
+=== 座標系
 
-Every display object has its own coordinate system.
-The `x` and `y` properties, for example, are not given in screen coordinates: they are always depending on the current coordinate system.
-That coordinate system, in turn, is depending on your position within the display list hierarchy.
+全てのディスプレイオブジェクトはそれぞれが固有の座標系を持っています。
+例えば、`x` と `y` プロパティはスクリーン座標系での値ではありません。それらの値がいくつになるのかはいつでも現在の座標系によります。
+そしてその座標系がどのようであるのかは、デイスプレイリストヒエラルキーのどこに現在のポジションがあるのかによります。
 
-To visualize this, imagine pinning sheets of paper onto a pinboard.
-Each sheet represents a coordinate system with a horizontal x-axis and a vertical y-axis.
-The position you stick the pin through is the root of the coordinate system.
+これを見た目として理解するには、コルクボードにペーパーシートをピン留する事を想像するといいでしょう。
+どのシートも水平のX座標と垂直のY座標をもつ座標系を表します。
+ピンが貫通して突き刺している場所が座標系の中心となります。
 
-.Coordinate systems act like the sheets on a pinboard.
+.座標系はコルクボード状のシートのように振る舞います。
 image::coordinate-systems.png[Coordinage Systems]
 
-Now, when you rotate the sheet of paper, everything that is drawn onto it (e.g. image and text) will rotate with it -- as do the x- and y-axes.
-However, the root of the coordinate system (the pin) stays where it is.
+シートを回転した際は、そのシート上に書かれた全ての内容（イメージやテキスト）も一緒に回転します。X座標とY座標も同様に回転します。
+しかし、座標系の中心は元の場所をキープしたままです。
 
-The position of the pin therefore represents the point the x- and y-coordinates of the sheet are pointing at, relative to the parent coordinate system (= the pin-board).
+よって、ピンのポジションはシートのX座標及びY座標の原点が示す、親の座標系（＝コルクボード）での場所を表します。
+//原文難しい。。:The position of the pin therefore represents the point the x- and y-coordinates of the sheet are pointing at, 
+//relative to the parent coordinate system (= the pin-board).
 
-Keep the analogy with the pin-board in mind when you create your display hierarchy.
-This is a very important concept you need to understand when working with Starling.
+ディスプレイオブジェクトの階層構造を作成するときは、頭の中にこのコルクボードの比喩を思い起こしましょう。
+Starling を扱う際には理解しておかなくてはいけないとても大事なコンセプトです。
 
-=== Custom Display Objects
+=== カスタムディスプレイオブジェクト
 
-I mentioned this already: when you create an application, you split it up into logical parts.
-A simple game of chess might contain the board, the pieces, a pause button and a message box.
-All those elements will be displayed on the screen -- thus, each will be represented by a class derived from _DisplayObject_.
+すでに述べましたが、アプリケーションを作る際に細かいロジック状のパーツに分ける事を行うかと思います。
+簡単なチェスゲームを作る場合、盤とピースとポーズボタンとメッセージボックスが用意されるでしょう。
+これらの構成要素は全てが画面上に表示されます。したがって、それぞれが _DisplayObject_ から派生するクラスで表されます。
+シンプルなメッセージボックスのサンプルを見てみましょう。
 
-Take a simple message box as an example.
-
-.A game's message box.
+.ゲームのメッセージボックス。
 image::msgbox.png[Message Box]
 
-That's actually quite similar to the speech bubble we just created; in addition to the background image and text, it also contains two buttons.
+実際メッセージボックスは、ふきだしの例とほとんど同じです。背景画像とテキストに加えて、２つのボタンも保持しています。
+今回は、ただスプライトにオブジェクトをグループ化するだけでなく、実装を適切なクラスにカプセル化したく思います。
 
-This time, instead of just grouping the object together in a sprite, we want to encapsulate it into a convenient class that hides any implementation details.
-
-To achieve this, we create a new class that inherits from _DisplayObjectContainer_.
-In its constructor, we create everything that makes up the message box:
+これをするためには、_DisplayObjectContainer_ を継承した新しいクラスを作成しましょう。
+このコンスタラクタの中で、メッセージボックスを構成する全てのパーツを作成してしまいましょう。
 
 [source, as3]
 ----
@@ -234,8 +234,8 @@ public class MessageBox extends DisplayObjectContainer
 }
 ----
 
-Now you have a simple class that contains a background image, two buttons and some text.
-To use it, just create an instance of _MessageBox_ and add it to the display tree:
+背景画像と２つのボタンとテキストを含むシンプルなクラスが出来上がりました。
+これを利用するには、単に _MessageBox_ のインスタンスを作成して、ディスプレイツリーに追加しましょう。
 
 [source, as3]
 ----
@@ -243,15 +243,18 @@ var msgBox:MessageBox = new MessageBox("Really exit?");
 addChild(msgBox);
 ----
 
-You can add additional methods to the class (like `fadeIn` and `fadeOut`), and code that is triggered when the user clicks one of those buttons.
-This is done using Starling's event mechanism, which is shown in a later chapter.
+追加のメソッドをクラスに追加する事もできます。( 例えば、`fadeIn`、`fadeOut` など。)
+そして、ユーザがボタンのうち一つをクリックした際に動作するコードを書く事もできます。
+//原文：You can add additional methods to the class (like `fadeIn` and `fadeOut`), and code that is triggered when the user clicks one of those buttons.
+これは、Starling のイベントメカニズムを用いて実装する事が可能です。（イベントについてはのちのチャプターで解説します。）
 
-=== Disposing Display Objects
+=== ディスプレイオブジェクトの廃棄
 
-When you don't want an object to be displayed any longer, you simply remove it from its parent, e.g. by calling `removeFromParent()`.
-The object will still be around, of course, and you can add it to another display object, if you want.
-Oftentimes, however, the object has outlived its usefulness.
-In that case, it's a good practice to dispose it.
+もうオブジェクトを表示する必要がなくなった場合、親からそのオブジェクトを取り除きましょう。例えば、`removeFromParent()` を呼び出せば良いです。
+オブジェクト自体はまだ存在するので、もし必要なら別のディスプレイオブジェクトの子として追加する事もできます。
+しかし、すでにそのオブジェクトが必要なくなっている事も多いでしょう。
+//原文：Oftentimes, however, the object has outlived its usefulness.
+そうであれば、それを廃棄するのが良い習慣です。
 
 [source, as3]
 ----
@@ -259,19 +262,19 @@ msgBox.removeFromParent();
 msgBox.dispose();
 ----
 
-When you dispose display objects, they will free up all the resources that they (or any of their children) have allocated.
-That's important, because many _Stage3D_ related data is not reachable by the garbage collector.
-When you don't dispose that data, it will stay in memory, which means that the app will sooner or later run out of resources and crash.
+ディスプレイオブジェクトを廃棄 (dispose) した場合、そのオブジェクト、またはその子孫オブジェクトは、保持していた全てのリソースを廃棄します。
+これはとても重要です。なぜなら、多くの _Stage3D_ に関連したデータは、ガベージコレクターの範疇にないものだからです。
+もしもデータを破棄しない場合はそれがメモリに居座り続け、アプリケーションは遅かれ早かれリソース不足になりクラッシュしてしまうでしょう。
 
-To make things easier, `removeFromParent()` optionally accepts a Boolean parameter to dispose the DisplayObject that is being removed.
-That way, the code from above can be simplified to this single line:
+作業を楽にするため、`removeFromParent()` は任意の Boolean型のパラメータを受け付け、取り除こうとしているデイスプレイオブジェクトを自動で破棄する指定ができるようになっています。
+よって、上記のコードは１行にシンプルにまとめる事ができます。
 
 [source, as3]
 ----
 msgBox.removeFromParent(true);
 ----
 
-=== Pivot Points
+=== 中心点
 
 Pivot Points are a feature you won't find in the traditional display list.
 In Starling, display objects contain two additional properties: `pivotX` and `pivotY`.
@@ -343,7 +346,8 @@ image.rotation = deg2rad(45);
 
 That code rotates the object around the bottom right corner of the image.
 
-==== Gotchas
+==== その他
+//原文：==== Gotchas
 
 Be careful: the pivot point is always given in the _local_ coordinate system of the object.
 That's unlike the `width` and `height` properties, which are actually relative to the _parent_ coordinate system.
