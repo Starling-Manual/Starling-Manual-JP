@@ -274,17 +274,16 @@ msgBox.dispose();
 msgBox.removeFromParent(true);
 ----
 
-=== 中心点
+=== Pivot Point
+Pivot Point は  Flash のディスプレイリストに存在しない機能です。
+Starling では、ディスプレイリストが２つの追加パラーメータを持っています。`pivotX` と `pivotY` です。
+オベジェクトの Pivot Point (_origin_、_root_、_anchor_ と呼ばれる事もあります。) はその座標系の中心を示します。
 
-Pivot Points are a feature you won't find in the traditional display list.
-In Starling, display objects contain two additional properties: `pivotX` and `pivotY`.
-The pivot point of an object (also known as _origin_, _root_ or _anchor_) defines the root of its coordinate system.
+デフォルトでは、Pivot Point は `(0, 0)` です。画像でいうと左上のポイントとなります。
+たいていの場合、これはちょうどいい値です。
+しかし、時折他の場所にこれを移動させたい場合もあるでしょう。例えば、画像の真ん中を基準にして回転させたい場合などです。
 
-Per default, the pivot point is at `(0, 0)`; in an image, that is the top left position.
-Most of the time, this is just fine.
-Sometimes, however, you want to have it at a different position -- e.g. when you want to rotate an image around its center.
-
-Without a pivot point, you'd have to wrap the object inside a container sprite in order to do that:
+Pivot Point 無しでは、同じ事をするのに一度スプライトで包んでやる必要が出るでしょう。
 
 [source, as3]
 ----
@@ -297,13 +296,13 @@ sprite.addChild(image); // <2>
 
 sprite.rotation = deg2rad(45); // <3>
 ----
-<1> Create a sprite.
-<2> Add an image so that its center is exactly on top of the sprite's origin.
-<3> Rotating the sprite will rotate the image around its center.
+<1> スプライトを作成します。
+<2> スプライトの基準座標に画像の中心点が重なるように配置します。
+<3> スプライトを回転すると、画像もその中心を基準として回転します。
 
-Most long-time Flash developers will know this trick; it was needed quite regularly.
-One might argue, however, that it's a lot of code for such a simple thing.
-With the pivot point, the code is reduced to the following:
+経験のある  Flash developers は、このテクニックを知っているでしょう。とても頻繁に必要となる作業です。
+しかし、簡単な事を実現するためにたくさんのコードが必要になると不平を言うものもいるでしょう。
+Pivot Point を使えば、下記のようにコード量が減少します。
 
 [source, as3]
 ----
@@ -312,19 +311,22 @@ image.pivotX = image.width  / 2.0; // <1>
 image.pivotY = image.height / 2.0; // <2>
 image.rotation = deg2rad(45); // <3>
 ----
-<1> Move `pivotX` to the horizontal center of the image.
-<2> Move `pivotY` to the vertical center of the image.
-<3> Rotate around the center.
+<1> `pivotX` を画像の水平方向の中点に移動します。
+<2> `pivotY` を画像の垂直方向の中点に移動します。
+<3> 画像を回転します。
 
-No more container sprite is needed!
-To stick with the analogy used in previous chapters: the pivot point defines the position where you stab the pin through the object when you attach it to its parent.
-The code above moves the pivot point to the center of the object.
+もはやスプライトは必要ありません！
+前のチャプターで使った例えに戻ってみましょう。
+//原文：To stick with the analogy used in previous chapters: 
+Pivot Point は 親に対してピンをオブジェクトに打ち付けた座標を定義します。
+//原文：the pivot point defines the position where you stab the pin through the object when you attach it to its parent.
+上記のコードは Pivot Point をオブジェクトの中心に移動します。
 
-.Note how moving the pivot point changes how the object rotates.
+.Note Pivot Point を変更すると回転のあり方も変わる。
 image::pivot-point.png[Pivot Point]
 
-Now that you have learned how to control the pivot point coordinates individually, let's take a look at the method `alignPivot()`.
-It allows us to move the pivot point to the center of the object with just one line of code:
+さあ、ここまでで Pivot Point をコントロールする術を学んだので、次は `alignPivot()` メソッドについて学びましょう。
+このメソッドでは Pivot Point をオブジェクトの真ん中に移動する事が立ったの１行で可能です。
 
 [source, as3]
 ----
@@ -333,9 +335,9 @@ image.alignPivot();
 image.rotation = deg2rad(45);
 ----
 
-Handy huh?
+便利でしょう？
 
-Furthermore, if we want the pivot point somewhere else (say, at the bottom right), we can optionally pass alignment arguments to the method:
+さらに、もしも Pivot Point を別の場所に設定したいのなら（例えば右下など）、位置指定の引数でそれを指定する事もできます。
 
 [source, as3]
 ----
@@ -344,7 +346,7 @@ image.alignPivot(Align.RIGHT, Align.BOTTOM);
 image.rotation = deg2rad(45);
 ----
 
-That code rotates the object around the bottom right corner of the image.
+このコードはオブジェクトを画像の右下を基準点として行います。
 
 ==== その他
 //原文：==== Gotchas
