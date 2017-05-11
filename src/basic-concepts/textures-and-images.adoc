@@ -1,7 +1,7 @@
-== Textures & Images
+== テクスチャとイメージ
 
-We came across the _Image_ and _Texture_ classes several times already, and indeed: they are some of the most useful classes in Starling.
-But how are they used, and what's the difference between the two?
+すでにイメージとテクスチャのクラスについては何回か目にしています。そしてそれらは Starling の中で最も便利なクラスのうちの２つです。
+しかしそのように使われるのでしょうか。そして両者の違いはなんでしょう？
 
 === Textures
 
