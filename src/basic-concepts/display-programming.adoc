@@ -351,21 +351,21 @@ image.rotation = deg2rad(45);
 ==== その他
 //原文：==== Gotchas
 
-Be careful: the pivot point is always given in the _local_ coordinate system of the object.
-That's unlike the `width` and `height` properties, which are actually relative to the _parent_ coordinate system.
-That leads to surprising results when the object is e.g. scaled or rotated.
+注意してください、Pivot Point はいつでもそのオブジェクトのローカル座標で定義されます。
+`width` や `height` プロパティは、その親の座標系での値となっていますが、それらとは異なります。
+例えばオブジェクトが拡大縮小や回転をしている時に、予想しない結果になるかもしれません。
 
-For example, think of an image that's 100 pixels wide and scaled to 200% (`image.scaleX = 2.0`).
-That image will now return a `width` of 200 pixels (twice its original width).
-However, to center the pivot point horizontally, you'd still set `pivotX` to `50`, not `100`!
-In the _local_ coordinate system, the image is still 100 pixels wide -- it just appears wider in the _parent_ coordinate system.
+例えば、画像が幅 100ピクセルで、200%の大きさまで拡大 (`image.scaleX = 2.0`) されている事を考えてみてください。
+画像はこの時、 `width` プロパティを 200ピクセルと返します。（元の幅の２倍です。）
+しかし、水平の Pivot Point を真ん中に設定するためには、`100` ではなく、やはり `50` と設定します！
+ローカル座標での画像サイズは 100ピクセルのままで、親の座標系では大きくなっているだけなのです。
 
-It might be easier to understand when you look back the code from the beginning of this section, where we centered the image within a parent sprite.
-What would happen if you changed the `scale` of the sprite?
-Would this mean that you have to update the position of the image to keep it centered?
-Of course not.
-The scale does not affect what's happening _inside_ the sprite, just how it looks from the _outside_.
-And it's just the same with the pivot point property.
-
-TIP: If you still get a headache picturing that (as it happens to me, actually), just remember to set the pivot point _before_ changing the scale or rotation of the object.
-That will avoid any problems.
+このセクションの初め、親のスプライトの真ん中に画像を配置したあたりからコードを見直すとわかりやすいかもしれません。
+//原文：It might be easier to understand when you look back the code from the beginning of this section, where we centered the image within a parent sprite.
+スプライトのスケールを変更すると何が起こるでしょう？
+画像を真ん中の位置にキープするために位置を調整する必要があるでしょうか？
+もちろんありません。
+スケールの変更はスプライトの中には何も影響を与えないのです。外から見てどう見えるかが変わるだけです。
+そしてそれは  Pivot Point プロパティでも同じ事です。
+TIP: もしまだこの事を理解するのが難しいなら、（実際自分もそうでした）必ずオブジェクトの大きさや回転を変更する _前に_ Pivot Point を設定するようにしましょう。
+これで問題が確実に起きなくなります。
