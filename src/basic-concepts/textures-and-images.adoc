@@ -214,11 +214,11 @@ _SubTexture_ の位置は下記のような XML ファイルで定義されま�
 * https://www.codeandweb.com/texturepacker/starling?source=gamua[TexturePacker] は、個人的に気に入っているツールです。これほどスプライトシートを調整する事ができるツールは他に見つからないでしょう。このツールは Starling のサポートもしており、とても素晴らしい物です。( ATF テクスチャを書き出せるツールが他にあるでしょうか？）
 * http://renderhjs.net/shoebox/[Shoebox] _AIR_ で作られた無料のツールです。アトラスの生成について _TexturePacker_ ほどのたくさんの機能を持ってはいませんが、関連機能がたくさんあります。例えば、ビットマップフォントの作成機能や、スプライトの抽出機能があります。
 
-==== Using the Atlas
+==== アトラスの利用
 
-Okay: you've got a texture atlas now.
-But how do you use it?
-Let's start with embedding the texture and XML data.
+さて、テクスチャアトラスファイルを手に入れる事はできました。
+では、どのように使えばいいでしょう？
+それでは、テクスチャと XMLデータを埋め込んでみましょう。
 
 [source, as3]
 ----
@@ -228,14 +228,13 @@ public static const AtlasXml:Class;
 [Embed(source="atlas.png")] // <2>
 public static const AtlasTexture:Class;
 ----
-<1> Embed the atlas XML. Don't forget to specify the _mimeType_.
-<2> Embed the atlas texture.
+<1> アトラスの XML を埋め込みます。_mimeType_ の設定を忘れないようにしましょう。
+<2> アトラスのテクスチャを埋め込みます。
 
-NOTE: Alternatively, you can also load these files from an URL or from the disk (if we are talking about _AIR_).
-We will look at that in detail when we discuss Starling's _AssetManager_.
+NOTE: 代わりにそれぞれのファイルを URLまたは、AIR としてアプリケーションが動いているのであればディスクから、ロードする事もできます。この事については、_AssetManager_ についての説明の際に扱います。
 
-With those two objects available, we can create a new _TextureAtlas_ instance and access all _SubTextures_ through the method `getTexture()`.
-Create the atlas object once when the game is initialized and reference it throughout its lifetime.
+この２つのオブジェクトが利用できれば、_TextureAtlas_ インスタンスを生成する事ができ、`getTexture()` メソッドを通して全ての _SubTextures_ にアクセスする事ができます。
+ゲームの初期化時に一度アトラスを生成しておけば、その後はいつでも参照する事ができます。
 
 [source, as3]
 ----
@@ -246,10 +245,11 @@ var atlas:TextureAtlas = new TextureAtlas(texture, xml);
 var moonTexture:Texture = atlas.getTexture("moon"); // <2>
 var moonImage:Image = new Image(moonTexture);
 ----
-<1> Create the atlas.
-<2> Display a _SubTexture_.
+<1> アトラスを生成する。
+<2> _SubTexture_　を表示する。
 
-It's as simple as that!
+簡単ですよね。
+//原文：It's as simple as that!
 
 === Render Textures
 
@@ -312,14 +312,18 @@ renderTexture.draw(brush);
 To wipe it completely clean, use the `clear` method.
 
 [CAUTION]
-.Context Loss
+.コンテキスト ロス
 ====
-Unfortunately, render textures have one big disadvantage: they lose all their contents when the render context is lost.
-<<Context Loss>> is discussed in detail in a later chapter; in a nutshell, it means that _Stage3D_ may lose the contents of all its buffers in certain situations.
-(Yes, that is as nasty as it sounds.)
+レンダーテクスチャには大きな欠点があります。それは、レンダーコンテキストが失われた際、レンダーテクスチャの内容が全てなくなってしまうという事です。
+<<コンテキスト ロス>> は、この後のチャプターで詳しく取り扱います。一言で言えば、_Stage3D_ はいくつかのシチュエーションで全てにコンテンツを失う事があるという事です。
+（聞こえての通り、とても嫌な感じです。）
+//原文：(Yes, that is as nasty as it sounds.)
 
-Thus, if it is really important that the texture's contents is persistent (i.e. it's not just eye candy), you will need to make some arrangements.
-We will look into possible strategies in the mentioned chapter -- I just wanted to mention this fact here so it doesn't hit you by surprise.
+従って、テクスチャの内容をなくしてはならないほど重要であれば（例えば、単なる装飾目的でないのなら）、いくつかの調整を行う必要があります。
+これの回避方法についても後のチャプターで取り扱います。
+//原文：We will look into possible strategies in the mentioned chapter
+急にこの事態に遭遇して驚かないようにお知らせしておきました。
+//原文： -- I just wanted to mention this fact here so it doesn't hit you by surprise.
 ====
 
 // TODO: Mipmaps
