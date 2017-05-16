@@ -285,8 +285,8 @@ addChild(image); // <1>
 ----
 <1> テクスチャは通常のものと同じように扱えます。
 
-If you draw lots of objects at once, it is recommended to bundle the drawing calls in a block via the `drawBundled` method, as shown below.
-This allows Starling to skip a few rather costly operations, speeding up the process immensely.
+もしもたくさんのオブジェクトを一度に描画するのならば、`drawBundled` メソッドの処理ブロック内に描画処理をまとめる事を推奨します。下記はその例です。
+このようにすると、Starling がコストが高い処理を飛ばす事ができ、かなりのスピードアップとなります。
 
 [source, as3]
 ----
@@ -299,18 +299,17 @@ renderTexture.drawBundled(function():void // <1>
     }
 });
 ----
-<1> Activate bundled drawing by encapsulating all draw-calls in a function.
-<2> Inside the function, call `draw` just like before.
+<1> 関数内に全ての描画命令をカプセル化する事して `bundled drawing` を有効にします。
+<2> 関数内では、通常通り `draw` 命令を呼び出します。
 
-To erase parts of a render texture, you can use any display object like a "rubber" by setting its blend mode to BlendMode.ERASE.
+レンダーテクスチャの一部を消したい場合、ブレンドモードを BlendMode.ERASE に設定をする事で、どんなディスプレイオブジェクトも消しゴムのように使う事ができます。
 
 [source, as3]
 ----
 brush.blendMode = BlendMode.ERASE;
 renderTexture.draw(brush);
 ----
-
-To wipe it completely clean, use the `clear` method.
+完全ぶ全てを消し去るには、`clear` メソッドを使って下さい。
 
 [CAUTION]
 .コンテキスト ロス
