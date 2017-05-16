@@ -1,4 +1,4 @@
-== ディスプレイオブジェクトを表示する
+== ディスプレイオブジェクトの表示
 //原文:Display Programming
 ifndef::imagesdir[:imagesdir: ../../img]
 
