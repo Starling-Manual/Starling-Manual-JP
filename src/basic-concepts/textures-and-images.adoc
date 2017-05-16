@@ -251,13 +251,14 @@ var moonImage:Image = new Image(moonTexture);
 簡単ですよね。
 //原文：It's as simple as that!
 
-=== Render Textures
+=== レンダーテクスチャー
 
-The _RenderTexture_ class allows creating textures dynamically.
-Think of it as a canvas on which you can paint any display object.
+_RenderTexture_ クラスを使うと、動的なテクスチャー生成が可能となります。
+どんなディスプレイオブジェクトも描画できるキャンバスを思い浮かべてみてください。
 
-After creating a render texture, just call the `drawObject` method to render an object directly onto the texture.
-The object will be drawn onto the texture at its current position, adhering its current rotation, scale and alpha properties.
+After creating a render texture, 
+レンダーテクスチャを作成した後は、`drawObject` メソッドを呼び出してテクスチャにオブジェクトを描画しましょう。
+テクスチャ上にそのオブジェクトが現在の位置で描かれ、回転・拡大・アルファなどもそのまま適用されます。
 
 [source, as3]
 ----
@@ -270,19 +271,19 @@ brush.rotation = 1.41;
 
 renderTexture.draw(brush); // <3>
 ----
-<1> Create a new _RenderTexture_ with the given size (in points). It will be initialized with fully transparent pixels.
-<2> In this sample, we're referencing a display object depicting a brush. We move it to a certain location.
-<3> The brush object will be drawn to the texture with its current position and orientation settings.
+<1> 新規に _RenderTexture_ をサイズを指定（単位はポイント）して作成します。初期値は完全に透明な状態です。
+<2> このサンプルでは、筆で描画したような素材を描画するオブジェクトとして使います。適切な位置と回転角度を設定します。
+<3> オブジェクトがテクスチャ上にその位置と回転角度で描画されます。
 
-Drawing is done very efficiently, as it is happening directly in graphics memory.
-After you have drawn objects onto the texture, the performance will be just like that of a normal texture -- no matter how many objects you have drawn.
+描画はとても効率的に行われます。
+テクスチャにオブジェクトを描画した後は、描画負荷的に通常のテクスチャと変わりません。どれだけのオブジェクトを描画したとしてもです。
 
 [source, as3]
 ----
 var image:Image = new Image(renderTexture);
 addChild(image); // <1>
 ----
-<1> The texture can be used like any other texture.
+<1> テクスチャは通常のものと同じように扱えます。
 
 If you draw lots of objects at once, it is recommended to bundle the drawing calls in a block via the `drawBundled` method, as shown below.
 This allows Starling to skip a few rather costly operations, speeding up the process immensely.
