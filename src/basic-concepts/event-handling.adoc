@@ -1,20 +1,21 @@
-== Event Handling
+== イベントハンドリング
 
-You can think of events as occurrences of any kind that are of interest to you as a programmer.
+"イベント" というのは、プログラマなら関心があるであろう出来事の事である、と考える事ができます。
 
-* For example, a mobile app might notify you that the device orientation has changed, or that the user just touched the screen.
-* On a lower level, a button might indicate that it was triggered, or a knight that he has run out of health points.
+* 例えば、モバイルアプリはデバイスが回転した時やユーザが画面をタッチした際に通知してくれるでしょう。
+* もっと下層の話で言えば、ボタンが押された時や、ゲーム中ナイトの体力が尽きた時などの通知もあるでしょう。
 
-That's what Starling's event mechanism is for.
+そのような目的で、Starling のイベントシステムはあるのです。
 
-=== Motivation
+=== 詳細
+//原文：意味がわからない。。=== Motivation
 
-The event mechanism is a key feature of Starling's architecture.
-In a nutshell, events allow objects to communicate with each other.
+イベントのシステムは Starling の構成機能のうち、キーとなる物です。
+簡単に言うと、イベントによりオブジェクトは相互にコミュニケーションを取る事ができるようになります。
 
-You might think: we already have a mechanism for that -- methods!
-That's true, but methods only work in one direction.
-For example, look at a _MessageBox_ that contains a _Button_.
+こう思うかもしれません。同じ目的で使える "メソッド" と言うものがあるじゃないか、と。
+それも確かに正しいです。ですが、メソッドは１方向で動作するものです。
+例えば、_ボタン_ を持つ _メッセージボックス_ を見てみましょう。
 
 [ditaa, messagebox-calls-button]
 ....
@@ -22,14 +23,14 @@ For example, look at a _MessageBox_ that contains a _Button_.
 | MessageBox |
 \-----+------/
       |
-      | Method
+      | メソッド
       v
   /---+----\
   | Button |
   \--------/
 ....
 
-The message box _owns_ the button, so it can use its methods and properties, e.g.
+メッセージボックスはボタンを保持しているので、そのメソッドとプロパティを利用する事ができます。
 
 [source, as3]
 ----
@@ -43,14 +44,15 @@ public class MessageBox extends DisplayObjectContainer
     }
 }
 ----
-<1> Communicate with the _Button_ via a property.
+<1> プロパティを通してボタンとやりとりをする。
 
-The _Button_ instance, on the other hand, does not own a reference to the message box.
-After all, a button can be used by any component -- it's totally independent of the _MessageBox_ class.
-That's a good thing, because otherwise, you could only use buttons inside message boxes, and nowhere else. Ugh!
+ところで _ボタン_ インスタンスは、メッセージボックスの参照を持っていません。
+ボタンはどんなコンポーネントからでも使う事ができ、メッセージボックスには全く依存していません。
+これは良い事です。なぜならそうでない場合メッセージボックスの中でしかボタンを使う事ができなくなってしまいます。（うーむ。）
 
-Still: the button is there for a reason -- if triggered, it needs to tell somebody about it!
-In other words: the button needs to be able to send messages to its owner, whoever that is.
+それでも、ボタンはある理由で存在しています。押されたならば、それを誰かに伝えなくてはなりません。
+//原文：Still: the button is there for a reason -- 
+つまり、ボタンはオーナーが誰であれ、そこに対してメッセージを送信する事が必要なのです。
 
 [ditaa, button-dispatches-to-messagebox]
 ....
@@ -58,7 +60,7 @@ In other words: the button needs to be able to send messages to its owner, whoev
 | MessageBox |
 \------------/
       ^
-      | Event
+      | イベント
       |
   /---+----\
   | Button |
