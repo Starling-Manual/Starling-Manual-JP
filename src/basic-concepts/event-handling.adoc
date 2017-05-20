@@ -67,9 +67,9 @@ public class MessageBox extends DisplayObjectContainer
   \--------/
 ....
 
-=== Event & EventDispatcher
+=== イベントとイベントディスパッチャー
 
-I have something to confess: when I showed you the class hierarchy of Starling's display objects, I omitted the actual base class: _EventDispatcher_.
+一つ白状しなくてはいけません。Starling のディスプレイオブジェクトのクラスの継承図を見せた時、実際のベースクラスを省略していたのです。_EventDispatcher_ と言うクラスです。
 
 [plantuml, class-hierarchy-with-eventdispatcher]
 ....
@@ -83,15 +83,15 @@ DisplayObject <|-- Mesh
 DisplayObject <|-- DisplayObjectContainer
 ....
 
-This class equips all display objects with the means to dispatch and handle events.
-It's not a coincidence that all display objects inherit from _EventDispatcher_; in Starling, the event system is tightly integrated with the display list.
-This has some advantages we will see later.
+このクラスは全てのディスプレイオブジェクトにイベントの発行とイベントの取り扱いをする術を与えます。
+_EventDispatcher_ を全てのディスプレイオブジェクトが継承しているのは、偶然ではありません。
+Starling では、イベントのシステムはディスプレイリストと強く統合しています。
+後ほど取り扱いますが、これによっていくつか有利な点があります。
 
-Events are best described by looking at an example.
+実際の例を見ながら解説します。
 
-Imagine for a moment that you've got a dog; let's call him _Einstein_.
-Several times each day, _Einstein_ will indicate to you that he wants to go out for a walk.
-He does so by barking.
+犬を手に入れた場合の事を考えて見ましょう。その犬をアインシュタインと呼びます。
+毎日何回か、_アインシュタイン_ は、吠えることによって外へ散歩に行きたいと表現をします。
 
 [source, as3]
 ----
@@ -115,32 +115,32 @@ function onBark(event:Event):void // <4>
     einstein.walk();
 }
 ----
-<1> The string `bark` will identify the event. It's encapsulated in an _Event_ instance.
-<2> Dispatching `event` will send it to everyone who subscribed to `bark` events.
-<3> Here, we _do_ subscribe by calling `addEventListener`. The first argument is the event `type`, the second the `listener` (a function).
-<4> When the dog barks, this method will be called with the event as parameter.
+<1> `bark` と言う文字列がイベントを定義します。_Event_ のインスタンス内にカプセル化されます。
+<2> 全ての `bark` イベントの購読者に `event` を発行します。
+<3> ここで、`addEventListener` メソッドを使って、購読を設定しています。最初の引数はイベントのタイプで、２つ目はリスナ関数です。
+<4> 犬が吠えた際このメソッドがイベントパラメータとともに呼ばれます。
 
-You just saw the three main components of the event mechanism:
+今、イベントシステムの３つの構成要素を確認しました。
 
-* Events are encapsulated in instances of the *Event* class (or subclasses thereof).
-* To dispatch an event, the sender calls *dispatchEvent*, passing the _Event_ instance along.
-* To listen to an event, the client calls *addEventListener*, indicating which type of event he is interested in and the function or method to be called.
+* イベントは*イベント*クラス（またはそのサブクラス）のインスタンス内にカプセル化されます。
+* イベントを発行するには、発行元が _イベント_ インスタンスとともに *dispatchEvent* メソッドを実行します。
+* イベントを購読するには、購読者は *addEventListener* を呼び出します。その際、どのイベントのタイプに興味があるかと、イベント発行時に呼び出すメソッドを指定します。
 
-From time to time, your aunt takes care of the dog.
-When that happens, you don't mind if the dog barks -- your aunt knows what she signed up for!
-So you remove the event listener, which is a good practice not only for dog owners, but also for Starling developers.
+時には、あなたのおばさんも犬の世話をするでしょう。
+その際は、犬が吠えても気にしなくて良いのです。おばさんも何のために購読をしたのか知っています。
+なので、イベントのリスナ登録を解除してしまいましょう。これは犬の飼い主だけでなく、Starling の開発者にも有効な習慣です。
 
 [source, as3]
 ----
 einstein.removeEventListener("bark", onBark); // <1>
 einstein.removeEventListeners("bark"); // <2>
 ----
-<1> This removes the specific `onBark` listener.
-<2> This removes all listeners of that type.
+<1> これにより `onBark` リスナーが解除されます。
+<2> こちらの方法では、このタイプのイベントの全てのリスなを解除します。
+`bark` イベントについてはこのような感じとなります。
+もちろん、 _アインシュタイン_ は他にもいくつかのタイプのイベントを発行する事ができます。例えば、遠吠え(`howl`) や 唸り(`growl`) などです。
 
-So much for the `bark` event.
-Of course, _Einstein_ could dispatch several different event types, for example `howl` or `growl` events.
-It's recommended to store such strings in static constants, e.g. right in the `Dog` class.
+このような文字列は静的な定数に定義しておくのが良いでしょう。Dog クラス内の定数としてなどです。
 
 [source, as3]
 ----
@@ -155,16 +155,16 @@ einstein.addEventListener(Dog.GROWL, burglar.escape);
 einstein.addEventListener(Dog.HOWL, neighbor.complain);
 ----
 
-Starling predefines several very useful event types right in the _Event_ class.
-Here's a selection of the most popular ones:
+Starling はあらかじめ、便利なイベントのタイプを _Event_ クラスに定義しています。
+以下は、メジャーな物の一部です。
 
-* *Event.TRIGGERED:* a button was triggered
-* *Event.ADDED:* a display object was added to a container
-* *Event.ADDED_TO_STAGE:* a display object was added to a container that is connected to the stage
-* *Event.REMOVED:* a display object was removed from a container
-* *Event.REMOVED_FROM_STAGE:* a display object lost its connection to the stage
-* *Event.ENTER_FRAME:* some time has passed, a new frame is rendered (we'll get to that later)
-* *Event.COMPLETE:* something (like a _MovieClip_ instance) just finished
+* *Event.TRIGGERED:* ボタンが押された
+* *Event.ADDED:* コンテナにディスプレイオブジェクトが追加された
+* *Event.ADDED_TO_STAGE:* ステージに関連するコンテナにディスプレイオブジェクトが追加された
+* *Event.REMOVED:* コンテナからディスプレイオブジェクトが取り除かれた
+* *Event.REMOVED_FROM_STAGE:* ディスプレイオブジェクトがステージへの接続を失った
+* *Event.ENTER_FRAME:* 時間が経って、新しいフレームが描画された（この後取り扱います）
+* *Event.COMPLETE:* 何か（ムービークリップの再生など）が終了した
 
 === Custom Events
 
