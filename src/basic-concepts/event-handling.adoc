@@ -230,75 +230,76 @@ function onBark(event:BarkEvent):void // <1>
 このようにして、_BarkEvent_ の取り扱いに慣れている犬のオーナーは、彼らの犬について本当に知る事ができるのです。
 まったく素晴らしい技能です！
 
-=== Simplifying
+=== もっと単純に
+//原文：=== Simplifying
 
-Agreed: it's a little cumbersome to create that extra class just to be able to pass on that `reason` string.
-After all, it's very often just a single piece of information we are interested in.
-Having to create additional classes for such a simple mechanism feels somewhat inefficient.
+ただ `reason` を渡すだけで追加のクラスを作る事がやや面倒である事には同意します。
+結局、ただ１つの情報にしか興味がない事はよくあります。
+そのようにシンプルな機能のために新たなクラスを作るのは能率が悪いように思えます。
 
-That's why you won't actually need the subclass-approach very often.
-Instead, you can make use of the `data` property of the _Event_ class, which can store arbitrary references (its type: _Object_).
+ですので、本当はサブクラスを作るアプローチを取る必要はそんなにないのです。
+代わりに、_Event_ クラスの `data` プロパティを任意の情報を持たせる事に使う事ができます。（`data` の型は _Object_ です。）
 
-Replace the _BarkEvent_ logic with this:
+_BarkEvent_ の実装を下記のように変更しましょう。
 
 [source, as3]
 ----
-// create & dispatch event
+// イベントを作成して発行する
 var event:Event = new Event(Dog.BARK);
 event.data = "hungry"; // <1>
 dispatchEvent(event);
 
-// listen to event
+// イベントを購読する
 einstein.addEventListener(Dog.BARK, onBark);
 function onBark(event:Event):void
 {
     trace("reason: " + event.data as String); // <2>
 }
 ----
-<1> Store the _reason_ for barking inside the `data` property.
-<2> To get the reason back, cast `data` to _String_.
+<1> 吠える _理由_ を `data` プロパティに設定します。
+<2> 理由を取り出すには、`data` を _String_ 型に変換します。
 
-The downside of this approach is that we lose some type-safety.
-But in my opinion, I'd rather have that cast to _String_ than implement a complete class.
+このアプローチの悪い点は型安全でなくなる事です。
+しかし、私のとしては、完全なクラスを実装するよりも むしろ _String_ に型を変換することを好みます。
 
-Furthermore, Starling has a few shortcuts that simplify this code further!
-Look at this:
+さらに、Starling はこのコードをさらに単純化するショートカットをいくつか持っています。
+下記を見てください。
 
 [source, as3]
 ----
-// create & dispatch event
+// イベントを作成して発行する
 dispatchEventWith(Dog.BARK, false, "hungry"); // <1>
 
-// listen to event
+// イベントを購読する
 einstein.addEventListener(Dog.BARK, onBark);
 function onBark(event:Event, reason:String):void
 {
     trace("reason: " + reason); // <2>
 }
 ----
-<1> Creates an event of type `Dog.BARK`, populates the `data` property, and dispatches the event -- all in one line.
-<2> The `data` property is passed to the (optional) second argument of the event handler.
+<1> `Dog.BARK` のイベントを作成して、`data` プロパティを設定して、イベントを発行する、これを全て一行で行います。
+<2> `data` プロパティは（任意の）２番目の引数として、イベントハンドラに渡されます。
 
-We got rid of quite an amount of boiler plate code that way!
-Of course, you can use the same mechanism even if you don't need any custom data.
-Let's look at the most simple event interaction possible:
+このようにしてたくさんの一般的なコード記述を取り除く事ができました！
+もちろん、カスタム data が必要ない場合でもこの記述を使う事ができます。
+最も単純なイベントの取り扱い例を見てみましょう。
 
 [source, as3]
 ----
-// create & dispatch event
+// イベントを作成して発行する
 dispatchEventWith(Dog.HOWL); // <1>
 
-// listen to event
+// イベントを購読する
 dog.addEventListener(Dog.HOWL, onHowl);
 function onHowl():void // <2>
 {
     trace("hoooh!");
 }
 ----
-<1> Dispatch an event by only specifying its type.
-<2> Note that this function doesn't contain any parameters! If you don't need them, there's no need to specify them.
+<1> タイプのみ指定してイベントを発行します。
+<2> この関数は引数を持っていません。必要がないのなら、それを指定する必要もないのです！
 
-NOTE: The simplified `dispatchEventWith` call is actually even more memory efficient, since Starling will pool the _Event_ objects behind the scenes.
+NOTE: 単純化された `dispatchEventWith` 呼び出しは、メモリーをさらに効率的に使います。Starling は _Event_ オブジェクトを裏で使いまわしているからです。
 
 === Bubbling
 
