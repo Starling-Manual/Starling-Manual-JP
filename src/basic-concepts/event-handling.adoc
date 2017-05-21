@@ -166,14 +166,15 @@ Starling はあらかじめ、便利なイベントのタイプを _Event_ ク�
 * *Event.ENTER_FRAME:* 時間が経って、新しいフレームが描画された（この後取り扱います）
 * *Event.COMPLETE:* 何か（ムービークリップの再生など）が終了した
 
-=== Custom Events
+=== カスタムイベント
 
-Dogs bark for different reasons, right?
-Einstein might indicate that he wants to pee, or that he is hungry.
-It might also be a way to tell a cat that it's high time to make an exit.
+犬と言う生き物は色々な理由で吠えますよね。
+アインシュタインはおしっこをしたい、または、お腹が減った、と伝えているのかもしれません。
+猫に対して出て行けと伝えるのにも使われるでしょう。
+//原文：It might also be a way to tell a cat that it's high time to make an exit.
 
-Dog people will probably hear the difference (I'm a cat person; I won't).
-That's because smart dogs set up a _BarkEvent_ that stores their intent.
+犬好きの人々はおそらくそれらを聞き分けます。（自分は猫好きなのでできませんが。）
+これが、賢い犬が意図を _吠えるイベント_ に仕込む理由です。
 
 [source, as3]
 ----
@@ -192,12 +193,12 @@ public class BarkEvent extends Event
     public function get reason():Boolean { return _reason; } // <4>
 }
 ----
-<1> It's a good practice to store the event type right at the custom event class.
-<2> The reason for creating a custom event: we want to store some information with it. Here, that's the `reason` String.
-<3> Call the super class in the constructor. (We will look at the meaning of `bubbles` shortly.)
-<4> Make `reason` accessible via a property.
+<1> カスタムイベントクラスにイベントのタイプを定義するのは良い慣習です。
+<2> カスタムイベントを作成した理由を保持する変数。ここに理由の情報を保持する。
+<3> コンストラクタでの superクラス呼び出し。 （`bubbles` の意味はこの後すぐに取り扱います。）
+<4> プロパティ経由で `理由` を取得できるようにします。
 
-The dog can now use this custom event when barking:
+犬は吠える際にこのカスタムクラスが使えるようになりました。
 
 [source, as3]
 ----
@@ -222,11 +223,12 @@ function onBark(event:BarkEvent):void // <1>
         einstein.walk();
 }
 ----
-<1> Note that the parameter is of type `BarkEvent`.
-<2> That's why we can now access the `reason` property and act accordingly.
+<1> 引数の型が `BarkEvent` になっています。
+<2> 理由に応じて何をするのか決定します。
+//原文：That's why we can now access the `reason` property and act accordingly.
 
-That way, any dog owners familiar with the _BarkEvent_ will finally be able to truly understand their dog.
-Quite an accomplishment!
+このようにして、_BarkEvent_ の取り扱いに慣れている犬のオーナーは、彼らの犬について本当に知る事ができるのです。
+まったく素晴らしい技能です！
 
 === Simplifying
 
