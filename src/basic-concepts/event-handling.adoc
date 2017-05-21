@@ -301,44 +301,46 @@ function onHowl():void // <2>
 
 NOTE: 単純化された `dispatchEventWith` 呼び出しは、メモリーをさらに効率的に使います。Starling は _Event_ オブジェクトを裏で使いまわしているからです。
 
-=== Bubbling
+=== バブリング
 
-In our previous examples, the event dispatcher and the event listener were directly connected via the `addEventListener`-method.
-But sometimes, that's not what you want.
+一つ前のサンプルでは、`addEventListener` メソッドを通じてイベントの発行者 (dispatcher) と購読者 (dispatcher) は直接繋がっていました。
+しかし、時折それは望んでいる状態ではない事があります。
 
-Let's say you created a complex game with a deep display list.
-Somewhere in the branches of this list, _Einstein_ (the protagonist-dog of this game) ran into a trap.
-He howls in pain, and in his final breaths, dispatches a `GAME_OVER` event.
+複雑なゲームを作り、深く構造となったディスプレイリスト構造ができていたとします。
+そのリストのどこかで、_アインシュタイン_ (ゲームの主人公です）が罠にはまったとします。
+苦しんで遠吠えをし、息を引き取りながら `GAME_OVER` イベントを発行します。
 
-Unfortunately, this information is needed far up the display list, in the game's root class.
-On such an event, it typically resets the level and returns the dog to its last save point.
-It would be really cumbersome to hand this event up from the dog over numerous display objects until it reaches the game root.
+残念ながら、この情報はディスプレイリストのはるか上層、ゲームのルートクラスで必要とされています。
+このようなイベントは、マップをリセットし、犬を最後のセーブポイントまで戻します。
+このイベントを犬からゲームのルートまでたくさんのディスプレイオブジェクトを経由して受け渡していくのはとても面倒です。
+//原文：It would be really cumbersome to hand this event up from the dog over numerous display objects until it reaches the game root.
 
-That's a very common requirement -- and the reason why events support something that is called _bubbling_.
+これはよくある要望です。そしてそれが _バブリング_ をイベントがサポートする理由です。
 
-Imagine a real tree (it's your display list) and turn it around by 180 degrees, so that the trunk points upwards.
-The trunk, that's your stage, and the leaves of the tree are your display objects.
-Now, if a leaf creates a bubbling event, that event will move upwards just like the bubbles in a glass of soda, traveling from branch to branch (from parent to parent) until it finally reaches the trunk.
+ディスプレイリストを実際の木と想像してみましょう。180度ひっくり返せば、幹の部分が上方にきます。
+幹はステージに相当し、木の葉は各々のディスプレイオブジェクトに相当します。
+１つの葉がバブリングイベントを作成したとすると、ソーダ水の中の泡のようにイベントが上方に移動していきます。枝から枝（親から親）へ、幹にたどり着くまで移動します。
 
-.An event bubbles all the way up to the stage.
+.イベントのバブルがステージまで登っていく。
 image::bubbling.png[Bubbling, 200]
+//原文:An event bubbles all the way up to the stage.
 
-Any display object along this route can listen to this event.
-It can even pop the bubble and stop it from traveling further. All that is required to do that is to set the `bubbles`-property of an event to true.
+経路の途中に位置するディスプレイオブジュエクトはこのイベントを購読する事ができます。
+そこで、バブルを弾いて移動をストップする事もできます。そのような振る舞いとするには、イベントの `bubbles` プロパティを true に設定する必要があります。
 
 [source, as3]
 ----
-// classic approach:
+// 一般的なアプローチ
 var event:Event = new Event("gameOver", true); // <1>
 dispatchEvent(event);
 
-// one-line alternative:
+// １行で記述するやり方
 dispatchEventWith("gameOver", true); // <2>
 ----
-<1> Passing `true` as second parameter of the Event constructor activates bubbling.
-<2> Alternatively, `dispatchEventWith` takes the exact same parameters.
+<1> バブリングを有効とするため、イベントのコンストラクタの第二引数に `true`を渡します。
+<2> 代わりに `dispatchEventWith` に同じパラメータを渡す事もできます。
 
-Anywhere along its path, you can listen to this event, e.g. on the dog, its parent, or the stage:
+イベントの経路上であればどこでも、このイベントを購読できます。犬の親の階層でもステージでもそれが可能です。
 
 [source, as3]
 ----
@@ -347,7 +349,7 @@ dog.parent.addEventListener("gameOver", onGameOver);
 stage.addEventListener("gameOver", onGameOver);
 ----
 
-This feature comes in handy in numerous situations; especially when it comes to user input via mouse or touch screen.
+この機能はたくさんのシチュエーションで役に立ちます。特にマウスやスクリーンのタッチなどを通したユーザの操作で有効となるでしょう。
 
 === Touch Events
 
