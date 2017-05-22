@@ -351,15 +351,15 @@ stage.addEventListener("gameOver", onGameOver);
 
 この機能はたくさんのシチュエーションで役に立ちます。特にマウスやスクリーンのタッチなどを通したユーザの操作で有効となるでしょう。
 
-=== Touch Events
+=== タッチイベント
 
-While typical desktop computers are controlled with a mouse, most mobile devices, like smartphones or tablets, are controlled with your fingers.
+一般的なデスクトップコンピューターがマウスでコントロールされるのに対し、ほとんどのモバイルデバイス、スマートフォンやタブレットでは指でコントロールされます。
 
-Starling unifies those input methods and treats all "pointing-device" input as `TouchEvent`.
-That way, you don't have to care about the actual input method your game is controlled with.
-Whether the input device is a mouse, a stylus, or a finger: Starling will always dispatch touch events.
+Starling はそれらのインプットを統合して、`TouchEvent` という ポインティングデバイス入力として扱います。
+これにより、実際にゲームがどのような入力でコントロールされているのかを気にする必要がなくなります。
+それがマウスであろうとも、スタイラスペンでも、指であっても、です。Starling はいつでもそれをタッチイベントとして発行します。
 
-First things first: if you want to support multitouch, make sure to enable it before you create your Starling instance.
+最初に大事なことを言うと、マルチタッチを扱いたい場合は、Starling のインスタンスを作成する前に間違いなくそれを有効にしておかなくてはいけません。
 
 [source, as3]
 ----
@@ -369,41 +369,42 @@ var starling:Starling = new Starling(Game, stage);
 starling.simulateMultitouch = true;
 ----
 
-Note the property `simulateMultitouch`.
-If you enable it, you can simulate multitouch input with your mouse on your development computer.
-Press and hold the kbd:[Ctrl] or kbd:[Cmd] keys (Windows or Mac) when you move the mouse cursor around to try it out.
-Add kbd:[Shift] to change the way the alternative cursor is moving.
+`simulateMultitouch` プロパティに注目してください。
+もしこれを有効とすると、開発コンピュータ上のマウスを使ってマルチタッチをシミュレートする事ができるようになります。
+キーボードの[Ctrl] か [Cmd] キーを（Windows か Mac かで異なります。) 押しながら、マウスを動かしてみてください。
+[Shift] キーを追加すると、カーソルが動いている向きを反対に変更する事ができます。
 
-.Simulating Multitouch with mouse and keyboard.
+.マウスとキーボードでマルチタッチをシュミレートする様子。
 image::simulate-multitouch.png[Simulate Multitouch]
 
-To react to touch events (real or simulated), you need to listen for events of the type `TouchEvent.TOUCH`.
+シュミレートであれ実際のものであれ、タッチイベントを扱うには、`TouchEvent.TOUCH` イベントを購読する必要があります。
 
 [source, as3]
 ----
 sprite.addEventListener(TouchEvent.TOUCH, onTouch);
 ----
 
-You might have noticed that I've just added the event listener to a _Sprite_ instance.
-_Sprite_, however, is a container class; it doesn't have any _tangible_ surface itself.
-Is it even possible to touch it, then?
+_Sprite_ インスタンスにリスな登録を行った事に気づいたでしょうか？
+_Sprite_ はコンテナクラスです。それ自身にはタッチ判定となる領域を持っていません。
+これでタッチが可能なのでしょうか？
 
-Yes, it is -- thanks to _bubbling_.
+答えはイエスです。_バブリング_ の機構のおかげでそれが可能となります。
 
-To understand that, think back to the _MessageBox_ class we created a while ago.
-When the user clicks on its text field, anybody listening to touches on the text field must be notified -- so far, so obvious.
-But the same is true for somebody listening for touch events on the message box itself; the text field is part of the message box, after all.
-Even if somebody listens to touch events on the stage, he should be notified.
-Touching any object in the display list means touching the stage!
+これを理解するには、ちょっと前に作成した _MessageBox_ クラスに戻って考えてみましょう。
+テキストフィールドをユーザがクリックした際、テキストフィールドに対してタッチイベントの購読をしている誰にでも通知が飛びます。ここまでは明白です。
+しかし、メッセージボックス自体に対してイベントを購読している者にも同じ通知が行きます。テキストフィールドは結局メッセージボックスの一部なのです。
+ステージに対してタッチイベントの購読を行っている者にも通知が行くはずです。
+ディスプレイリスト内のどのオブジェクトに対するタッチでも、それはステージをタッチしたと言う事になります！
 
-Thanks to bubbling events, Starling can easily represent this type of interaction.
-When it detects a touch on the screen, it figures out which _leaf object_ was touched.
-It creates a _TouchEvent_ and dispatches it on that object.
-From there, it will bubble up along the display list.
+バブリングイベントの仕組みのおかげで、Starling は簡単にこのインタラクションのタイプを理解する事ができます。
+//原文：Thanks to bubbling events, Starling can easily represent this type of interaction.
+スクリーンのタッチを検知した時、どの _葉要素_ がタッチされたのかが判定されます。
+タッチイベントが作成され、そのオブジェクトから発行されます。
+そこから、ディスプレイリストに沿ってイベントは上層へと登って行きます。
 
-==== Touch Phases
+==== タッチフェーズ
 
-Time to look at an actual event listener:
+実際のタッチイベントのリスナ関数を確認してみましょう。
 
 [source, as3]
 ----
@@ -418,24 +419,27 @@ private function onTouch(event:TouchEvent):void
 }
 ----
 
-That's the most basic case: Find out if somebody touched the screen and trace out the coordinates.
-The method `getTouch` is provided by the _TouchEvent_ class and helps you find the touches you are interested in.
+上記は最も基本的な例です。スクリーンのタッチを検知して、その座標をログ出力します。
+`getTouch` メソッドは、_TouchEvent_ クラスによって提供され、これは、関心があるタッチを選出するのに役立ちます。
 
-NOTE: The _Touch_ class encapsulates all information of a single touch: where it occurred, where it was in the previous frame, etc.
+NOTE: _Touch_ クラスは、シングルタッチの全ての情報をカプセル化します。どこでそれが起こって、前のフレームではその場所がどこであったか、などがその情報の例です。
 
-As first parameter, we passed `this` to the `getTouch` method.
-Thus, we're asking the the event to return any touches that occurred on on `this` _or its children_.
+`getTouch` メソッドへの最初の引数として、ここでは `this` を渡しました。
+したがって、`this` か、またはその子要素で発生したいくつかのタッチについての情報を得る事ができます。
+//原文：Thus, we're asking the the event to return any touches that occurred on on `this` _or its children_.
 
-Touches go through a number of _phases_ within their life time:
+タッチは、その存在期間中、いくつかの _フェーズ_ を経て行きます。
+//原文：Touches go through a number of _phases_ within their life time:
 
 [horizontal]
-`TouchPhase.HOVER`:: Only for mouse input; dispatched when the cursor moves over the object with the mouse button _up_.
-`TouchPhase.BEGAN`:: The finger just hit the screen, or the mouse button was pressed.
-`TouchPhase.MOVED`:: The finger moves around on the screen, or the mouse is moved while the button is pressed.
-`TouchPhase.STATIONARY`:: The finger or mouse (with pressed button) has not moved since the last frame.
-`TouchPhase.ENDED`:: The finger was lifted from the screen or from the mouse button.
+`TouchPhase.HOVER`:: マウスインプットのみ。マウスのボタンが押されない状態でオブジェクト上をカーソルが通過した際に発行されます。
+`TouchPhase.BEGAN`:: 指が画面に触れた、またはマウスボタンが押されたタイミングで発行されます。
+`TouchPhase.MOVED`:: 指が画面上で移動した際、または、マウスがボタンが押されながら移動した際に発行されます。
+`TouchPhase.STATIONARY`:: 指、またはマウスが押されたまま、前のフレームから移動がない場合に発行されます。
+`TouchPhase.ENDED`::指が画面から離れた、または、マウスボタンが離された際に発行されます。
 
-Thus, the sample above (which looked for phase `BEGAN`) will write trace output at the exact moment the finger touches the screen, but not while it moves around or leaves the screen.
+よって、上のサンプル（`BEGAN` フェーズを扱っています。）では、指が画面に触れたタイミングでログ出力を行います。
+しかし、指が葉要素に沿って、またはスクリーン上を移動する際は何もログに表示しません。
 
 ==== Multitouch
 
