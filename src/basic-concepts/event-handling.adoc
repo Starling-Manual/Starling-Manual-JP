@@ -441,10 +441,10 @@ NOTE: _Touch_ クラスは、シングルタッチの全ての情報をカプセ
 よって、上のサンプル（`BEGAN` フェーズを扱っています。）では、指が画面に触れたタイミングでログ出力を行います。
 しかし、指が葉要素に沿って、またはスクリーン上を移動する際は何もログに表示しません。
 
-==== Multitouch
+==== マルチタッチ
 
-In the sample above, we only listened to single touches (i.e. one finger only).
-Multitouch is handled very similarly; the only difference is that you call `touchEvent.getTouches` instead (note the plural).
+上記のサンプルではシングルタッチのみを購読していました。（つまり、指一本だけ。）
+それがマルチタッチでもほとんど同じように取り扱う事ができます。たった一つの違いは、代わりに `touchEvent.getTouches` 命令を呼び出すと言う事だけです。（"Touch" が複数形になっています。）
 
 [source, as3]
 ----
@@ -465,24 +465,30 @@ else if (touches.length >= 2)
 }
 ----
 
-The `getTouches` method returns a vector of touches.
-We can base our logic on the length and contents of that vector.
+`getTouches` メソッドは、タッチのベクター型配列を返します。
+そのベクターの長さと中身を元にロジックを組み立てる事が出来るのです。
 
-* In the first _if_-clause, only a single finger is on the screen. Via `getMovement`, we could e.g. implement a drag-gesture.
-* In the _else_-clause, two fingers are on the screen. By accessing both touch objects, we could e.g. implement a pinch-gesture.
+* 最初のif節では、指一本だけがスクリーンに触れています。`getMovement` メソッドを通して、例えばドラッグジェスチャーのような物を実装可能です。
+* else節では、２本(以上)の指がスクリーンに触れています。２つのタッチオブジェクトにアクセスして、ピンチジェスチャーのような物を実装可能です。
 
-NOTE: The demo application that's part of the Starling download contains the https://github.com/Gamua/Starling-Framework/blob/master/samples/demo/src/utils/TouchSheet.as[TouchSheet] class, which is used in the _Multitouch_ scene.
-It shows a sample implementation of a touch handler that allows dragging, rotation and scaling of a sprite.
+NOTE: このデモアプリは Starling のダウンロード内容の一部として含まれています。 https://github.com/Gamua/Starling-Framework/blob/master/samples/demo/src/utils/TouchSheet.as[TouchSheet] クラスが _マルチタッチ_ シーンで利用されています。
+タッチハンドラによってスプライトをドラッグ、回転、スケーリングする事が出来るサンプル実装となっています。
 
-==== Mouse Out and End Hover
+==== マウスアウトとエンドホバー
 
-There's a special case to consider when you want to detect that a mouse was moved away from an object (with the mouse button in "up"-state).
-(This is only relevant for mouse input.)
+マウスが（マウスボタンが押されていない状態で）オブジェクトから離れる時に関して存在する特殊なケースについて考えます。
+(これはタッチではなく、マウス入力だけに関連した考察です。)
 
-If the target of a hovering touch changed, a _TouchEvent_ is dispatched to the previous target to notify it that it's no longer being hovered over.
-In this case, the `getTouch` method will return `null`.
-Use that knowledge to catch what could be called a _mouse out_ event.
+ホバーしているオブジェクトが別のものに変化したのなら、_TouchEvent_ が前のホバー対象に対して発行され、もうすでにホバーされていない事を通知します。
+そして、この際には、`getTouch` メソッドが null を返します。
+どう言うものがマウスアウトイベントと呼ばれるの理解できたでしょうか。
 
+//原文：There's a special case to consider when you want to detect that a mouse was moved away from an object (with the mouse button in "up"-state).
+//原文：(This is only relevant for mouse input.)
+//原文：
+//原文：If the target of a hovering touch changed, a _TouchEvent_ is dispatched to the previous target to notify it that it's no longer being hovered over.
+//原文：In this case, the `getTouch` method will return `null`.
+//原文：Use that knowledge to catch what could be called a _mouse out_ event.
 [source, as3]
 ----
 var touch:Touch = event.getTouch(this);
