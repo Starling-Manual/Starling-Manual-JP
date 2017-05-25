@@ -1,14 +1,16 @@
-== Context Loss
+== コンテキストロス
 
-All Stage3D rendering happens through a so called "render context" (an instance of the _Context3D_ class).
-It stores all current settings of the GPU, like the list of active textures, pointers to the vertex data, etc.
-The render context is your connection to the GPU -- without it, you can't do any Stage3D rendering.
+全ての Stage3D によるレンダリングは "レンダーコンテキスト" と呼ばれる _Context3D_ クラスのインスタンスを通して行われます。
+レンダーコンテキストは、アクティブなテクスチャ一覧や頂点データなど、GPU の現在の設定を保持しています。
+レンダーコンテキスト は GPU とのコネクションなのです。これがないと、Stage3D のレンダリングは何も行う事ができません。
 
-And here comes the problem: that context can sometimes get lost.
-This means that you lose references to all data that was stored in graphics memory; most notably: textures.
+ここで問題があります。このコンテキストはしばしば失われてしまうのです。
+つまり、グラフィックスメモリー上にあった全てのデータへの参照を失うと言う事です。例えば、テクスチャが失われます。
 
-Such a context loss doesn't happen equally frequently on all systems; it's rare on _iOS_ and _macOS_, happens from time to time on _Windows_ and very often on _Android_ (rotating the screen? Bam!).
-So there's no way around it: we need to expect the worst and prepare for a context loss.
+そのようなコンテキストロス(紛失)は全てのシステムで同じ頻度で起こるわけではありません。 _iOS_ と _macOS_ ではほとんど再現せず、
+_Windows_ は時々再現し、_Android_では頻繁に再現します。（画面を回転すると…再現！）
+//原文：happens from time to time on _Windows_ and very often on _Android_ (rotating the screen? Bam!).
+これが起こる事自体はどうする事もできないので、最悪のケースが起きる事を想定し、コンテキストロスにあらかじめ準備しておく事が必要です。
 
 === Default Behavior
 
