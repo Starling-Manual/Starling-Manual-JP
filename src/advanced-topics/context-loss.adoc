@@ -12,18 +12,18 @@ _Windows_ は時々再現し、_Android_では頻繁に再現します。（画�
 //原文：happens from time to time on _Windows_ and very often on _Android_ (rotating the screen? Bam!).
 これが起こる事自体はどうする事もできないので、最悪のケースが起きる事を想定し、コンテキストロスにあらかじめ準備しておく事が必要です。
 
-=== Default Behavior
+=== デフォルトの振る舞い
 
-When Starling recognizes that the current render context has been lost, it initiates the following procedures:
+現在のコンテキストを紛失した事を Starling が認識すると、下記の一連の処理を実行します。
 
-* Starling will automatically create a new context and initialize it with the same settings as before.
-* All vertex- and index buffers will be restored.
-* All vertex- and fragment programs (shaders) will be recompiled.
-* Textures will be restored by whatever means possible (from memory/disk/etc.)
+* Starling は自動で新しいコンテキストを作成し、今までと同じセッティングで初期化します、
+* 全ての頂点及び頂点インデックスバッファを復元します。
+* 全ての頂点シェーダーとピクセルシェーダーを再コンパイルします。
+* テクスチャを可能な限り再ロードします。(メモリ/ディスク/その他から。)
 
-Restoring buffers and programs is not problematic; Starling has all data that's required and it doesn't take much time.
-Textures, however, are a headache.
-To illustrate that, let's look at the worst case example: a texture created from an embedded bitmap.
+バッファの内容とプログラムを元に戻すことは問題にはなりません。Starling は必要な全てのデータを保持しており、元に戻す時間も長くかかりません。
+しかし、テクスチャに関しては頭の痛い問題です。
+説明のため、最悪のケースの例を見てみましょう。テクスチャの生成に埋め込みビットマップを使っていた場合です。
 
 [source, as3]
 ----
@@ -34,54 +34,56 @@ var bitmap:Bitmap = new Hero();
 var texture:Texture = Texture.fromBitmap(bitmap);
 ----
 
-The moment you call `Texture.fromBitmap`, the bitmap is uploaded to GPU memory, which means it's now part of the context.
-If we could rely on the context staying alive forever, we'd be done now.
+`Texture.fromBitmap` メソッドを呼び出した瞬間、ビットマップが GPU メモリにアップロードされます。つまりビットマップがコンテキストの一部になったと言うことです。
+コンテキストが永久に存在すると信頼できるのなら、これでやる事は終了です。
 
-However, we _cannot_ rely on that: the texture data could be lost anytime.
-That's why Starling will keep a copy of the original bitmap.
-When the worst happens, it will use it to recreate the texture.
-All of that happens behind the scenes.
+しかし、そのように信頼する事はできません。テクスチャのデータはいつでもなくなりうるのです。
+そのため、Starling はオリジナルのビットマップのコピーを保持します。
+最悪の事態となった時、テクスチャを復元するために使われます。
+この処理は自動で行われます。
 
-Lo and behold!
-That means that the texture is in memory three times.
+驚くべきことに、１つのテクスチャが３箇所でメモリー上に存在することになります！
 
-* The "Hero" class (conventional memory)
-* The backup bitmap (conventional memory)
-* The texture (graphics memory)
+* "Hero" クラス内（通常のメモリー）
+* コピーされているビットマップ（通常のメモリー）
+* テクスチャ（グラフィックスメモリー）
 
-Given the tight memory constraints we're facing on mobile, this is a catastrophe.
-You don't want this to happen!
+モバイル端末などとてもメモリ量が制限されている場合、これは大惨事であると言えます。
+このような状態は避けたいですね！
+//原文：You don't want this to happen!
 
-It becomes a little better if you change your code slightly:
+下記のようにコードを多少変更することで、若干問題を緩和する事が可能です。
 
 [source, as3]
 ----
-// use the 'fromEmbeddedAsset' method instead
+// 代わりに 'fromEmbeddedAsset' メソッドを使う。
 var texture:Texture = Texture.fromEmbeddedAsset(Hero);
 ----
 
-That way, Starling can recreate the texture directly from the embedded class (calling `new Hero()`), which means that the texture is in memory only two times.
-For embedded assets, that's your best bet.
+このようにすると、Starling は埋め込みクラスから直接テクスチャを再生成します。(`new Hero()` を呼び出します。）
+つまりテクスチャはメモリー上に２箇所にか存在しない事になります。
+埋め込みクラスに対しては、これがベストの対応です。
 
-Ideally, though, we want to have the texture in memory only once.
-For this to happen, you must not embed the asset; instead, you need to load it from an URL that points to a local or remote file.
-That way, only the URL needs to be stored; the actual data can then be reloaded from the original location.
+しかし、理想としては１箇所しかテクスチャをメモリー上に持ちたくありません。
+そのためには、アセットを埋め込んではいけません。代わりに、ローカルもしくはリモートからアセットを読み込むようにします。
+その場合 URL のみを保持すればよく、実際のデータは元の場所から再読み込みができるのです。
 
-There are two ways to make this happen:
+２つの方法があります。
 
-* Use the _AssetManager_ to load your textures.
-* Restore the texture manually.
+* _AssetManager_ を用いてテクスチャのロードを行う。
+* 手動でテクスチャを読み込み直す。
 
-My recommendation is to use the _AssetManager_ whenever possible.
-It will handle a context loss without wasting any memory; you don't have to add any special restoration logic whatsoever.
+オススメはいつでも _AssetManager_ を使う事です。
+メモリーを浪費する事なくコンテキストロスに対応する事ができます。
+テクスチャを復元するためのどんな特別処理も記述する必要がなくなります。
 
-Nevertheless, it's good to know what's happening behind the scenes.
-Who knows -- you might run into a situation where a manual restoration is your only choice.
+しかし、裏で何が行われているか知る事は良い事です。
+ひょっとすると、手動でテクスチャを復元せざるを得ない状況がありえるかもしれません。
 
-=== Manual Restoration
+=== テクスチャの手動復元
 
-You might wonder how `Texture.fromEmbeddedAsset()` works internally.
-Let's look at a possible implementation of that method:
+`Texture.fromEmbeddedAsset()` は実際にはどのように動いているのでしょうか。
+このメソッドの考えられる実装をみてみましょう。
 
 [source, as3]
 ----
@@ -96,8 +98,8 @@ public static function fromEmbeddedAsset(assetClass:Class):Texture
 }
 ----
 
-You can see that the magic is happening in the `root.onRestore` callback.
-Wait a minute: what's `root`?
+`root.onRestore` コールバック内で重要な処理が行われている事がわかります。
+しかし、`root` とは何でしょう？
 
 You might not know it, but when you've got a _Texture_ instance, that's actually often not a concrete texture at all.
 In reality, it might be just a pointer to a part of another texture (a _SubTexture_).
