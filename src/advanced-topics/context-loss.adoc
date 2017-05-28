@@ -101,27 +101,28 @@ public static function fromEmbeddedAsset(assetClass:Class):Texture
 `root.onRestore` コールバック内で重要な処理が行われている事がわかります。
 しかし、`root` とは何でしょう？
 
-You might not know it, but when you've got a _Texture_ instance, that's actually often not a concrete texture at all.
-In reality, it might be just a pointer to a part of another texture (a _SubTexture_).
-Even the `fromBitmap` call could return such a texture!
-(Explaining the reasoning behind that would be beyond the scope of this chapter, though.)
+知らないかもしれませんが、_テクスチャ_ のインスタンスを生成した際、それはしばしば実際の完全なテクスチャではないのです。
+実はそれは、他のテクスチャの一部の領域への参照かもしれないのです。（それを _SubTexture_ といいます。）
+`fromBitmap` メソッドを呼び出しでさえも、その参照を返します。
+（しかし、その理由を説明するのは、このチャプターの範疇を超えてしまいます。）
 
-In any case, `texture.root` will always return the _ConcreteTexture_ object, and that's where the `onRestore` callback is found.
-This callback will be executed directly after a context loss, and it gives you the chance of recreating your texture.
+いずれにしろ、`texture.root` は いつでも、_ConcreteTexture_ オブジェクトを返します。そして、そのオブジェクトには `onRestore` コールバックが存在します。
+このコールバックはコンテキストロスの後に直接呼び出され、テクスチャを復元する機会を与えてくれます。
 
-In our case, that callback simply instantiates the bitmap once again and uploads it to the root texture.
-Voilà, the texture is restored!
+今回のコールバックの例では、もう一度同じビットマップをインスタンス化して、ルートテクスチャとしてアップロードしてやります。
+さあ、テクスチャが復元されました！
+//原文：Voilà, the texture is restored!
 
-The devil lies in the details, though.
-You have to construct your `onRestore`-callback very carefully to be sure not to store another bitmap copy without knowing it.
-Here's one innocent looking example that's actually totally useless:
+しかし、詳細な部分には悪魔が住んでいるものです。
+`onRestore` コールバックは、知らぬ間に別のビットマップのコピーを保持してしまわないよう、厳重に慎重に作成しましょう。
+ここに一見無害ではあるものの、実はとてもよろしくないコールバックの例があります。
 
 [source, as3]
 ----
 public static function fromEmbeddedAsset(assetClass:Class):Texture
 {
-    // DO NOT use this code! BAD example.
-
+    // このコードを実際に利用してはいけません！悪いコードの例です。
+	
     var bitmap:Bitmap = new assetClass();
     var texture:Texture = Texture.fromBitmap(bitmap);
     texture.root.onRestore = function():void
@@ -132,7 +133,7 @@ public static function fromEmbeddedAsset(assetClass:Class):Texture
 }
 ----
 
-Can you spot the error?
+間違いがあるのがわかりましたか？
 
 The problem is that the method creates a _Bitmap_ object and uses it in the callback.
 That callback is actually a so-called _closure_; that's an inline function that will be stored together with some of the variables that accompany it.
