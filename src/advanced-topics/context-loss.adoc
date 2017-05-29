@@ -133,26 +133,32 @@ public static function fromEmbeddedAsset(assetClass:Class):Texture
 }
 ----
 
-間違いがあるのがわかりましたか？
+良くない点があるのがわかりましたか？
 
-The problem is that the method creates a _Bitmap_ object and uses it in the callback.
-That callback is actually a so-called _closure_; that's an inline function that will be stored together with some of the variables that accompany it.
-In other words, you've got a function object that stays in memory, ready to be called when the context is lost.
-And the bitmap instance is stored inside it, even though you never explicitly said so.
-(Well, in fact you did, by using `bitmap` inside the callback.)
+問題は、このメソッドが _Bitmap_ オブジェクトを生成し、コールバック内で利用しているという事です。
+このコールバックは、_クロージャー_ と呼ばれるもので、周辺の変数とともに保持されるインライン(関数内)の関数です。
+//原文：that's an inline function that will be stored together with some of the variables that accompany it.
+言い換えれば、メモリー上に関数オブジェクトが保持して、コンテキストロス発生時に呼び出される事が出来るようにします。
+そして、はっきりとそのように設定をしていないにも関わらず、ビットマップのインスタンスがその内部に保持されます。
+（実際は、`bitmap` をコールバック内で利用する事によってそれを行なっているのです。）
 
-In the original code, the bitmap is not referenced, but _created_ inside the callback.
-Thus, there is no `bitmap` instance to be stored with the closure.
-Only the `assetClass` object is referenced in the callback -- and that is in memory, anyway.
+元のコードでは、ビットマップは参照されず、コールバック内で _作成_ されています。
+従ってクロージャーに `bitmap` インスランスが保持される事はないのです。
+`assetClass` オブジェクトだけがコールバック内で参照されます。どちらにしろメモリー内にですが。
 
-That technique works in all kinds of scenarios:
+このテクニックはどんなシナリオでも上手く働きます。
 
-* If your texture originates from an URL, you pass only that URL to the callback and reload it from there.
-* For ATF textures, the process is just the same, except that you need to upload the data with `root.uploadATFData` instead.
-* For a bitmap containing a rendering of a conventional display object, just reference that display object and draw it into a new bitmap in the callback.
-  (That's just what Starling's _TextField_ class does.)
+* テクスチャが URL からローヂされているのなら、その URL を使ってコールバック内で読み込み直します。
+* それが ATF テクスチャであってもやり方は同じです。異なるのは `root.uploadATFData` メソッドを代わりに使うだけです。
+* 従来の Flash のディスプレイオブジェクトのレンダリングをビットマップとして使っている場合、
+コールバック内では、そのディスプレイオブジェクトを新しいビットマップにレンダリングし直してください。
+（Starling の _TextField_ クラスがちょうど同じように処理をしています。）
+//原文：For a bitmap containing a rendering of a conventional display object,
+//just reference that display object and draw it into a new bitmap in the callback.
+//(That's just what Starling's _TextField_ class does.)
 
-NOTE: Let me emphasize: the _AssetManager_ does all this for you, so that's the way to go. I just wanted to show you how that is achieved.
+NOTE: 強調すると、_AssetManager_ はこのような処理をいい感じに自動で行なってくれます。ただどのようにそれが実装されているのか説明しておきたかったのです。
+//原文：Let me emphasize: the _AssetManager_ does all this for you, so that's the way to go. I just wanted to show you how that is achieved.
 
 === Render Textures
 
