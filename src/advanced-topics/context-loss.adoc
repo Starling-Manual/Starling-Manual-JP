@@ -160,44 +160,45 @@ public static function fromEmbeddedAsset(assetClass:Class):Texture
 NOTE: 強調すると、_AssetManager_ はこのような処理をいい感じに自動で行なってくれます。ただどのようにそれが実装されているのか説明しておきたかったのです。
 //原文：Let me emphasize: the _AssetManager_ does all this for you, so that's the way to go. I just wanted to show you how that is achieved.
 
-=== Render Textures
+=== レンダーテクスチャー
 
-Another area where a context loss is especially nasty: render textures.
-Just like other textures, they will lose all their contents -- but there's no easy way to restore them.
-After all, their contents is the result of any number of dynamic draw operations.
+コンテキストロスが悩ましいまた別の領域はレンダーテクスチャに関する所です。
+他のテクスチャと同じように、レンダーテクスチャも内容を失いうります。しかし、簡単にそれを復元する方法は存在しないのです。
+結局、その内容というのは動的なたくさんの描画処理の結果なのですから。
 
-If the _RenderTexture_ is just used for eye candy (say, footprints in the snow), you might be able to just live with it getting cleared.
-If its contents is crucial, on the other hand, you need a solution for this problem.
+もしも、_レンダーテクスチャー_ が見た目の賑やかし用途だけで使われているのなら（例えば雪面の足跡など）、
+全てをなかったことにしてやり直すのでも良いかもしれません。
+しかし、内容がとても重要であるのなら、この問題を解決しなくてはいけません。
 
-There's no way around it: you will need to manually redraw the texture's complete contents.
-Again, the `onRestore` callback could come to the rescue:
+特にこれといった対応方法はありません。手動でテクスチャを描画し直して、内容を復元する必要があります。
+`onRestore` コールバックがここでも役にたつかもしれません。
 
 [source, as3]
 ----
 renderTexture.root.onRestore = function():void
 {
     var contents:Sprite = getContents();
-    renderTexture.clear(); // required on texture restoration
+    renderTexture.clear(); // テクスチャの復元に必要
     renderTexture.draw(contents);
 });
 ----
 
-I hear you: it's probably more than just one object, but a bunch of draw calls executed over a longer period.
-For example, a drawing app with a _RenderTexture_-canvas, containing dozens of brush strokes.
+言いたい事はわかります。おそらく一つ以上のオブジェクトを描画していて、長い時間をかけて何度も描画された結果であったのだと。
+例えば、お絵かきソフトでは _RenderTexture_ をキャンバスとして使い、たくさんのブラシストロークで絵が描かれている事でしょう。
 
-In such a case, you need to store sufficient information about all draw commands to be able to reproduce them.
+そのような場合、最初から同じ手順で描画をし直せるように、必要な情報（操作手順）を保持しておく事が必要です。
 
-If we stick with the drawing app scenario, you might want to add support for an _undo/redo_ system, anyway.
-Such a system is typically implemented by storing a list of objects that encapsulate individual commands.
-You can re-use that system in case of a context loss to restore all draw operations.
+お絵かきアプリの場合についてさらに考えるなら、どちらにしろそのアプリはアンドゥ・リドゥをサポートしたい所でしょう。
+そのようなシステムを実装する場合、個々の処理内容を表すオブジェクトをリストの形式で保持しておくのが一般的です。
+コンテキストロスの場合でも、その仕組みを再利用して、全ての描画操作を復元する事ができるでしょう。
 
-Now, before you start implementing this system, there is one more gotcha you need to be aware of.
-When the `root.onRestore` callback is executed, it's very likely that not all of your textures are already available.
-After all, they need to be restored, too, and that might take a while!
+さて、システムを実装する前に、意識しなくてはいけない潜在的な問題があります。
+`root.onRestore` コールバックが呼ばれる際、たいていの場合全てのテクスチャがまだ利用できる状態ではないという事です。
+やはり、それらも復元されなくてはならず、しばらく時間がかかるのです！
 
-If you loaded your textures with the _AssetManager_, however, it has got you covered.
-In that case, you can listen to its `TEXTURES_RESTORED` event instead.
-Also, make sure to use `drawBundled` for optimal performance.
+もしもテクスチャを _AssetManager_ を用いてロードしているのなら、そこはうまく扱ってくれます。
+その際は代わりに、`TEXTURES_RESTORED` イベントを購読しましょう。
+また、パフォーマンスを考慮して、`drawBundled` メソッドを間違いなく使うようにしましょう。
 
 [source, as3]
 ----
@@ -206,10 +207,10 @@ assetManager.addEventListener(Event.TEXTURES_RESTORED, function():void
     renderTexture.drawBundled(function():void
     {
         for each (var command:DrawCommand in listOfCommands)
-            command.redraw(); // executes `renderTexture.draw()`
+            command.redraw(); // `renderTexture.draw()` を実行します。
     });
 });
 ----
 
-NOTE: This time, there is no need to call clear, because that's the default behavior of `onRestore`, anyway -- and we did not modify that.
-Remember, we are in a different callback here (`Event.TEXTURES_RESTORED`), and `onRestore` has not been modified from its default implementation.
+NOTE: この場合は、クリア命令を実行する必要はありません。なぜなら、それが `onRestore` コールバックでのデフォルトの振る舞いで、それを変更してはいないので。
+上記処理は別のコールバック(`Event.TEXTURES_RESTORED`)内であり、`onRestore` コールバックはデフォルトの振る舞いから変更されていない事を覚えておきましょう。
