@@ -1,24 +1,24 @@
-== Memory Management
+== メモリ管理
 
-Many Starling developers use the framework to create apps and games for mobile devices.
-And almost all of those developers will sooner or later find out (the hard way) that mobile devices are notoriously low on memory.
-Why is that?
+たくさんの Starling デベロッパーがアプリやゲームをモバイル向けに作るためにフレームワークを利用しています。
+そしてそのうちほとんど全員が、遅かれ早かれモバイル端末は悪い噂になるほどメモリが少ないと言う事に苦労しながら気がつきます。
+なぜでしょう？
 
-* Most mobile devices have screens with extremely high resolutions.
-* 2D games for such devices require equally high resolution textures.
-* The available RAM is too small to hold all that texture data.
+* ほとんどのモバイル端末はとても高い解像度のスクリーンを持ちます。
+* そのような端末で2Dゲームを動かす場合、同様に高い解像度のテクスチャが必要になります。
+* 利用可能な RAM はそのテクスチャデータ全てを保持するには少なすぎるのです。
 
-In other words, a really vicious combination.
+つまりは、ひどい組み合わせだ、と言えるでしょう。
 
-What happens if you _do_ run out of memory?
-Most of the time, you will get the famous error 3691 ("Resource limit for this resource type exceeded") and your app will crash.
-The following hints will show you ways to avoid this nasty error!
+では、メモリが足りなくなった場合は どのような事が起きるでしょう？
+ほとんどの場合、エラー番号 3691 (このリソース種類ためのリソースを使い果たした) と言う、有名なエラーが生じて、アプリはクラッシュするでしょう。
+下記に続くヒントは、このタチの悪いエラーを避けるための方法を示すものとなります。
 
-=== Dispose your Waste
+=== 無駄なメモリ浪費をなくす
 
-When you don't need an object any longer, don't forget to call `dispose` on it.
-Different to conventional Flash objects, the garbage collector will not clean up any Stage3D resources!
-You are responsible for that memory yourself.
+もしも、あるオブジェクトがもう必要ないのなら、忘れずに `dispose` メソッドを呼んでやりましょう。
+Flash のオブジェクトと異なり、ガベージコレクターは Stage3D のリソースのメモリを掃除してくれません！
+メモリ管理に開発者自身が責任を持つのです。
 
 ==== Textures
 
