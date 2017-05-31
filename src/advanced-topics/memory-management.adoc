@@ -20,21 +20,21 @@
 Flash のオブジェクトと異なり、ガベージコレクターは Stage3D のリソースのメモリを掃除してくれません！
 メモリ管理に開発者自身が責任を持つのです。
 
-==== Textures
+==== テクスチャ
 
-Those are the most important objects you need to take care of.
-Textures will always take up the biggest share of your memory.
+テクスチャは扱うオブジェクトの中で最も重要なものです。
+いつでもメモリ領域のうち、一番大きな割合を占める事でしょう。
 
-Starling tries to help you with this, of course.
-For example, when you load your textures from an atlas, you only need to dispose the atlas, not the actual SubTextures.
-Only the atlas requires GPU memory, the "offspring" textures will just reference the atlas texture.
+Starling はもちろん、この事をうまくカバーできるように働きます。
+例えば、アトラスからテクスチャをロードする際、アトラスを廃棄数るだけでよく、実際のサブテクスチャを廃棄する必要はありません。
+アトラスは GPU メモリだけを必要とし、"部分部分" のテクスチャはただそのアトラステクスチャを参照するだけになります。
 
 [source, as3]
 ----
 var atlas:TextureAtlas = ...;
 var hero:Texture = atlas.getTexture("hero");
 
-atlas.dispose(); // will invalidate "hero" as well.
+atlas.dispose(); // この処理は "hero" テクスチャも同時に廃棄します。
 ----
 
 ==== Display Objects
