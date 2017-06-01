@@ -37,13 +37,13 @@ var hero:Texture = atlas.getTexture("hero");
 atlas.dispose(); // この処理は "hero" テクスチャも同時に廃棄します。
 ----
 
-==== Display Objects
+==== ディスプレイオブジェクト
 
-While display objects themselves do not require a lot of graphics memory (some do not require any at all), it's a good practice to dispose them, too.
-Be especially careful with "heavy" objects like TextFields.
+ディスプレイオブジェクト自体はたくさんのグラフィックメモリを必要としない（そのうちいくつかは全く必要としない）のですが、やはりそれらを廃棄するのは良い習慣と言えます。
+特にテキストフィールドなどが大きなオブジェクトですので慎重に扱いましょう。
 
-Display object containers will take care of all their children, as is to be expected.
-When you dispose a container, all children will be disposed automatically.
+ディスプレイオブジェクトコンテナは期待通りに、子孫要素の面倒を全て見てくれます。
+コンテナを破棄すると、子孫のオブジェクトも自動的に同時に破棄されます。
 
 [source, as3]
 ----
@@ -54,28 +54,28 @@ var child2:Quad = new Quad(100, 100, Color.GREEN);
 parent.addChild(child1);
 parent.addChild(child2);
 
-parent.dispose(); // will dispose the children, too
+parent.dispose(); // この処理で子ディスプレイオブジェクトも破棄されます。
 ----
 
-All in all, though, recent Starling versions have become more forgiving when it comes to disposing display objects.
-Most display objects do not store Stage3D resources any longer, so it's not a catastrophe if you forget to dispose one.
+概して、最近のバージョンの Starling では、ディスプレイオブジェクトの破棄に関して、寛容になりました。
+ほとんどのディスプレイオブジェクトはもはや Stage3D のリソースを保持していないので、ディスプレイオブジェクトを破棄するのを忘れたとしても大ごとにはなりません。
 
-==== Images
+==== イメージ
 
-Here's the first pitfall: disposing an image will _not_ dispose its texture.
+ここにまず最初の落とし穴が存在します。イメージを破棄してもテクスチャは破棄されません。
 
 [source, as3]
 ----
 var texture:Texture = Texture.fromBitmap(/* ... */);
 var image:Image = new Image(texture);
 
-image.dispose(); // will NOT dispose texture!
+image.dispose(); // ここでテクスチャは破棄されません！
 ----
 
-That's because Starling can't know if you're using this texture anywhere else!
-After all, you could have other images that use the same texture.
+なぜなら Starling は、このテクスチャを今後も利用する気があるのか、知りようがないからです。
+実際、同じテクスチャを共有する別のイメージをすでに利用しているかもしれません。
 
-On the other hand, if you know that the texture is not used anywhere else, get rid of it.
+逆に、もしもうこのテクスチャが他の場所で使われていない事がわかっているのであれば、破棄してしまいましょう。
 
 [source, as3]
 ----
@@ -83,34 +83,34 @@ image.texture.dispose();
 image.dispose();
 ----
 
-==== Filters
+==== フィルター
 
-Fragment filters are a little delicate, too.
-When you dispose an object, the filter will be disposed, as well:
-
-[source, as3]
-----
-var object:Sprite = createCoolSprite();
-object.filter = new BlurFilter();
-object.dispose(); // will dispose filter
-----
-
-But watch out: the following similar code will not dispose the filter:
+フラグメントフィルターもちょっとデリケートです。
+オブジェクトを破棄する時、同様にフィルターも破棄されます。
 
 [source, as3]
 ----
 var object:Sprite = createCoolSprite();
 object.filter = new BlurFilter();
-object.filter = null; // filter will *not* be disposed
+object.dispose(); // ここでフィルターも破棄されます。
 ----
 
-Again, the reason is that Starling can't know if you want to use the filter elsewhere.
+しかし、下記のような似たコードではフィルターが破棄されないのです。
 
-However, in practice, this is not a problem.
-The filter is not disposed, but Starling will still clean up all its resources.
-So you won't create a memory leak.
+[source, as3]
+----
+var object:Sprite = createCoolSprite();
+object.filter = new BlurFilter();
+object.filter = null; // ここでフィルターは破棄 *されません。* 
+----
 
-NOTE: In previous Starling versions (< 2.0), this _did_ create a memory leak.
+もう一度言いますが、 Starling は、このフィルターを今後も利用する気があるのか、知りようがないのです。
+
+しかし、実際にはこれは問題になりません。
+フィルターが破棄されてなくても、Starling が全てのリソースを消去するからです。
+よって、この操作でメモリリークを引き起こすことはありません。
+
+NOTE: 以前の Starling のバージョン(2.0未満) では、この場合メモリリークを起こします。
 
 === Do not Embed Textures
 
