@@ -147,55 +147,56 @@ assets.loadQueue(...);
 var texture:Texture = assets.getTexture("hero");
 ----
 
-=== Use RectangleTextures
+=== RectangleTexture を使う
 
-Starling's _Texture_ class is actually just a wrapper for two Stage3D classes:
+Starling の _Texture_ クラスは、実際は２つの Stage3D クラスのただのラッパーです。
 
-`flash.display3D.textures.Texture`:: Available in all profiles. Supports mipmaps and wrapping, but requires side-lengths that are powers of two.
-`flash.display3D.textures.RectangleTexture`:: Available beginning with `BASELINE` profile. No mipmaps, no wrapping, but supports arbitrary side-lengths.
+`flash.display3D.textures.Texture`:: どのピロファイルでも利用可能です。ミップマップとラッピングをサポートしますが、縦横のサイズが２の倍数である事が要求されます。
+`flash.display3D.textures.RectangleTexture`:: `BASELINE` プロファイル以降で利用できます。ミップマップトラッピングをサポートしませんが、任意のサイズを取る事ができます。
 
-The former (`Texture`) has a strange and little-known side effect: it will always allocate memory for mipmaps, whether you need them or not.
-That means that you will waste about one third of texture memory!
+前者はあまり知られていない妙な短所があります。必要であろうともなかろうとも、いつでもミップマップ用のメモリを確保してしまうのです。
+つまり、1/3 の分のメモリを浪費している事になります！
 
-Thus, it's preferred to use the alternative (`RectangleTexture`).
-Starling will use this texture type whenever possible.
+従って、後者の `RectangleTexture` を使う事が好まれます。
+Starling は可能な場合は、こちらのタイプのテクスチャを優先して使います。
 
-However, it can only do that if you run at least in `BASELINE` profile, and if you disable mipmaps.
-The first requirement can be fulfilled by picking the best available Context3D profile.
-That happens automatically if you use Starling's default constructor.
+しかし、少なくとも `BASELINE` プロファイルで動作中でないとそのような事はできません。またミップマップが必要ない場合に可能となります。
+１つ目の条件は Context3D プロファイルのうちベストの物を選択する事で満たす事ができます。
+これは、Starling のデフォルトのコンストラクタの振る舞いです。
 
 [source, as3]
 ----
-// init Starling like this:
+// このように Starling を初期化した場合、
 ... = new Starling(Game, stage);
 
-// that's equivalent to this:
+// 下記の設定をしたのと同じ事になります。
 ... = new Starling(Game, stage, null, null, "auto", "auto");
 ----
 
-The last parameter (`auto`) will tell Starling to use the best available profile.
-This means that if the device supports RectangleTextures, Starling will use them.
+最後の引数の `auto` は、Starling に 選択可能なプロファイルのうち、一番上位のものを使うように指定しています。
+つまり、デバイスが RectangleTexture をサポートするなら、Starling はそれを使うという事です。
 
-As for mipmaps: they will only be created if you explicitly ask for them.
-Some of the `Texture.from...` factory methods contain such a parameter, and the _AssetManager_ features a `useMipMaps` property.
-Per default, they are always disabled.
+ミップマップに関しては、要求された場合のみ作成されます。
+いくつかの `Texture.from...` で始まるテクスチャ生成メソッドは、その指定のパラメータを持っています。そして、_AssetManager_ には `useMipMaps` プロパティが存在します。
+デフォルトでは、ミップマップが無効になる設定になっています。
 
-=== Use ATF Textures
+=== ATF テクスチャを使う
 
-We already talked about <<ATF Textures>> previously, but it makes sense to mention them again in this section.
-Remember, the GPU cannot make use of JPG or PNG compression; those files will always be decompressed and uploaded to graphics memory in their uncompressed form.
+<<ATF テクスチャ>> に関しては、すでに考察しました。 しかし、このセクションでも、もう一度取り上げる意義があります。
+GPU が JPG や PNG 圧縮のデータをそのまま使う事ができない事を思い出してください。
+それらのファイルは一度展開され、非圧縮状態でグラフィックメモリにアップロードされます。
 
-Not so with ATF textures: they can be rendered directly from their compressed form, which saves a lot of memory.
-So if you skipped the ATF section, I recommend you take another look!
+ATF テクスチャの場合は異なります。圧縮された状態のまま描画され、たくさんのメモリを節約します。
+もしも ATF テクスチャのセクションを読み飛ばしてきたのなら、目を通しておく事をオススメします！
 
-The downside of ATF textures is the reduced image quality, of course.
-But while it's not feasible for all types of games, you can try out the following trick:
+ATF テクスチャの悪い点は、もちろんですが、イメージのクオリティが劣化する事です。
+しかし、全てのゲームに適用できるわけではありませんが、下記のようなテクニックを適用する事が可能です。
 
-. Create your textures a little bigger than what's actually needed.
-. Now compress them with the ATF tools.
-. At runtime, scale them down to their original size.
+. 実際に必要な大きさより若干大きくテクスチャを生成します。
+. ATF ツールで圧縮します。
+. ランタイムでは、実際に必要なサイズに縮小してテクスチャを利用します。
 
-You'll still save a quite a bit of memory, and the compression artifacts will become less apparent.
+この手順でも、かなりたくさんのメモリの節約が可能です。そして画質の劣化ははっきりとは確認できません。
 
 === Use 16 bit Textures
 
