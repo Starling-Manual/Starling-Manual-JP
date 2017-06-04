@@ -198,7 +198,7 @@ ATF テクスチャの悪い点は、もちろんですが、イメージのク�
 
 この手順でも、かなりたくさんのメモリの節約が可能です。そして画質の劣化ははっきりとは確認できません。
 
-=== Use 16 bit Textures
+=== 16ビットテクスチャを使う
 
 If ATF textures don't work for you, chances are that your application uses a comic-style with a limited color palette.
 I've got good news for you: for these kinds of textures, there's a different solution!
@@ -240,41 +240,42 @@ assets.enqueue(/* ... */);
 assets.loadQueue(/* ... */);
 ----
 
-=== Avoid Mipmaps
+=== ミップマップを避ける
 
-Mipmaps are downsampled versions of your textures, intended to increase rendering speed and reduce aliasing effects.
+ミップマップは元となるテクスチャを縮小したバージョンの事です。レンダリングのスピードを上げつつ、エイリアシングを軽減する目的で使われます。
 
-.Sample of a texture with mipmaps.
+.ミップマップを持つテクスチャの例。
 image::mipmap.jpg[Mipmap]
 
-Since version 2.0, Starling doesn't create any mipmaps by default.
-That turned out to be the preferable default, because without mipmaps:
+Starling のバージョン2からは、デフォルトでミップマップを生成しない仕様となりました。
+デフォルト設定として好ましい事がわかったからです。なぜなら、
 
-* Textures load faster.
-* Textures require less texture memory (just the original pixels, no mipmaps).
-* Blurry images are avoided (mipmaps sometimes become fuzzy).
+* テクスはの読み込みが速い
+* テクスチャが使うメモリ量が少ない（オリジナルのピクセル文だけで済みます。）
+* ぼやけた描画を避ける事ができる。（ミップマップはしばしば曖昧な見た目を生じます。）
 
-On the other hand, activating them will yield a slightly faster rendering speed when the object is scaled down significantly, and you avoid aliasing effects (i.e. the effect contrary to blurring).
-To enable mipmaps, use the corresponding parameter in the `Texture.from...` methods.
+一方で、ミップマップを有効とするとオブジェクトがかなり縮小されていた場合は、描画速度が著しく上がります。
+そして表示にエイリアシングがかかる事を避ける事ができます。（エイリアスとぼやけは正反対のものです。）
+ミップマップを有効にするには、`Texture.from...` 系のメソッドで対応するパラメータを設定してください。
 
-=== Use Bitmap Fonts
+=== ビットマップフォントを使う
 
-As already discussed, TextFields support two different kinds of fonts: TrueType fonts and Bitmap Fonts.
+すでに議論されましたが、テキストフィールドは２種類のフォントをサポートします。TrueType フォントと、ビットマップフォントです。
 
-While TrueType fonts are very easy to use, they have a few downsides.
+TrueType フォントはとても簡単に使えますが、いくつかの短所も持ちます。
 
-* Whenever you change the text, a new texture has to be created and uploaded to graphics memory. This is slow.
-* If you've got many TextFields or big ones, this will require a lot of texture memory.
+* テキストを変更するたびに、新しくテクスチャが生成されグラフィックメモリーにアップロードされます。これは遅い処理です。
+* たくさんのテキストフィールドを生成したり、大きなものを生成した場合、たくさんのテクスチャメモリが必要となります。
 
-Bitmap Fonts, on the other hand, are
+一方で、ビットマップフォントは、
 
-* updated very quickly and
-* require only a _constant_ amount of memory (just the glyph texture).
+* 更新が高速です。
+* 必要なメモリ量は一定です。（glyph テクスチャのみとなります。）
 
-That makes them the preferred way of displaying text in Starling.
-My recommendation is to use them whenever possible!
+これらの理由で、Starling 内にテキストを表示する方法として好ましいのです。
+個人的には、いつでもビットマップフォントを使う事をオススメします！
 
-TIP: Bitmap Font textures are a great candidate for 16 bit textures, because they are often just pure white that's tinted to the actual TextField color at runtime.
+TIP: ビットマップフォントは16ビットテクスチャを適用する候補として適切です。なぜなら大抵は白一色でテキストフィールド色にランタイムで着色されるからです。
 
 === Optimize your Texture Atlas
 
