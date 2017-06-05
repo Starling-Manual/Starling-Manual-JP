@@ -200,6 +200,7 @@ ATF テクスチャの悪い点は、もちろんですが、イメージのク�
 
 === 16ビットテクスチャを使う
 
+ATF テクスチャが適切でない場合、
 If ATF textures don't work for you, chances are that your application uses a comic-style with a limited color palette.
 I've got good news for you: for these kinds of textures, there's a different solution!
 
@@ -277,23 +278,24 @@ TrueType フォントはとても簡単に使えますが、いくつかの短�
 
 TIP: ビットマップフォントは16ビットテクスチャを適用する候補として適切です。なぜなら大抵は白一色でテキストフィールド色にランタイムで着色されるからです。
 
-=== Optimize your Texture Atlas
+=== テクスチャアトラスを最適化する
 
-It should be your top priority to pack your texture atlases as tightly as possible. Tools like https://www.codeandweb.com/texturepacker/starling?source=gamua[TexturePacker] have several options that will help with that:
+できる限りコンパクトにテクスチャアトラスをパックする事はとても重要な事でしょう。
+https://www.codeandweb.com/texturepacker/starling?source=gamua[TexturePacker] のようなツールでは下記のようなオプション指定が可能です。
 
-* Trim transparent borders away.
-* Rotate textures by 90 degrees if it leads to more effective packing.
-* Reduce the color depth (see above).
-* Remove duplicate textures.
-* etc.
+* 周辺の透明部分をトリムする。
+* より効率よくパックする場合、テクスチャを90度回転して扱う。
+* カラーの深度を減らす（上の考察を参照）
+* 重複する画像を削除する
+* その他
 
-Make use of this!
-Packing more textures into one atlas not only reduces your overall memory consumption, but also the number of draw calls (more on that in the next chapter).
+これらを利用して役に立てて下さい！
+たくさんのテクスチャを１枚のアトラスに収める事で、メモリ全体の浪費を抑えるだけでなく、ドローコールの回数も抑える事ができます。（詳しくは次のチャプターで取り扱います。）
 
 [[memory_management_scout]]
 //パフォチューノページと記載を合わせる 英語のままでいい
 
-=== Use Adobe Scout
+=== Adobe スカウトを使う
 
 https://www.adobe.com/products/scout.html[Adobe Scout] is a lightweight but comprehensive profiling tool for ActionScript and Stage3D.
 Any Flash or AIR application, regardless of whether it runs on mobile devices or in browsers, can be quickly profiled with no change to the code -- and Adobe Scout quickly and efficiently detects problems that could affect performance.
