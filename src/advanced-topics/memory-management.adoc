@@ -295,17 +295,19 @@ https://www.codeandweb.com/texturepacker/starling?source=gamua[TexturePacker] �
 [[memory_management_scout]]
 //パフォチューノページと記載を合わせる 英語のままでいい
 
-=== Adobe スカウトを使う
+=== Adobe Scout を使う
 
-https://www.adobe.com/products/scout.html[Adobe Scout] is a lightweight but comprehensive profiling tool for ActionScript and Stage3D.
-Any Flash or AIR application, regardless of whether it runs on mobile devices or in browsers, can be quickly profiled with no change to the code -- and Adobe Scout quickly and efficiently detects problems that could affect performance.
+https://www.adobe.com/products/scout.html[Adobe Scout] は、軽量化つ包括的な ActionScript と Stage3D のためのプロファイリングツールです。
+どんな Flash または AIR アプリケーションに対して、モバイル端末上で動いていようともブラウザで動いていようとも、コードの変更なしに素早くプロファイリングを行う事ができます。
+そして、Adobe Scout は素早く効率的にパフォーマンスに影響を与えうる問題を検出します。
 
-With Scout, you can not only find performance bottlenecks in your ActionScript code, but you'll also find a detailed roundup of your memory consumption over time, both for conventional and graphics memory.
-This is priceless!
+Scout を使うと、パフォーマンスのボトルネックになる ActionScript のコードを見つけられるだけでなく、
+時間とともに散り積もって行く通常メモリ及びグラフィックメモリの浪費についいぇの詳細を知る事もできます。
+非常に素晴らしい事です！
 
-NOTE: Adobe Scout is part of the _free_ version of Adobe's Creative Cloud membership. You don't have to become a paying subscriber of CC to get it.
-
-Here is a great tutorial from Thibault Imbert that explains in detail how to work with Adobe Scout: http://www.adobe.com/devnet/scout/articles/adobe-scout-getting-started.html[Getting started with Adobe Scout]
+NOTE: Adobe Scout は、Adobe Creative Cloud メンバーシップの _無料_ 契約があれば利用する事ができます。入手するために有料の契約を結ぶ必要はありません。
+次のリンクは Thibault Imbert 氏による、Adobe Scout をどのように使うかの詳細を説明する素晴らしい内容のチュートリアルビデオです。
+http://www.adobe.com/devnet/scout/articles/adobe-scout-getting-started.html[Getting started with Adobe Scout]
 
 .Adobe Scout
 image::scout-screenshot.png[Adobe Scout]
