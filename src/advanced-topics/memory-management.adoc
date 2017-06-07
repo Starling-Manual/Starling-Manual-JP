@@ -313,25 +313,27 @@ http://www.adobe.com/devnet/scout/articles/adobe-scout-getting-started.html[Gett
 .Adobe Scout
 image::scout-screenshot.png[Adobe Scout]
 
-=== Keep an Eye on the Statistics Display
+=== 常にStat表示を確認する
 
-The statistics display (available via `starling.showStats`) includes information about both conventional memory and graphics memory.
-It pays off to keep an eye on these values during development.
+Stat表示 (`starling.showStats` メソッドを実行すると表示されます。) には、通常メモリとグラフィックスメモリの情報がともに含まれています。
+開発中はそれらの値に注目し続ける価値があります。
 
-Granted, the conventional memory value is often misleading -- you never know when the garbage collector will run.
-The graphics memory value, on the other hand, is extremely accurate.
-When you create a texture, the value will rise; when you dispose a texture, it will decrease -- immediately.
+そうですね、しばしば通常メモリの値は誤解される事があります。ガベージコレクションがいつ起こるかは、わからないのです。
+一方、グラフィックメモリに関してはとても正確な値が表示されます。 
+テクスチャを作ると、メモリ使用量が上がります。テクスチャを破棄すると使用量が下がります。これはすぐさま確認できます。
 
-Actually, when I added this feature to Starling, it took about five minutes and I had already found the first memory leak -- in Starling's demo app.
-I used the following approach:
+実際、この機能を Starling に追加した時、Starling のデモアプリにメモリリークを発見するのに５分ほどしかかかりませんでした。
+だいたい５分しかかからなかったのですが、
+//原文：Actually, when I added this feature to Starling, it took about five minutes and I had already found the first memory leak -- in Starling's demo app.
+下記のようなアプローチで利用しました。
 
-* In the main menu, I noted down the used GPU memory.
-* Then I entered the demos scenes, one after another.
-* Each time I returned to the main menu, I checked if the GPU memory had returned to the original value.
-* After returning from one of the scenes, that value was not restored, and indeed: a code review showed that I had forgotten to dispose one of the textures.
+* メインメニューにて、GPUメモリの利用率を測定します。
+* デモシーンに１つづつ移動します。
+* メインメニューに戻るたびに、GPUメモリが元の値に戻っているかを確認します。
+* あるシーンから戻ってきた際、メモリ量が元に戻りませんでした。実際、コードレビューをしてみると、一つテクスチャを破棄し忘れているのがわかりました。
 
-.The statistics display shows the current memory usage.
+.Stat表示で現在のメモリ利用量が確認できます。
 image::stats-display.png[The statistics display]
 
-Needless to say: Scout offers far more details on memory usage.
-But the simple fact that the statistics display is always available makes it possible to find things that would otherwise be easily overlooked.
+言うまでもなく、Adobe Scout では、さらに詳細なメモリ利用量を測定できます。
+しかし、Stat表示はいつでも利用する事ができるので、それがなければ簡単に見過ごしてしまうような事をも過ごさずに済むのです。
