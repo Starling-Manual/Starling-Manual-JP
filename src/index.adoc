@@ -26,9 +26,16 @@ ifndef::ebook-format[:leveloffset: 1]
 // Masterにpushされた翻訳内容は15分程度の間隔で自動的に本サイトに適用されます
 // http://manual.starling-framework.org/jp/
 
-// introduction
+// 第一リリースに向けた対応 2017/6
+// すでに古くなった翻訳、リンク切れなどありそうだが、修正しているといつまでもリリースできないので
+// 最低限の調整を入れてリリースとする。
+// この index.adoc中で触れている翻訳中は発売予定だったハンドブックがすでに発売されているので
+// その部分だけは最新の英語マニュアルを元に翻訳をする。
+// 他は基本誤字や文章の修正しかしない。そもそもリンク切れになってい待っている部分、大きく書き直すことはできないので、
+// 根本的な翻訳し直しは次回に回し、リンク切れの旨注釈を入れるに止める。
+// それ以外どこの翻訳が必要かは 2017/1/15以降に入った英語版の更新差分で判断する。
 
-_※訳者注：日本語訳は順次進行中です。_
+// introduction
 
 このマニュアルは http://www.starling-framework.org[Starling Framework] の包括的な解説を目的とします。
 Starling は _ActionScript 3_ で記述されてた、クロスプラットフォームで動作するライブラリです。主に２Dゲーム開発を対象にしていますが、他にも様々なアプリケーションを開発する事ができます。
@@ -36,6 +43,11 @@ Starling は _ActionScript 3_ で記述されてた、クロスプラットフ�
 ifdef::backend-html5[]
 TIP: このドキュメントの link:manual.pdf[PDFバージョン] がダウンロード可能です。
 endif::[]
+
+IMPORTANT: ※訳者注：このマニュアルは、Starling マニュアルの2017年1月初回リリースを日本語訳したものです。
+その後の英語版にアップデートが入っている関係で最新の内容と翻訳の内容がずれていたり、リンクが消滅してしまっているものも存在しますが、随時修正予定となります。了承ください。また、修正・翻訳に貢献いただける方は、
+https://github.com/Starling-Manual/Starling-Manual-JP
+まで修正プルリクを送るか、直接連絡をいただければと思います。
 
 このマニュアルでは、下記について学ぶ事ができます。
 
@@ -48,22 +60,41 @@ endif::[]
 * モバイルフォンやタブレットでゲームを動かすために必要な事
 
 //原文：Keep on reading to dive right into it!
-早速、詳細について読んで行きましょう！
+早速、詳細を読み進んで行きましょう！
+
+//本来の1月バージョンの翻訳
+//[NOTE]
+//.Starling Handbook
+//====
+//[.right]
+//image::handbook-mockup.jpg[The Starling Handbook, 250]
+//
+//このマニュアルの内容に加えて、さらにたくさんの HOWTO やガイドを追記した本の執筆も行われています。
+//原文：A step-by-step tutorial will lead you through the development of a *complete game*.
+//ステップ・バイ・ステップで記述されたチュートリアルは、ゲーム開発の最初から最後までの手助けとなるでしょう。
+//
+//* 本について詳しくは http://gamua.com/blog/2016/09/the-starling-handbook/[Gamua ブログ] を参照してください。
+//* 本の http://bit.ly/2dfNIQF[お試しプレビュー版] がダウンロード可能です。
+//* ここに http://eepurl.com/chQGpD[サインアップ] すれば、本が完成した際のお知らせを受ける事ができます！
+//====
 
 [NOTE]
-.Starling Handbook
+.The Starling Handbook
 ====
-[.right]
+[.right, link=https://gamua.com/starling/handbook/]
 image::handbook-mockup.jpg[The Starling Handbook, 250]
 
-このマニュアルの内容に加えて、さらにたくさんの HOWTO やガイドを追記した本の執筆も行われています。
-//原文：A step-by-step tutorial will lead you through the development of a *complete game*.
-ステップ・バイ・ステップで記述されたチュートリアルは、ゲーム開発の最初から最後までの手助けとなるでしょう。
+このマニュアルのさらに高度な内容を含んだバージョンが必要でしょうか？ _Starling Handbook_ という本がまさにそれです。
+このマニュアルで扱われた内容に加えて、さらにたくさんの情報が詰まっています。
 
-* 本について詳しくは http://gamua.com/blog/2016/09/the-starling-handbook/[Gamua ブログ] を参照してください。
-* 本の http://bit.ly/2dfNIQF[お試しプレビュー版] がダウンロード可能です。
-* ここに http://eepurl.com/chQGpD[サインアップ] すれば、本が完成した際のお知らせを受ける事ができます！
+* ゲーム一つを最初から通して開発する具体的なやり方の紹介。
+* あらゆるヒントとなる制作のレシピ集。
+// 原文：Get inspired by recipes for all tastes.
+* フェザーズ(UIライブラリ) と Starling ビルダー (Stalingの画面構成をデザインするWYSIWYGエディター）について直接学ぶことができます。
+
+本についての詳しい情報は https://gamua.com/starling/handbook/[*The Starling Handbook*] を確認して下さい。
 ====
+
 
 // include main chapters
 
@@ -102,13 +133,21 @@ image::impressive.jpg[Impressive]
 Starling コミュニティはあなたの手助けをしたいと思っています。
 ぜひ、オフィシャルのフォーラムを訪れてください。 http://forum.starling-framework.org[Starling Forum].
 
-=== このマニュアルでは物足りない人へ
+//本来の1月バージョンの翻訳
+//=== このマニュアルで物足りない、という方へ
+//Starling の情報について、このドキュメントではまだ不十分だと思う人は、ここに http://eepurl.com/chQGpD[サインアップ] してください。
+//http://gamua.com/blog/2016/09/the-starling-handbook/[Starling Handbook] の発売時にお知らせします！
+//Starling Handbookは、このマニュアルの全内容に加えて、さらにプロジェクト開発に役立つ情報をお伝えします。
+//原文：And you’re supporting the continuing development of Starling at the same time!//本が売れると開発費用に当てられるという意味だろうか？
+//そしてそれは同時に Starling の開発の継続をサポートする事になります！
+//
+//image::handbook-mockup.jpg[The Starling Handbook]
 
-Starling の情報について、このドキュメントではまだ不十分だと思う人は、ここに http://eepurl.com/chQGpD[サインアップ] してください。
-http://gamua.com/blog/2016/09/the-starling-handbook/[Starling Handbook] の発売時にお知らせします！
-Starling Handbookは、このマニュアルの全内容に加えて、さらにプロジェクト開発に役立つ情報をお伝えします。
-//原文：And you’re supporting the continuing development of Starling at the same time!
-//本が売れると開発費用に当てられるという意味だろうか？
-そしてそれは同時に Starling の開発の継続をサポートする事になります！
+=== このマニュアルで物足りない、という方へ
 
+もし、真の Starling マスターになりたいのなら、 https://gamua.com/starling/handbook/[Starling Handbook] を忘れずに入手するようにしましょう！
+このマニュアルの全内容に加えて、さらにプロジェクト開発に役立つレシピや情報を知る事ができます。
+そして同時に Starling の開発の継続をサポートする事にもなるのです！
+
+[link=https://gamua.com/starling/handbook/]
 image::handbook-mockup.jpg[The Starling Handbook]
