@@ -28,14 +28,17 @@ ifndef::ebook-format[:leveloffset: 1]
 
 // introduction
 
-_※訳者注：日本語訳は順次進行中です。_
-
 このマニュアルは http://www.starling-framework.org[Starling Framework] の包括的な解説を目的とします。
 Starling は _ActionScript 3_ で記述されてた、クロスプラットフォームで動作するライブラリです。主に２Dゲーム開発を対象にしていますが、他にも様々なアプリケーションを開発する事ができます。
 
 ifdef::backend-html5[]
 TIP: このドキュメントの link:manual.pdf[PDFバージョン] がダウンロード可能です。
 endif::[]
+
+IMPORTANT: ※訳者注：このマニュアルは、Starling マニュアルの2017年1月初回リリースを日本語訳したものです。
+その後の英語版にアップデートが入っている関係で最新の内容と翻訳の内容がずれていたり、リンクが消滅してしまっているものも存在しますが、随時修正予定となります。了承ください。また、修正・翻訳に貢献いただける方は、
+https://github.com/Starling-Manual/Starling-Manual-JP
+まで修正プルリクを送るか、直接連絡をいただければと思います。
 
 このマニュアルでは、下記について学ぶ事ができます。
 
